@@ -1,0 +1,426 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+      "title": "stubserver",
+      "version": "0.9.0"
+    },
+    "paths": {
+      "/0/footprints/{id}": {
+        "get": {
+          "operationId": "get_pcf",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "$ref": "#/components/schemas/PcfId"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/ProductFootprintResponse"
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "# 401 Not Authorized",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/BadRequest"
+                  }
+                }
+              }
+            }
+          },
+          "security": [
+            {
+              "BearerAuth": []
+            }
+          ]
+        }
+      },
+      "/0/footprints": {
+        "get": {
+          "operationId": "get_list",
+          "responses": {
+            "200": {
+              "description": "",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/PCFListingResponse"
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "# 401 Not Authorized",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/BadRequest"
+                  }
+                }
+              }
+            }
+          },
+          "security": [
+            {
+              "BearerAuth": []
+            }
+          ]
+        }
+      }
+    },
+    "components": {
+      "schemas": {
+        "ProductFootprintResponse": {
+          "type": "object",
+          "required": [
+            "data"
+          ],
+          "properties": {
+            "data": {
+              "$ref": "#/components/schemas/ProductFootprint"
+            }
+          }
+        },
+        "ProductFootprint": {
+          "type": "object",
+          "anyOf": [
+            {
+              "type": "object",
+              "required": [
+                "pcf"
+              ],
+              "properties": {
+                "pcf": {
+                  "$ref": "#/components/schemas/CarbonFootprint"
+                }
+              }
+            }
+          ],
+          "required": [
+            "comment",
+            "companyId",
+            "companyName",
+            "declaredUnit",
+            "declaredUnitAmount",
+            "id",
+            "productCategoryCpc",
+            "productDescription",
+            "productId",
+            "productNameCompany",
+            "version",
+            "waterContent"
+          ],
+          "properties": {
+            "id": {
+              "$ref": "#/components/schemas/NonEmptyString"
+            },
+            "version": {
+              "$ref": "#/components/schemas/VersionString"
+            },
+            "companyName": {
+              "$ref": "#/components/schemas/NonEmptyString"
+            },
+            "companyId": {
+              "$ref": "#/components/schemas/NonEmptyURNVector"
+            },
+            "productDescription": {
+              "type": "string"
+            },
+            "productId": {
+              "$ref": "#/components/schemas/NonEmptyURNVector"
+            },
+            "productCategoryCpc": {
+              "$ref": "#/components/schemas/NonEmptyString"
+            },
+            "productNameCompany": {
+              "$ref": "#/components/schemas/NonEmptyString"
+            },
+            "declaredUnit": {
+              "$ref": "#/components/schemas/FunctionalUnit"
+            },
+            "declaredUnitAmount": {
+              "$ref": "#/components/schemas/StrictlyPositiveDecimal"
+            },
+            "waterContent": {
+              "$ref": "#/components/schemas/Percent"
+            },
+            "comment": {
+              "type": "string"
+            }
+          }
+        },
+        "NonEmptyString": {
+          "type": "string",
+          "minLength": 1
+        },
+        "VersionString": {
+          "type": "string",
+          "pattern": "\\d+\\.\\d+\\.\\d+"
+        },
+        "NonEmptyURNVector": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^([uU][rR][nN]):"
+          },
+          "minItems": 1
+        },
+        "FunctionalUnit": {
+          "type": "string",
+          "enum": [
+            "l",
+            "kg"
+          ]
+        },
+        "StrictlyPositiveDecimal": {
+          "type": "string",
+          "pattern": "^(\\d*[1-9]\\d*([\\.]\\d+)?|\\d+(\\.\\d*[1-9]\\d*)?)$"
+        },
+        "Percent": {
+          "type": "number",
+          "format": "double",
+          "maximum": 100,
+          "minimum": 0
+        },
+        "CarbonFootprint": {
+          "type": "object",
+          "anyOf": [
+            {
+              "required": [
+                "biogenicEmissions"
+              ],
+              "properties": {
+                "biogenicEmissions": {
+                  "$ref": "#/components/schemas/StrictlyPositiveDecimal"
+                }
+              }
+            },
+            {
+              "required": [
+                "carbonEmissions"
+              ],
+              "properties": {
+                "carbonEmissions": {
+                  "$ref": "#/components/schemas/StrictlyPositiveDecimal"
+                }
+              }
+            },
+            {
+              "required": [
+                "landUseEmissions"
+              ],
+              "properties": {
+                "landUseEmissions": {
+                  "$ref": "#/components/schemas/StrictlyPositiveDecimal"
+                }
+              }
+            }
+          ],
+          "required": [
+            "biogenicEmissions",
+            "boundaryGate",
+            "boundaryProcesses",
+            "carbonEmissions",
+            "crossSectoralStandardsUsed",
+            "geographyCountry",
+            "landUseEmissions",
+            "primaryDataShare",
+            "reportingPeriodEnd",
+            "reportingPeriodStart"
+          ],
+          "properties": {
+            "carbonEmissions": {
+              "$ref": "#/components/schemas/PositiveDecimal"
+            },
+            "biogenicEmissions": {
+              "$ref": "#/components/schemas/PositiveDecimal"
+            },
+            "landUseEmissions": {
+              "$ref": "#/components/schemas/PositiveDecimal"
+            },
+            "reportingPeriodStart": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "reportingPeriodEnd": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "geographyCountry": {
+              "type": "string"
+            },
+            "geographySubregion": {
+              "$ref": "#/components/schemas/NonEmptyString",
+              "nullable": true
+            },
+            "primaryDataShare": {
+              "$ref": "#/components/schemas/Percent"
+            },
+            "emissionFactorSources": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/EmissionFactorDS"
+              },
+              "nullable": true
+            },
+            "boundaryProcesses": {
+              "type": "string"
+            },
+            "boundaryGate": {
+              "$ref": "#/components/schemas/BoundaryGate"
+            },
+            "crossSectoralStandardsUsed": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/CrossSectoralStandard"
+              }
+            },
+            "productSpecificRules": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/ProductSpecificRule"
+              },
+              "nullable": true
+            },
+            "allocationRules": {
+              "type": "string",
+              "nullable": true
+            }
+          }
+        },
+        "PositiveDecimal": {
+          "type": "string",
+          "pattern": "^\\d+(\\.\\d+)?$"
+        },
+        "EmissionFactorDS": {
+          "type": "object",
+          "required": [
+            "name",
+            "version"
+          ],
+          "properties": {
+            "name": {
+              "$ref": "#/components/schemas/EmissionFactorDSName"
+            },
+            "version": {
+              "$ref": "#/components/schemas/NonEmptyString"
+            }
+          }
+        },
+        "EmissionFactorDSName": {
+          "type": "string",
+          "enum": [
+            "Ecoinvent",
+            "Gabi",
+            "GLEC",
+            "PEF",
+            "UNEP Global LCA Data Access Network",
+            "Other"
+          ]
+        },
+        "BoundaryGate": {
+          "type": "string",
+          "enum": [
+            "Cradle-to-gate",
+            "Gate-to-gate"
+          ]
+        },
+        "CrossSectoralStandard": {
+          "type": "string",
+          "enum": [
+            "GHG Protocol Product standard",
+            "ISO Standard 14067",
+            "ISO Standard 14044"
+          ]
+        },
+        "ProductSpecificRule": {
+          "type": "object",
+          "required": [
+            "operator",
+            "ruleNames"
+          ],
+          "properties": {
+            "operator": {
+              "$ref": "#/components/schemas/ProductSpecificRuleOperator"
+            },
+            "ruleNames": {
+              "$ref": "#/components/schemas/NonEmptyStringVec"
+            }
+          }
+        },
+        "ProductSpecificRuleOperator": {
+          "type": "string",
+          "enum": [
+            "PEF",
+            "EPD International",
+            "Other"
+          ]
+        },
+        "NonEmptyStringVec": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "BadRequest": {
+          "type": "object",
+          "required": [
+            "message"
+          ],
+          "properties": {
+            "message": {
+              "type": "string"
+            }
+          }
+        },
+        "PcfId": {
+          "type": "string"
+        },
+        "PCFListingResponse": {
+          "type": "object",
+          "required": [
+            "data"
+          ],
+          "properties": {
+            "data": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/ProductFootprint"
+              }
+            }
+          }
+        }
+      },
+      "securitySchemes": {
+        "BearerAuth": {
+          "description": "OAuth2 Client Credentials Grant (RFC6749 4.4)",
+          "type": "oauth2",
+          "flows": {
+            "clientCredentials": {
+              "tokenUrl": "/0/auth/token",
+              "scopes": {
+                "footprint:list": "Ability to list footprints",
+                "footprint:read": "Ability to access individual footprints"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  
