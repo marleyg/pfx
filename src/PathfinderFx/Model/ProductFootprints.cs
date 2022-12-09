@@ -4,7 +4,7 @@
 //
 //    using Microsoft.PathfinderFx;
 //
-//    var productFootprint = ProductFootprint.FromJson(jsonString);
+//    var productFootprint = ProductFootprints.FromJson(jsonString);
 
 namespace Microsoft.PathfinderFx
 {
@@ -15,7 +15,7 @@ namespace Microsoft.PathfinderFx
     using Newtonsoft.Json;
     using Newtonsoft.Json.Converters;
 
-    public partial class ProductFootprint
+    public partial class ProductFootprints
     {
         [JsonProperty("data")]
         public Datum[] Data { get; set; }
@@ -268,14 +268,14 @@ namespace Microsoft.PathfinderFx
         public string[] RuleNames { get; set; }
     }
 
-    public partial class ProductFootprint
+    public partial class ProductFootprints
     {
-        public static ProductFootprint FromJson(string json) => JsonConvert.DeserializeObject<ProductFootprint>(json, Microsoft.PathfinderFx.Converter.Settings);
+        public static ProductFootprints FromJson(string json) => JsonConvert.DeserializeObject<ProductFootprints>(json, Microsoft.PathfinderFx.Converter.Settings);
     }
 
     public static class Serialize
     {
-        public static string ToJson(this ProductFootprint self) => JsonConvert.SerializeObject(self, Microsoft.PathfinderFx.Converter.Settings);
+        public static string ToJson(this ProductFootprints self) => JsonConvert.SerializeObject(self, Microsoft.PathfinderFx.Converter.Settings);
     }
 
     internal static class Converter
