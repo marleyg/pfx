@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.PathfinderFx;
+using PathfinderFx.Model;
 
 namespace PathfinderFx.Controllers
 {
