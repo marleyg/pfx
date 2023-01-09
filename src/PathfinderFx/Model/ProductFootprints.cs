@@ -22,7 +22,7 @@ namespace PathfinderFx.Model
     public partial class ProductFootprints
     {
         [JsonPropertyName("data")]
-        public System.Collections.Generic.List<Datum> Data { get; set; }
+        public List<Datum> Data { get; set; }
     }
 
     public partial class Datum
@@ -46,13 +46,13 @@ namespace PathfinderFx.Model
         public string CompanyName { get; set; }
 
         [JsonPropertyName("companyIds")]
-        public System.Collections.Generic.List<string> CompanyIds { get; set; }
+        public List<string> CompanyIds { get; set; }
 
         [JsonPropertyName("productDescription")]
         public string ProductDescription { get; set; }
 
         [JsonPropertyName("productIds")]
-        public System.Collections.Generic.List<string> ProductIds { get; set; }
+        public List<string> ProductIds { get; set; }
 
         [JsonPropertyName("productCategoryCpc")]
         [JsonConverter(typeof(ParseStringConverter))]
@@ -68,7 +68,7 @@ namespace PathfinderFx.Model
         public Pcf Pcf { get; set; }
 
         [JsonPropertyName("extensions")]
-        public System.Collections.Generic.List<Extension> Extensions { get; set; }
+        public List<Extension> Extensions { get; set; }
     }
 
     public partial class Extension
@@ -83,6 +83,7 @@ namespace PathfinderFx.Model
         [JsonPropertyName("documentation")]
         public Uri Documentation { get; set; }
 
+        //figure out what to do here to be able to handle a colletion of objects or serialized json?
         [JsonPropertyName("data")]
         public Data Data { get; set; }
     }
@@ -173,7 +174,7 @@ namespace PathfinderFx.Model
         public double PrimaryDataShare { get; set; }
 
         [JsonPropertyName("emissionFactorSources")]
-        public System.Collections.Generic.List<EmissionFactorSource> EmissionFactorSources { get; set; }
+        public List<EmissionFactorSource> EmissionFactorSources { get; set; }
 
         [JsonPropertyName("boundaryProcessesDescription")]
         public string BoundaryProcessesDescription { get; set; }
@@ -191,10 +192,10 @@ namespace PathfinderFx.Model
         public string PackagingGhgEmissions { get; set; }
 
         [JsonPropertyName("crossSectoralStandardsUsed")]
-        public System.Collections.Generic.List<string> CrossSectoralStandardsUsed { get; set; }
+        public List<string> CrossSectoralStandardsUsed { get; set; }
 
         [JsonPropertyName("productOrSectorSpecificRules")]
-        public System.Collections.Generic.List<ProductOrSectorSpecificRule> ProductOrSectorSpecificRules { get; set; }
+        public List<ProductOrSectorSpecificRule> ProductOrSectorSpecificRules { get; set; }
 
         [JsonPropertyName("allocationRulesDescription")]
         public string AllocationRulesDescription { get; set; }
@@ -296,7 +297,7 @@ namespace PathfinderFx.Model
         public string Operator { get; set; }
 
         [JsonPropertyName("ruleNames")]
-        public System.Collections.Generic.List<string> RuleNames { get; set; }
+        public List<string> RuleNames { get; set; }
     }
 
     public partial class ProductFootprints
