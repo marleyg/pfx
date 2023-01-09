@@ -30,7 +30,7 @@ namespace PathfinderFx.Controllers
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public ProductFootprints GetFootprint(string id)
         {
-            _logger.LogInformation("Getting footprint, id: {id}", id);
+            _logger.LogInformation("Getting footprint, id: {Id}", id);
             return ProductFootprints.FromJson(System.IO.File.ReadAllText("Data/pfv2.json"));
         }
         

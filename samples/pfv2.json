@@ -1,105 +1,116 @@
 {
     "data": [
-      {
-        "id": "d9be4477-e351-45b3-acd9-e1da05e6f633",
-        "specVersion": "2.0.0",
-        "version": 0,
-        "created": "2022-12-08T14:47:32Z",
-        "updated": "",
-        "companyName": "My Corp",
-        "companyIds": [
-          "urn:uuid:51131FB5-42A2-4267-A402-0ECFEFAD1619",
-          "urn:epc:id:sgln:4063973.00000.8"
-        ],
-        "productDescription": "Cote'd Or Ethanol",
-        "productIds": [
-          "urn:gtin:4712345060507"
-        ],
-        "productCategoryCpc": "3342",
-        "productNameCompany": "Green Ethanol",
-        "comment": "Should have information and instructions related to the calculation of the footprint, or other information which informs the ability to interpret, to audit or to verify the Product Footprint.",
-        "pcf": {
-          "declaredUnit": "liter",
-          "unitaryProductAmount": "12.0",
-          "pCfExcludingBiogenic": "0.231",
-          "pCfIncludingBiogenic": "0.232",
-          "fossilGhgEmissions": "0.123",
-          "fossilCarbonContent": "1.721",
-          "biogenicEmissions": {
-            "landUseEmissions": "0.001",
-            "iLucGhgEmissions": "0.021",
-            "dLucGhgEmissions": "0.011",
-            "otherGhgEmissions": "0.0"
-          },
-          "biogenicCarbonContent": "0.0",
-          "biogenicCarbonWithdrawal": "0.0",
-          "characterizationFactors": "AR6",
-          "biogenicAccountingMethodology": "Name of Methodolology",
-          "reportingPeriodStart": "2021-01-01T00:00:00Z",
-          "reportingPeriodEnd": "2022-01-01T00:00:00Z",
-          "geographyCountrySubdivision": "Europe",
-          "geography_country": "FR",
-          "geographyRegionOrSubregion": "Western Europe",
-          "primaryDataShare": 56.12,
-          "emissionFactorSources": [
-            {
-              "name": "Ecoinvent",
-              "version": "1.2.3"
-            }
-          ],
-          "boundaryProcessesDescription": "End-of-life included",
-          "exemptedEmissionsPercent": 10.0,
-          "exemptedEmissionsDescription": "Exempted emissions are those that are not included in the footprint calculation because they are not considered to be within the control of the company. For example, emissions from the use of the product by the consumer are not included in the footprint calculation.",
-          "packagingEmissionsIncluded": true,
-          "packagingGhgEmissions": "2.123",
-          "crossSectoralStandardsUsed": [
-            "GHG Protocol Product standard",
-            "ISO Standard 14067",
-            "ISO Standard 14044"
-
-          ],
-          "productOrSectorSpecificRules": [
-            {
-              "operator": "EPD International",
-              "ruleNames": [
-                "ABC 2021"
-              ]
-            }
-          ],
-          "allocationRulesDescription": "Allocation rules are used to allocate the emissions from the production of the product to the product itself. For example, if the product is made up of multiple components, the emissions from the production of each component are allocated to the product based on the proportion of each component in the product. Allocation rules are also used to allocate emissions from the production of the packaging to the product.",
-          "uncertaintyAssessmentDescription": "Uncertainty assessment is used to describe the uncertainty in the footprint calculation. For example, the uncertainty in the emissions from the production of the product may be estimated using Monte Carlo simulation. The uncertainty in the emissions from the production of the packaging may be estimated using a range of values.",
-          "dqi":{
-            "coveragePercent": 100.0,
-            "technologicalDQR": 1.13,
-            "temporalDQR": 2.57,
-            "geographicalDQR": 1.0,
-            "completenessDQR": 2.6,
-            "reliabilityDQR": 1.79
-          },
-          "assurance":{
-            "coverage": "product line",
-            "level": "reasonable",
-            "boundary": "Cradle-to-Gate",
-            "providerName": "My Auditor",
-            "completedAt": "2022-12-08T14:47:32Z",
-            "standard": "ISO ...",
-            "statementOrSignature":{
-              "type": "signature",
-              "value": "..."
+        {
+            "id": "d9be4477-e351-45b3-acd9-e1da05e6f633",
+            "specVersion": "2.0.0",
+            "version": 0,
+            "created": "2022-12-08T14:47:32Z",
+            "updated": "",
+            "companyName": "My Corp",
+            "companyIds": [
+                "urn:uuid:51131FB5-42A2-4267-A402-0ECFEFAD1619",
+                "urn:epc:id:sgln:4063973.00000.8"
+            ],
+            "productDescription": "Cote'd Or Ethanol",
+            "productIds": [
+                "urn:gtin:4712345060507"
+            ],
+            "productCategoryCpc": "3342",
+            "productNameCompany": "Green Ethanol",
+            "comment": "Should have information and instructions related to the calculation of the footprint, or other information which informs the ability to interpret, to audit or to verify the Product Footprint.",
+            "pcf": {
+                "declaredUnit": "liter",
+                "unitaryProductAmount": "12.0",
+                "pCfExcludingBiogenic": "0.231",
+                "pCfIncludingBiogenic": "0.232",
+                "fossilGhgEmissions": "0.123",
+                "fossilCarbonContent": "1.721",
+                "biogenicEmissions": {
+                    "landUseEmissions": "0.001",
+                    "iLucGhgEmissions": "0.021",
+                    "dLucGhgEmissions": "0.011",
+                    "otherGhgEmissions": "0.0"
+                },
+                "biogenicCarbonContent": "0.0",
+                "biogenicCarbonWithdrawal": "0.0",
+                "characterizationFactors": "AR6",
+                "biogenicAccountingMethodology": "Name of Methodolology",
+                "reportingPeriodStart": "2021-01-01T00:00:00Z",
+                "reportingPeriodEnd": "2022-01-01T00:00:00Z",
+                "geographyCountrySubdivision": "Europe",
+                "geography_country": "FR",
+                "geographyRegionOrSubregion": "Western Europe",
+                "primaryDataShare": 56.12,
+                "emissionFactorSources": [
+                    {
+                        "name": "Ecoinvent",
+                        "version": "1.2.3"
+                    }
+                ],
+                "boundaryProcessesDescription": "End-of-life included",
+                "exemptedEmissionsPercent": 10,
+                "exemptedEmissionsDescription": "Exempted emissions are those that are not included in the footprint calculation because they are not considered to be within the control of the company. For example, emissions from the use of the product by the consumer are not included in the footprint calculation.",
+                "packagingEmissionsIncluded": true,
+                "packagingGhgEmissions": "2.123",
+                "crossSectoralStandardsUsed": [
+                    "GHG Protocol Product standard",
+                    "ISO Standard 14067",
+                    "ISO Standard 14044"
+                ],
+                "productOrSectorSpecificRules": [
+                    {
+                        "operator": "EPD International",
+                        "ruleNames": [
+                            "ABC 2021"
+                        ]
+                    }
+                ],
+                "allocationRulesDescription": "Allocation rules are used to allocate the emissions from the production of the product to the product itself. For example, if the product is made up of multiple components, the emissions from the production of each component are allocated to the product based on the proportion of each component in the product. Allocation rules are also used to allocate emissions from the production of the packaging to the product.",
+                "uncertaintyAssessmentDescription": "Uncertainty assessment is used to describe the uncertainty in the footprint calculation. For example, the uncertainty in the emissions from the production of the product may be estimated using Monte Carlo simulation. The uncertainty in the emissions from the production of the packaging may be estimated using a range of values.",
+                "dqi": {
+                    "coveragePercent": 100,
+                    "technologicalDQR": 1.13,
+                    "temporalDQR": 2.57,
+                    "geographicalDQR": 1,
+                    "completenessDQR": 2.6,
+                    "reliabilityDQR": 1.79
+                },
+                "assurance": {
+                    "coverage": "product line",
+                    "level": "reasonable",
+                    "boundary": "Cradle-to-Gate",
+                    "providerName": "My Auditor",
+                    "completedAt": "2022-12-08T14:47:32Z",
+                    "standard": "ISO ...",
+                    "statementOrSignature": {
+                        "type": "signature",
+                        "value": "..."
+                    },
+                    "comments": "This is a comment"
+                }
             },
-            "comments": "This is a comment"
-          }
-        },
-        "extensions": [
-          {
-            "name": "My Extension",
-            "version": "1.0.0",
-            "description": "This is a description of my extension",
-            "data": {
-              "myKey": "myValue"
-            }
-          }
-        ]
-      }
+            "extensions": [
+                {
+                    "specVersion": "1.0.0",
+                    "dataSchema": "https://pathfinder.dev/data-schemas/1.0.0/shipment.json",
+                    "documentation": "https://pathfinder.dev/data-schemas/1.0.0/shipment/documentation/",
+                    "data": {
+                        "shipmentId": "1234567890",
+                        "consignmentId": "abcdefghi",
+                        "shipmentType": "PICKUP",
+                        "weight": 10,
+                        "transportChainElementId": "ABCDEFGHI"
+                    }
+                },
+                {
+                    "specVersion": "1.0.0",
+                    "dataSchema": "https://pathfinder.dev/data-schemas/1.0.0/primary-data-share.json",
+                    "data": {
+                        "primaryDataShareScope2": 67.2,
+                        "primaryDataShareScope3": 12.3
+                    }
+                }
+            ]
+        }
     ]
-  }
+}
