@@ -6,6 +6,16 @@
             "version": 0,
             "created": "2022-12-08T14:47:32Z",
             "updated": "",
+            "status": "deprecated or invalid",
+            "statusComment": "",
+            "previousPfIds": [
+                {
+                    "id": "d9be4477-e351-45b3-acd9-e1da05e6f633"
+                },
+                {
+                    "id": "e8gs2231-e351-45b3-acd9-e1da05e6f531"
+                }
+            ],
             "companyName": "My Corp",
             "companyIds": [
                 "urn:uuid:51131FB5-42A2-4267-A402-0ECFEFAD1619",

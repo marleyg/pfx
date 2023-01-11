@@ -41,7 +41,21 @@ namespace PathfinderFx.Model
 
         [JsonPropertyName("updated")]
         public string Updated { get; set; }
+        
+        /* Lifecycle properties */
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonPropertyName("status")]
+        public PfStatus Status { get; set; }
+        
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonPropertyName("statusComment")]
+        public string StatusComment { get; set; }
 
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonPropertyName("precedingPfIds")]
+        public List<string> PrecedingPfIds { get; set; }
+        /* End lifecycle properties */
+        
         [JsonPropertyName("companyName")]
         public string CompanyName { get; set; }
 
