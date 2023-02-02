@@ -3,7 +3,7 @@ using System.ComponentModel;
 namespace PathfinderFx.Model;
 
 /// <summary>
-/// States and Territories of the US
+/// Country codes
 /// </summary>
 public enum GeographyCountry
 {
