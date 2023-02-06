@@ -2,7 +2,7 @@
     "data": [
         {
             "id": "d9be4477-e351-45b3-acd9-e1da05e6f633",
-            "specVersion": "1.0.0",
+            "specVersion": "2.0.0",
             "version": 0,
             "created": "2022-05-22T21:47:32Z",
             "companyName": "My Corp",
@@ -49,6 +49,10 @@
                         "version": "1.2.3"
                     }
                 ],
+                "exemptedEmissionsPercent": "0.0",
+                "exemptedEmissionsDescription": "",
+                "packagingEmissionsIncluded": false,
+                "primaryDataShare": 56.12,
                 "dqi": {
                     "coveragePercent": 100,
                     "technologicalDQR": 1.13,
@@ -63,17 +67,9 @@
                     "boundary": "Cradle-to-Gate",
                     "providerName": "My Auditor",
                     "completedAt": "2022-12-08T14:47:32Z",
-                    "standard": "ISO ...",
-                    "statementOrSignature": {
-                        "type": "signature",
-                        "value": "..."
-                    },
+                    "standardName": "ISO ...",
                     "comments": "This is a comment"
-                },
-                "exemptedEmissionsPercent": "0.0",
-                "exemptedEmissionsDescription": "",
-                "packagingEmissionsIncluded": false,
-                "primaryDataShare": 56.12
+                }
             },
             "extensions": [
                 {
