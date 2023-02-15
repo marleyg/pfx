@@ -3,8 +3,9 @@
         {
             "id": "d9be4477-e351-45b3-acd9-e1da05e6f633",
             "specVersion": "2.0.0",
-            "version": 0,
+            "version": 1,
             "created": "2022-05-22T21:47:32Z",
+            "status": "Active",
             "companyName": "My Corp",
             "companyIds": [
                 "urn:uuid:51131FB5-42A2-4267-A402-0ECFEFAD1619",
@@ -21,12 +22,10 @@
                 "declaredUnit": "liter",
                 "unitaryProductAmount": "12.0",
                 "pCfExcludingBiogenic": "0.0",
-                "pCfIncludingBiogenic": "0.0",
                 "fossilGhgEmissions": "0.123",
                 "fossilCarbonContent": "0.0",
                 "biogenicCarbonContent": "0.0",
-                "landManagementGhgEmissions": "0.001",
-                "otherBiogenicGhgEmissions": "0",
+                "landManagementGhgEmissions": "0.01",
                 "characterizationFactors": "AR5",
                 "crossSectoralStandardsUsed": [
                     "GHG Protocol Product standard"
@@ -40,8 +39,8 @@
                     }
                 ],
                 "boundaryProcessesDescription": "End-of-life included",
-                "reportingPeriodStart": "2021-01-01T00:00:00Z",
-                "reportingPeriodEnd": "2022-01-01T00:00:00Z",
+                "referencePeriodStart": "2021-01-01T00:00:00Z",
+                "referencePeriodEnd": "2022-01-01T00:00:00Z",
                 "geographyCountry": "FR",
                 "secondaryEmissionFactorSources": [
                     {
@@ -49,18 +48,10 @@
                         "version": "1.2.3"
                     }
                 ],
-                "exemptedEmissionsPercent": "0.0",
+                "exemptedEmissionsPercent": 3.1,
                 "exemptedEmissionsDescription": "",
                 "packagingEmissionsIncluded": false,
                 "primaryDataShare": 56.12,
-                "dqi": {
-                    "coveragePercent": 100,
-                    "technologicalDQR": 1.13,
-                    "temporalDQR": 2.57,
-                    "geographicalDQR": 1,
-                    "completenessDQR": 2.6,
-                    "reliabilityDQR": 1.79
-                },
                 "assurance": {
                     "coverage": "product line",
                     "level": "reasonable",

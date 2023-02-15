@@ -21,7 +21,7 @@ namespace PathfinderFx.Controllers
         public ProductFootprints ListFootprints()
         {
             _logger.LogInformation("Getting footprints");
-            return ProductFootprints.FromJson(System.IO.File.ReadAllText("Data/pfv2.json"));
+            return ProductFootprints.FromJson(System.IO.File.ReadAllText("Data/pfsv2.json"));
         }
 
         [HttpGet("{id}")]

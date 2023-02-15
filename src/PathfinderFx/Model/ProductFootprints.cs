@@ -2,7 +2,7 @@
 //
 // To parse this JSON data, add NuGet 'System.Text.Json' then do:
 //
-//    using PathfinderFx.Model;
+//    using PathfinderFx;
 //
 //    var productFootprints = ProductFootprints.FromJson(jsonString);
 #nullable enable
@@ -10,7 +10,7 @@
 #pragma warning disable CS8601
 #pragma warning disable CS8603
 
-namespace PathfinderFx.Model
+namespace PathfinderFx
 {
     using System;
     using System.Collections.Generic;
@@ -28,34 +28,40 @@ namespace PathfinderFx.Model
     public partial class Datum
     {
         [JsonPropertyName("id")]
-        public Guid Id { get; set; }
+        public Guid? Id { get; set; }
 
         [JsonPropertyName("specVersion")]
         public string SpecVersion { get; set; }
 
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonPropertyName("precedingPfIds")]
+        public List<string> PrecedingPfIds { get; set; }
+
         [JsonPropertyName("version")]
-        public long Version { get; set; }
+        public long? Version { get; set; }
 
         [JsonPropertyName("created")]
-        public DateTimeOffset Created { get; set; }
+        public DateTimeOffset? Created { get; set; }
 
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("updated")]
         public string Updated { get; set; }
-        
-        /* Lifecycle properties */
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+
         [JsonPropertyName("status")]
-        public PfStatus Status { get; set; }
-        
+        public string Status { get; set; }
+
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("statusComment")]
         public string StatusComment { get; set; }
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-        [JsonPropertyName("precedingPfIds")]
-        public List<string> PrecedingPfIds { get; set; }
-        /* End lifecycle properties */
-        
+        [JsonPropertyName("validityPeriodStart")]
+        public DateTimeOffset? ValidityPeriodStart { get; set; }
+
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonPropertyName("validityPeriodEnd")]
+        public DateTimeOffset? ValidityPeriodEnd { get; set; }
+
         [JsonPropertyName("companyName")]
         public string CompanyName { get; set; }
 
@@ -70,7 +76,7 @@ namespace PathfinderFx.Model
 
         [JsonPropertyName("productCategoryCpc")]
         [JsonConverter(typeof(ParseStringConverter))]
-        public long ProductCategoryCpc { get; set; }
+        public long? ProductCategoryCpc { get; set; }
 
         [JsonPropertyName("productNameCompany")]
         public string ProductNameCompany { get; set; }
@@ -78,26 +84,24 @@ namespace PathfinderFx.Model
         [JsonPropertyName("comment")]
         public string Comment { get; set; }
 
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("pcf")]
         public Pcf Pcf { get; set; }
 
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("extensions")]
         public List<Extension> Extensions { get; set; }
     }
 
     public partial class Extension
     {
+        
         [JsonPropertyName("specVersion")]
         public string SpecVersion { get; set; }
 
         [JsonPropertyName("dataSchema")]
         public Uri DataSchema { get; set; }
 
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-        [JsonPropertyName("documentation")]
-        public Uri Documentation { get; set; }
-
-        //figure out what to do here to be able to handle a colletion of objects or serialized json?
         [JsonPropertyName("data")]
         public Data Data { get; set; }
     }
@@ -106,8 +110,7 @@ namespace PathfinderFx.Model
     {
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("shipmentId")]
-        [JsonConverter(typeof(ParseStringConverter))]
-        public long? ShipmentId { get; set; }
+        public string ShipmentId { get; set; }
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("consignmentId")]
@@ -124,18 +127,10 @@ namespace PathfinderFx.Model
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("transportChainElementId")]
         public string TransportChainElementId { get; set; }
-
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-        [JsonPropertyName("primaryDataShareScope2")]
-        public double? PrimaryDataShareScope2 { get; set; }
-
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-        [JsonPropertyName("primaryDataShareScope3")]
-        public double? PrimaryDataShareScope3 { get; set; }
     }
 
     public partial class Pcf
-    {
+    {      
         [JsonPropertyName("declaredUnit")]
         public string DeclaredUnit { get; set; }
 
@@ -145,6 +140,7 @@ namespace PathfinderFx.Model
         [JsonPropertyName("pCfExcludingBiogenic")]
         public string PCfExcludingBiogenic { get; set; }
 
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("pCfIncludingBiogenic")]
         public string PCfIncludingBiogenic { get; set; }
 
@@ -154,155 +150,157 @@ namespace PathfinderFx.Model
         [JsonPropertyName("fossilCarbonContent")]
         public string FossilCarbonContent { get; set; }
 
-        [JsonPropertyName("biogenicEmissions")]
-        public BiogenicEmissions BiogenicEmissions { get; set; }
-
         [JsonPropertyName("biogenicCarbonContent")]
         public string BiogenicCarbonContent { get; set; }
 
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonPropertyName("dLucGhgEmissions")]
+        public string DLucGhgEmissions { get; set; }
+
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonPropertyName("landManagementGhgEmissions")]
+        public string LandManagementGhgEmissions { get; set; }
+
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonPropertyName("otherBiogenicGhgEmissions")]
+        public string OtherBiogenicGhgEmissions { get; set; }
+
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonPropertyName("iLucGhgEmissions")]
+        public string ILucGhgEmissions { get; set; }
+
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("biogenicCarbonWithdrawal")]
         public string BiogenicCarbonWithdrawal { get; set; }
+
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonPropertyName("aircraftGhgEmissions")]
+        public string AircraftGhgEmissions { get; set; }
 
         [JsonPropertyName("characterizationFactors")]
         public string CharacterizationFactors { get; set; }
 
+        [JsonPropertyName("crossSectoralStandardsUsed")]
+        public List<string> CrossSectoralStandardsUsed { get; set; }
+
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonPropertyName("productOrSectorSpecificRules")]
+        public List<ProductOrSectorSpecificRule> ProductOrSectorSpecificRules { get; set; }
+
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("biogenicAccountingMethodology")]
         public string BiogenicAccountingMethodology { get; set; }
 
-        [JsonPropertyName("reportingPeriodStart")]
-        public DateTimeOffset ReportingPeriodStart { get; set; }
-
-        [JsonPropertyName("reportingPeriodEnd")]
-        public DateTimeOffset ReportingPeriodEnd { get; set; }
-
-        [JsonPropertyName("geographyCountrySubdivision")]
-        public string GeographyCountrySubdivision { get; set; }
-
-        [JsonPropertyName("geography_country")]
-        public string GeographyCountry { get; set; }
-
-        [JsonPropertyName("geographyRegionOrSubregion")]
-        public string GeographyRegionOrSubregion { get; set; }
-
-        [JsonPropertyName("primaryDataShare")]
-        public double PrimaryDataShare { get; set; }
-
-        [JsonPropertyName("emissionFactorSources")]
-        public List<EmissionFactorSource> EmissionFactorSources { get; set; }
-
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("boundaryProcessesDescription")]
         public string BoundaryProcessesDescription { get; set; }
 
+        [JsonPropertyName("referencePeriodStart")]
+        public DateTimeOffset? ReferencePeriodStart { get; set; }
+
+        [JsonPropertyName("referencePeriodEnd")]
+        public DateTimeOffset? ReferencePeriodEnd { get; set; }
+
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonPropertyName("geographyCountrySubdivision")]
+        public string GeographyCountrySubdivision { get; set; }
+
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonPropertyName("geography_country")]
+        public string GeographyCountry { get; set; }
+
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonPropertyName("geographyRegionOrSubregion")]
+        public string GeographyRegionOrSubregion { get; set; }
+
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonPropertyName("secondaryEmissionFactorSources")]
+        public List<SecondaryEmissionFactorSource> SecondaryEmissionFactorSources { get; set; }
+
         [JsonPropertyName("exemptedEmissionsPercent")]
-        public long ExemptedEmissionsPercent { get; set; }
+        public decimal? ExemptedEmissionsPercent { get; set; }
 
         [JsonPropertyName("exemptedEmissionsDescription")]
         public string ExemptedEmissionsDescription { get; set; }
 
         [JsonPropertyName("packagingEmissionsIncluded")]
-        public bool PackagingEmissionsIncluded { get; set; }
+        public bool? PackagingEmissionsIncluded { get; set; }
 
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("packagingGhgEmissions")]
         public string PackagingGhgEmissions { get; set; }
 
-        [JsonPropertyName("crossSectoralStandardsUsed")]
-        public List<string> CrossSectoralStandardsUsed { get; set; }
-
-        [JsonPropertyName("productOrSectorSpecificRules")]
-        public List<ProductOrSectorSpecificRule> ProductOrSectorSpecificRules { get; set; }
-
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("allocationRulesDescription")]
         public string AllocationRulesDescription { get; set; }
 
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("uncertaintyAssessmentDescription")]
         public string UncertaintyAssessmentDescription { get; set; }
 
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonPropertyName("primaryDataShare")]
+        public double? PrimaryDataShare { get; set; }
+
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("dqi")]
         public Dqi Dqi { get; set; }
 
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("assurance")]
         public Assurance Assurance { get; set; }
     }
 
     public partial class Assurance
     {
+        
         [JsonPropertyName("coverage")]
         public string Coverage { get; set; }
 
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("level")]
         public string Level { get; set; }
 
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("boundary")]
         public string Boundary { get; set; }
 
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("providerName")]
         public string ProviderName { get; set; }
 
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("completedAt")]
-        public DateTimeOffset CompletedAt { get; set; }
+        public DateTimeOffset? CompletedAt { get; set; }
 
-        [JsonPropertyName("standard")]
-        public string Standard { get; set; }
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonPropertyName("standardName")]
+        public string StandardName { get; set; }
 
-        [JsonPropertyName("statementOrSignature")]
-        public StatementOrSignature StatementOrSignature { get; set; }
-
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("comments")]
         public string Comments { get; set; }
-    }
-
-    public partial class StatementOrSignature
-    {
-        [JsonPropertyName("type")]
-        public string Type { get; set; }
-
-        [JsonPropertyName("value")]
-        public string Value { get; set; }
-    }
-
-    public partial class BiogenicEmissions
-    {
-        [JsonPropertyName("landUseEmissions")]
-        public string LandUseEmissions { get; set; }
-
-        [JsonPropertyName("iLucGhgEmissions")]
-        public string ILucGhgEmissions { get; set; }
-
-        [JsonPropertyName("dLucGhgEmissions")]
-        public string DLucGhgEmissions { get; set; }
-
-        [JsonPropertyName("otherGhgEmissions")]
-        public string OtherGhgEmissions { get; set; }
     }
 
     public partial class Dqi
     {
         [JsonPropertyName("coveragePercent")]
-        public long CoveragePercent { get; set; }
+        public long? CoveragePercent { get; set; }
 
         [JsonPropertyName("technologicalDQR")]
-        public double TechnologicalDqr { get; set; }
+        public double? TechnologicalDqr { get; set; }
 
         [JsonPropertyName("temporalDQR")]
-        public double TemporalDqr { get; set; }
+        public double? TemporalDqr { get; set; }
 
         [JsonPropertyName("geographicalDQR")]
-        public long GeographicalDqr { get; set; }
+        public long? GeographicalDqr { get; set; }
 
         [JsonPropertyName("completenessDQR")]
-        public double CompletenessDqr { get; set; }
+        public double? CompletenessDqr { get; set; }
 
         [JsonPropertyName("reliabilityDQR")]
-        public double ReliabilityDqr { get; set; }
-    }
-
-    public partial class EmissionFactorSource
-    {
-        [JsonPropertyName("name")]
-        public string Name { get; set; }
-
-        [JsonPropertyName("version")]
-        public string Version { get; set; }
+        public double? ReliabilityDqr { get; set; }
     }
 
     public partial class ProductOrSectorSpecificRule
@@ -314,14 +312,23 @@ namespace PathfinderFx.Model
         public List<string> RuleNames { get; set; }
     }
 
+    public partial class SecondaryEmissionFactorSource
+    {
+        [JsonPropertyName("name")]
+        public string Name { get; set; }
+
+        [JsonPropertyName("version")]
+        public string Version { get; set; }
+    }
+
     public partial class ProductFootprints
     {
-        public static ProductFootprints FromJson(string json) => JsonSerializer.Deserialize<ProductFootprints>(json, PathfinderFx.Model.Converter.Settings);
+        public static ProductFootprints FromJson(string json) => JsonSerializer.Deserialize<ProductFootprints>(json, PathfinderFx.Converter.Settings);
     }
 
     public static class Serialize
     {
-        public static string ToJson(this ProductFootprints self) => JsonSerializer.Serialize(self, PathfinderFx.Model.Converter.Settings);
+        public static string ToJson(this ProductFootprints self) => JsonSerializer.Serialize(self, PathfinderFx.Converter.Settings);
     }
 
     internal static class Converter
