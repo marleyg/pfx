@@ -9,11 +9,6 @@ on:
       - main
   workflow_dispatch:
 
-env:
-  AZURE_WEBAPP_NAME: PathfinderFx    # set this to your application's name
-  AZURE_WEBAPP_PACKAGE_PATH: './src/PathfinderFx'      # set this to the path to your web app project, defaults to the repository root
-  DOTNET_VERSION: '7.x'           # set this to the dot net version to use
-
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -31,13 +26,13 @@ jobs:
         run: dotnet build --configuration Release
 
       - name: dotnet publish
-        run: dotnet publish -c Release -o ./src/PathfinderFx
+        run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v2
         with:
           name: .net-app
-          path: ./src/PathfinderFx
+          path: ${{env.DOTNET_ROOT}}/myapp
 
   deploy:
     runs-on: ubuntu-latest
@@ -58,5 +53,5 @@ jobs:
         with:
           app-name: 'PathfinderFx'
           slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_D8C4F1A93B9542538B14345DDF210C19 }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_1919D837BA4B45709125FB4D5C18A622 }}
           package: .
