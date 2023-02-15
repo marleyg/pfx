@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.PathfinderFx;
+using PathfinderFx.Model;
 
 namespace PathfinderFx.Controllers
 {
@@ -21,7 +21,7 @@ namespace PathfinderFx.Controllers
         public ProductFootprints ListFootprints()
         {
             _logger.LogInformation("Getting footprints");
-            return ProductFootprints.FromJson(System.IO.File.ReadAllText("Data/pfv2.json"));
+            return ProductFootprints.FromJson(System.IO.File.ReadAllText("Data/pfsv2.json"));
         }
 
         [HttpGet("{id}")]
@@ -30,7 +30,7 @@ namespace PathfinderFx.Controllers
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public ProductFootprints GetFootprint(string id)
         {
-            _logger.LogInformation("Getting footprint, id: {id}", id);
+            _logger.LogInformation("Getting footprint, id: {Id}", id);
             return ProductFootprints.FromJson(System.IO.File.ReadAllText("Data/pfv2.json"));
         }
         
