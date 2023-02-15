@@ -4,9 +4,8 @@
     <TargetFramework>net7.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <UserSecretsId>3ef1fcf6-bacf-4ef6-ba10-3e8836cf835c</UserSecretsId>
-    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
-    <DockerfileContext>.</DockerfileContext>
+    <PackageId>$(AssemblyName)</PackageId>
+    <AssemblyName>Microsoft.PathfinderFx</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>
@@ -16,8 +15,6 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Data\" />
-  </ItemGroup>
+
 
 </Project>

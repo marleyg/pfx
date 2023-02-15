@@ -11,12 +11,12 @@ COPY ["PathfinderFx.csproj", "."]
 RUN dotnet restore "./PathfinderFx.csproj"
 COPY . .
 WORKDIR "/src/."
-RUN dotnet build "PathfinderFx.csproj" -c Release -o /app/build
+RUN dotnet build "PathfinderFx.csproj" -c debug -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "PathfinderFx.csproj" -c Release -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "PathfinderFx.csproj" -c debug -o /app/publish 
 
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "PathfinderFx.dll"]
+ENTRYPOINT ["dotnet", "Microsoft.PathfinderFx.dll"]

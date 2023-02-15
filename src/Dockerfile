@@ -7,16 +7,16 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /src
-COPY ["PathfinderFx/PathfinderFx.csproj", "."]
-RUN dotnet restore "./PathfinderFx.csproj"
+COPY ["PathfinderFx/PathfinderFx.csproj", "PathfinderFx/"]
+RUN dotnet restore "PathfinderFx/PathfinderFx.csproj"
 COPY . .
-WORKDIR "/src/."
-RUN dotnet build "PathfinderFx.csproj" -c Release -o /app/build
+WORKDIR "/src/PathfinderFx"
+RUN dotnet build "PathfinderFx.csproj" -c Debug -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "PathfinderFx.csproj" -c Release -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "PathfinderFx.csproj" -c Debug -o /app/publish
 
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "PathfinderFx.dll"]
+ENTRYPOINT ["dotnet", "Microsoft.PathfinderFx.dll"]
