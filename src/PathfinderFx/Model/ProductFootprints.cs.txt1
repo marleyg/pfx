@@ -1,0 +1,323 @@
+using System.Globalization;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+
+namespace PathfinderFx.Model
+{
+    public partial class ProductFootprints
+    {
+        [JsonProperty("data", Required = Required.Always)]
+        public List<Datum> Data { get; set; }
+    }
+
+    public partial class Datum
+    {
+        [JsonProperty("id", Required = Required.Always)]
+        public Guid Id { get; set; }
+
+        [JsonProperty("specVersion", Required = Required.Always)]
+        public string SpecVersion { get; set; }
+
+        //this attribute allows for a property to be absent from the JSON, as an optional Pathfinder property
+        [JsonProperty("precedingPfIds", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        public List<string> PrecedingPfIds { get; set; }
+
+        [JsonProperty("version", Required = Required.Always)]
+        public long Version { get; set; }
+
+        [JsonProperty("created", Required = Required.Always)]
+        public DateTimeOffset Created { get; set; }
+
+        [JsonProperty("updated", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        public string Updated { get; set; }
+
+        [JsonProperty("status", Required = Required.Always)]
+        public string Status { get; set; }
+
+        [JsonProperty("statusComment", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        public string StatusComment { get; set; }
+
+        [JsonProperty("validityPeriodStart", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        public DateTimeOffset ValidityPeriodStart { get; set; }
+
+        [JsonProperty("validityPeriodEnd", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        public DateTimeOffset ValidityPeriodEnd { get; set; }
+
+        [JsonProperty("companyName", Required = Required.Always)]
+        public string CompanyName { get; set; }
+
+        [JsonProperty("companyIds", Required = Required.Always)]
+        public List<string> CompanyIds { get; set; }
+
+        [JsonProperty("productDescription", Required = Required.Always)]
+        public string ProductDescription { get; set; }
+
+        [JsonProperty("productIds", Required = Required.Always)]
+        public List<string> ProductIds { get; set; }
+
+        [JsonProperty("productCategoryCpc", Required = Required.Always)]
+        [JsonConverter(typeof(ParseStringConverter))]
+        public long ProductCategoryCpc { get; set; }
+
+        [JsonProperty("productNameCompany", Required = Required.Always)]
+        public string ProductNameCompany { get; set; }
+
+        [JsonProperty("comment", Required = Required.Always)]
+        public string Comment { get; set; }
+
+        [JsonProperty("pcf", Required = Required.Always)]
+        public Pcf Pcf { get; set; }
+
+        [JsonProperty("extensions", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        public List<Extension> Extensions { get; set; }
+    }
+
+    public partial class Extension
+    {
+        [JsonProperty("specVersion", Required = Required.Always)]
+        public string SpecVersion { get; set; }
+
+        [JsonProperty("dataSchema", Required = Required.Always)]
+        public Uri DataSchema { get; set; }
+
+        [JsonProperty("data", Required = Required.Always)]
+        public Data Data { get; set; }
+    }
+
+    public partial class Data
+    {
+        [JsonProperty("shipmentId", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        public string ShipmentId { get; set; }
+
+        [JsonProperty("consignmentId", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        public string ConsignmentId { get; set; }
+
+        [JsonProperty("shipmentType", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        public string ShipmentType { get; set; }
+
+        [JsonProperty("weight", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        public long Weight { get; set; }
+
+        [JsonProperty("transportChainElementId", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        public string TransportChainElementId { get; set; }
+    }
+
+    public partial class Pcf
+    {
+        [JsonProperty("declaredUnit", Required = Required.Always)]
+        public string DeclaredUnit { get; set; }
+
+        [JsonProperty("unitaryProductAmount", Required = Required.Always)]
+        public string UnitaryProductAmount { get; set; }
+
+        [JsonProperty("pCfExcludingBiogenic", Required = Required.Always)]
+        public string PCfExcludingBiogenic { get; set; }
+
+        [JsonProperty("pCfIncludingBiogenic", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        public string PCfIncludingBiogenic { get; set; }
+
+        [JsonProperty("fossilGhgEmissions", Required = Required.Always)]
+        public string FossilGhgEmissions { get; set; }
+
+        [JsonProperty("fossilCarbonContent", Required = Required.Always)]
+        public string FossilCarbonContent { get; set; }
+
+        [JsonProperty("biogenicCarbonContent", Required = Required.Always)]
+        public string BiogenicCarbonContent { get; set; }
+
+        [JsonProperty("dLucGhgEmissions", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        public string DLucGhgEmissions { get; set; }
+
+        [JsonProperty("landManagementGhgEmissions", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        public string LandManagementGhgEmissions { get; set; }
+
+        [JsonProperty("otherBiogenicGhgEmissions", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        public string OtherBiogenicGhgEmissions { get; set; }
+
+        [JsonProperty("iLucGhgEmissions", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        public string ILucGhgEmissions { get; set; }
+
+        [JsonProperty("biogenicCarbonWithdrawal", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        public string BiogenicCarbonWithdrawal { get; set; }
+
+        [JsonProperty("aircraftGhgEmissions", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        public string AircraftGhgEmissions { get; set; }
+
+        [JsonProperty("characterizationFactors", Required = Required.Always)]
+        public string CharacterizationFactors { get; set; }
+
+        [JsonProperty("crossSectoralStandardsUsed", Required = Required.Always)]
+        public List<string> CrossSectoralStandardsUsed { get; set; }
+
+        [JsonProperty("productOrSectorSpecificRules", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        public List<ProductOrSectorSpecificRule> ProductOrSectorSpecificRules { get; set; }
+
+        [JsonProperty("biogenicAccountingMethodology", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        public string BiogenicAccountingMethodology { get; set; }
+
+        [JsonProperty("boundaryProcessesDescription", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        public string BoundaryProcessesDescription { get; set; }
+
+        [JsonProperty("referencePeriodStart", Required = Required.Always)]
+        public DateTimeOffset ReferencePeriodStart { get; set; }
+
+        [JsonProperty("referencePeriodEnd", Required = Required.Always)]
+        public DateTimeOffset ReferencePeriodEnd { get; set; }
+
+        [JsonProperty("geographyCountrySubdivision", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        public string GeographyCountrySubdivision { get; set; }
+
+        [JsonProperty("geography_country", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        public string GeographyCountry { get; set; }
+
+        [JsonProperty("geographyRegionOrSubregion", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        public string GeographyRegionOrSubregion { get; set; }
+
+        [JsonProperty("secondaryEmissionFactorSources", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        public List<SecondaryEmissionFactorSource> SecondaryEmissionFactorSources { get; set; }
+
+        [JsonProperty("exemptedEmissionsPercent", Required = Required.Always)]
+        public long ExemptedEmissionsPercent { get; set; }
+
+        [JsonProperty("exemptedEmissionsDescription", Required = Required.Always)]
+        public string ExemptedEmissionsDescription { get; set; }
+
+        [JsonProperty("packagingEmissionsIncluded", Required = Required.Always)]
+        public bool PackagingEmissionsIncluded { get; set; }
+
+        [JsonProperty("packagingGhgEmissions", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        public string PackagingGhgEmissions { get; set; }
+
+        [JsonProperty("allocationRulesDescription", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        public string AllocationRulesDescription { get; set; }
+
+        [JsonProperty("uncertaintyAssessmentDescription", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        public string UncertaintyAssessmentDescription { get; set; }
+
+        [JsonProperty("primaryDataShare", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        public double PrimaryDataShare { get; set; }
+
+        [JsonProperty("dqi", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        public Dqi Dqi { get; set; }
+
+        [JsonProperty("assurance", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        public Assurance Assurance { get; set; }
+    }
+
+    public partial class Assurance
+    {
+        [JsonProperty("coverage", Required = Required.Always)]
+        public string Coverage { get; set; }
+
+        [JsonProperty("level", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        public string Level { get; set; }
+
+        [JsonProperty("boundary", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        public string Boundary { get; set; }
+
+        [JsonProperty("providerName", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        public string ProviderName { get; set; }
+
+        [JsonProperty("completedAt", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        public DateTimeOffset CompletedAt { get; set; }
+
+        [JsonProperty("standardName", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        public string StandardName { get; set; }
+
+        [JsonProperty("comments", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        public string Comments { get; set; }
+    }
+
+    public partial class Dqi
+    {
+        [JsonProperty("coveragePercent", Required = Required.Always)]
+        public long CoveragePercent { get; set; }
+
+        [JsonProperty("technologicalDQR", Required = Required.Always)]
+        public double TechnologicalDqr { get; set; }
+
+        [JsonProperty("temporalDQR", Required = Required.Always)]
+        public double TemporalDqr { get; set; }
+
+        [JsonProperty("geographicalDQR", Required = Required.Always)]
+        public long GeographicalDqr { get; set; }
+
+        [JsonProperty("completenessDQR", Required = Required.Always)]
+        public double CompletenessDqr { get; set; }
+
+        [JsonProperty("reliabilityDQR", Required = Required.Always)]
+        public double ReliabilityDqr { get; set; }
+    }
+
+    public partial class ProductOrSectorSpecificRule
+    {
+        [JsonProperty("operator", Required = Required.Always)]
+        public string Operator { get; set; }
+
+        [JsonProperty("ruleNames", Required = Required.Always)]
+        public List<string> RuleNames { get; set; }
+    }
+
+    public partial class SecondaryEmissionFactorSource
+    {
+        [JsonProperty("name", Required = Required.Always)]
+        public string Name { get; set; }
+
+        [JsonProperty("version", Required = Required.Always)]
+        public string Version { get; set; }
+    }
+
+    public partial class ProductFootprints
+    {
+        public static ProductFootprints FromJson(string json) => JsonConvert.DeserializeObject<ProductFootprints>(json, Converter.Settings);
+    }
+
+    public static class Serialize
+    {
+        public static string ToJson(this ProductFootprints self) => JsonConvert.SerializeObject(self, Converter.Settings);
+    }
+
+    internal static class Converter
+    {
+        public static readonly JsonSerializerSettings Settings = new JsonSerializerSettings
+        {
+            MetadataPropertyHandling = MetadataPropertyHandling.Ignore,
+            DateParseHandling = DateParseHandling.None,
+            Converters =
+            {
+                new IsoDateTimeConverter { DateTimeStyles = DateTimeStyles.AssumeUniversal }
+            },
+        };
+    }
+
+    internal class ParseStringConverter : JsonConverter
+    {
+        public override bool CanConvert(Type t) => t == typeof(long) || t == typeof(long?);
+
+        public override object ReadJson(JsonReader reader, Type t, object existingValue, JsonSerializer serializer)
+        {
+            if (reader.TokenType == JsonToken.Null) return null;
+            var value = serializer.Deserialize<string>(reader);
+            long l;
+            if (Int64.TryParse(value, out l))
+            {
+                return l;
+            }
+            throw new Exception("Cannot unmarshal type long");
+        }
+
+        public override void WriteJson(JsonWriter writer, object untypedValue, JsonSerializer serializer)
+        {
+            if (untypedValue == null)
+            {
+                serializer.Serialize(writer, null);
+                return;
+            }
+            var value = (long)untypedValue;
+            serializer.Serialize(writer, value.ToString());
+            return;
+        }
+
+        public static readonly ParseStringConverter Singleton = new ParseStringConverter();
+    }
+}
