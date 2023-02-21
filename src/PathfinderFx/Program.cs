@@ -1,3 +1,4 @@
+using System.Reflection;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,7 +13,7 @@ builder.Services.AddSwaggerGen(options =>
     options.SwaggerDoc("v1", new OpenApiInfo
     {
         Version = "v1",
-        Title = "Pathfinder 2.0.0 API - Alpha",
+        Title = "Pathfinder 2.0.0 API - Alpha-2",
         Description = "A Request/Response API for WBCSD:PACT Pathfinder 2.0.0 technical specifications, this is the Consultative Review version and not final. This API will be updated to the final specification when released at the end of February. This API is not intended for production use.",
         Contact = new OpenApiContact
         {
@@ -25,6 +26,9 @@ builder.Services.AddSwaggerGen(options =>
             Url = new Uri("https://opensource.org/licenses/MIT")
         }
     });
+    // using System.Reflection;
+    var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
 });
 
 var app = builder.Build();
