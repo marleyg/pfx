@@ -39,14 +39,14 @@ public class PfRequestData
     public PfRequestData()
     {
     }
-    public PfRequestData(ProductFootprints pf, string comment)
+    public PfRequestData(string pf, string comment)
     {
         Pf = pf;
         Comment = comment;
     }
 
     [JsonPropertyName("productFootprintFragment")]
-    public ProductFootprints Pf { get; set; }
+    public string Pf { get; set; }
     
     [JsonPropertyName("comment")]
     public string Comment { get; set; }

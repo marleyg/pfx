@@ -60,6 +60,13 @@ namespace PathfinderFx.Controllers
             return ProductFootprints.FromJson(System.IO.File.ReadAllText("Data/pfv2.json"));
         }
         
+        /// <summary>
+        /// Establish an event one time subscription for the authenticated user to receive notifications when a footprint is created, updated, or deleted.
+        /// </summary>
+        /// <remarks>Currently not implemented.</remarks>
+        /// <param name="actionEvent"></param>
+        /// <exception cref="NotImplementedException"></exception>
+        
         [HttpPost("events")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(EmptyResult))]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
