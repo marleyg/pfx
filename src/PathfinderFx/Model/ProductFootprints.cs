@@ -101,6 +101,10 @@ namespace PathfinderFx
 
         [JsonPropertyName("dataSchema")]
         public Uri DataSchema { get; set; }
+        
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonPropertyName("documentation")]
+        public Uri Documentation { get; set; }
 
         [JsonPropertyName("data")]
         public Data Data { get; set; }
@@ -206,7 +210,7 @@ namespace PathfinderFx
         public string GeographyCountrySubdivision { get; set; }
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-        [JsonPropertyName("geography_country")]
+        [JsonPropertyName("geographyCountry")]
         public string GeographyCountry { get; set; }
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
