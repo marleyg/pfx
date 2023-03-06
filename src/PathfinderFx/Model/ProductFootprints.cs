@@ -195,7 +195,6 @@ namespace PathfinderFx
         [JsonPropertyName("biogenicAccountingMethodology")]
         public string BiogenicAccountingMethodology { get; set; }
 
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("boundaryProcessesDescription")]
         public string BoundaryProcessesDescription { get; set; }
 
