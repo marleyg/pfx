@@ -256,7 +256,10 @@ namespace PathfinderFx
 
     public partial class Assurance
     {
+        [JsonPropertyName("assurance")]
+        public bool HasAssurance { get; set; }
         
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("coverage")]
         public string Coverage { get; set; }
 

@@ -8,7 +8,7 @@
       ],
       "version": 1,
       "created": "2022-12-08T14:47:32Z",
-      "updated": "2023-1-08T14:47:32Z",   name
+      "updated": "2023-1-08T14:47:32Z",
       "status": "Active",
       "statusComment": "This is an optional comment",
       "validityPeriodStart": "2022-12-08T14:47:32Z",
@@ -80,6 +80,7 @@
           "reliabilityDQR": 1.79
         },
         "assurance": {
+          "assurance": true,
           "coverage": "product line",
           "level": "reasonable",
           "boundary": "Cradle-to-Gate",

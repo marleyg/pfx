@@ -53,6 +53,7 @@
         "packagingEmissionsIncluded": false,
         "primaryDataShare": 56.12,
         "assurance": {
+          "assurance": true,
           "coverage": "product line",
           "level": "reasonable",
           "boundary": "Cradle-to-Gate",
