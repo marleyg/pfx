@@ -241,13 +241,16 @@ namespace PathfinderFx
         [JsonPropertyName("uncertaintyAssessmentDescription")]
         public string UncertaintyAssessmentDescription { get; set; }
 
+        /// <summary>
+        /// Optional until 2025
+        /// </summary>
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("primaryDataShare")]
         public double? PrimaryDataShare { get; set; }
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("dqi")]
-        public Dqi Dqi { get; set; }
+        public DataQualityIndicators Dqi { get; set; }
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("assurance")]
@@ -288,7 +291,7 @@ namespace PathfinderFx
         public string Comments { get; set; }
     }
 
-    public partial class Dqi
+public partial class DataQualityIndicators
     {
         [JsonPropertyName("coveragePercent")]
         public long? CoveragePercent { get; set; }

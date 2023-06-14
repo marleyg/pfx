@@ -12,9 +12,9 @@ builder.Services.AddSwaggerGen(options =>
 {
     options.SwaggerDoc("v1", new OpenApiInfo
     {
-        Version = "v1-Beta-1",
-        Title = "Pathfinder 2.0.0 API - Beta-2",
-        Description = "A Request/Response API for WBCSD:PACT Pathfinder 2.0.0 technical specifications, this is the v2 Data Model release version and not the final API release. This API will be updated to require authentication in the next release. This API is not intended for production use.",
+        Version = "v1-Beta-3",
+        Title = "Pathfinder 2.0.0 API - Beta-4",
+        Description = "A Request/Response API for WBCSD:PACT Pathfinder 2.0.0 (Version 2.0.1-20230522) technical specifications, this is the v2 Data Model release version and not the final API release. This API will be updated to require authentication in the next release. This API is not intended for production use.",
         Contact = new OpenApiContact
         {
             Name = "Marley Gray",
