@@ -1,0 +1,445 @@
+{
+    "$schema": "http://json-schema.org/draft-06/schema#",
+    "$ref": "#/definitions/ProductFootprint",
+    "definitions": {
+        "ProductFootprint": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Datum"
+                    }
+                }
+            },
+            "required": [
+                "data"
+            ],
+            "title": "ProductFootprint"
+        },
+        "Datum": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "format": "uuid"
+                },
+                "specVersion": {
+                    "type": "string"
+                },
+                "precedingPfIds": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "version": {
+                    "type": "integer"
+                },
+                "created": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "updated": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                },
+                "statusComment": {
+                    "type": "string"
+                },
+                "validityPeriodStart": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "validityPeriodEnd": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "companyName": {
+                    "type": "string"
+                },
+                "companyIds": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "productDescription": {
+                    "type": "string"
+                },
+                "productIds": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "productCategoryCpc": {
+                    "type": "string",
+                    "format": "integer"
+                },
+                "productNameCompany": {
+                    "type": "string"
+                },
+                "comment": {
+                    "type": "string"
+                },
+                "pcf": {
+                    "$ref": "#/definitions/Pcf"
+                },
+                "extensions": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Extension"
+                    }
+                }
+            },
+            "required": [
+                "comment",
+                "companyIds",
+                "companyName",
+                "created",
+                "extensions",
+                "id",
+                "pcf",
+                "precedingPfIds",
+                "productCategoryCpc",
+                "productDescription",
+                "productIds",
+                "productNameCompany",
+                "specVersion",
+                "status",
+                "statusComment",
+                "updated",
+                "validityPeriodEnd",
+                "validityPeriodStart",
+                "version"
+            ],
+            "title": "Datum"
+        },
+        "Extension": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "specVersion": {
+                    "type": "string"
+                },
+                "dataSchema": {
+                    "type": "string",
+                    "format": "uri",
+                    "qt-uri-protocols": [
+                        "https"
+                    ],
+                    "qt-uri-extensions": [
+                        ".json"
+                    ]
+                },
+                "data": {
+                    "$ref": "#/definitions/Data"
+                }
+            },
+            "required": [
+                "data",
+                "dataSchema",
+                "specVersion"
+            ],
+            "title": "Extension"
+        },
+        "Data": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "shipmentId": {
+                    "type": "string"
+                },
+                "consignmentId": {
+                    "type": "string"
+                },
+                "shipmentType": {
+                    "type": "string"
+                },
+                "weight": {
+                    "type": "integer"
+                },
+                "transportChainElementId": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "consignmentId",
+                "shipmentId",
+                "shipmentType",
+                "transportChainElementId",
+                "weight"
+            ],
+            "title": "Data"
+        },
+        "Pcf": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "declaredUnit": {
+                    "type": "string"
+                },
+                "unitaryProductAmount": {
+                    "type": "string"
+                },
+                "pCfExcludingBiogenic": {
+                    "type": "string"
+                },
+                "pCfIncludingBiogenic": {
+                    "type": "string"
+                },
+                "fossilGhgEmissions": {
+                    "type": "string"
+                },
+                "fossilCarbonContent": {
+                    "type": "string"
+                },
+                "biogenicCarbonContent": {
+                    "type": "string"
+                },
+                "dLucGhgEmissions": {
+                    "type": "string"
+                },
+                "landManagementGhgEmissions": {
+                    "type": "string"
+                },
+                "otherBiogenicGhgEmissions": {
+                    "type": "string"
+                },
+                "iLucGhgEmissions": {
+                    "type": "string"
+                },
+                "biogenicCarbonWithdrawal": {
+                    "type": "string"
+                },
+                "aircraftGhgEmissions": {
+                    "type": "string"
+                },
+                "characterizationFactors": {
+                    "type": "string"
+                },
+                "crossSectoralStandardsUsed": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "productOrSectorSpecificRules": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/ProductOrSectorSpecificRule"
+                    }
+                },
+                "biogenicAccountingMethodology": {
+                    "type": "string"
+                },
+                "boundaryProcessesDescription": {
+                    "type": "string"
+                },
+                "referencePeriodStart": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "referencePeriodEnd": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "geographyCountrySubdivision": {
+                    "type": "string"
+                },
+                "geography_country": {
+                    "type": "string"
+                },
+                "geographyRegionOrSubregion": {
+                    "type": "string"
+                },
+                "secondaryEmissionFactorSources": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/SecondaryEmissionFactorSource"
+                    }
+                },
+                "exemptedEmissionsPercent": {
+                    "type": "integer"
+                },
+                "exemptedEmissionsDescription": {
+                    "type": "string"
+                },
+                "packagingEmissionsIncluded": {
+                    "type": "boolean"
+                },
+                "packagingGhgEmissions": {
+                    "type": "string"
+                },
+                "allocationRulesDescription": {
+                    "type": "string"
+                },
+                "uncertaintyAssessmentDescription": {
+                    "type": "string"
+                },
+                "primaryDataShare": {
+                    "type": "number"
+                },
+                "dqi": {
+                    "$ref": "#/definitions/Dqi"
+                },
+                "assurance": {
+                    "$ref": "#/definitions/Assurance"
+                }
+            },
+            "required": [
+                "aircraftGhgEmissions",
+                "allocationRulesDescription",
+                "assurance",
+                "biogenicAccountingMethodology",
+                "biogenicCarbonContent",
+                "biogenicCarbonWithdrawal",
+                "boundaryProcessesDescription",
+                "characterizationFactors",
+                "crossSectoralStandardsUsed",
+                "dLucGhgEmissions",
+                "declaredUnit",
+                "dqi",
+                "exemptedEmissionsDescription",
+                "exemptedEmissionsPercent",
+                "fossilCarbonContent",
+                "fossilGhgEmissions",
+                "geographyCountrySubdivision",
+                "geographyRegionOrSubregion",
+                "geography_country",
+                "iLucGhgEmissions",
+                "landManagementGhgEmissions",
+                "otherBiogenicGhgEmissions",
+                "pCfExcludingBiogenic",
+                "pCfIncludingBiogenic",
+                "packagingEmissionsIncluded",
+                "packagingGhgEmissions",
+                "primaryDataShare",
+                "productOrSectorSpecificRules",
+                "referencePeriodEnd",
+                "referencePeriodStart",
+                "secondaryEmissionFactorSources",
+                "uncertaintyAssessmentDescription",
+                "unitaryProductAmount"
+            ],
+            "title": "Pcf"
+        },
+        "Assurance": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "assurance": {
+                    "type": "boolean"
+                },
+                "coverage": {
+                    "type": "string"
+                },
+                "level": {
+                    "type": "string"
+                },
+                "boundary": {
+                    "type": "string"
+                },
+                "providerName": {
+                    "type": "string"
+                },
+                "completedAt": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "standardName": {
+                    "type": "string"
+                },
+                "comments": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "assurance",
+                "boundary",
+                "comments",
+                "completedAt",
+                "coverage",
+                "level",
+                "providerName",
+                "standardName"
+            ],
+            "title": "Assurance"
+        },
+        "Dqi": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "coveragePercent": {
+                    "type": "integer"
+                },
+                "technologicalDQR": {
+                    "type": "number"
+                },
+                "temporalDQR": {
+                    "type": "number"
+                },
+                "geographicalDQR": {
+                    "type": "integer"
+                },
+                "completenessDQR": {
+                    "type": "number"
+                },
+                "reliabilityDQR": {
+                    "type": "number"
+                }
+            },
+            "required": [
+                "completenessDQR",
+                "coveragePercent",
+                "geographicalDQR",
+                "reliabilityDQR",
+                "technologicalDQR",
+                "temporalDQR"
+            ],
+            "title": "Dqi"
+        },
+        "ProductOrSectorSpecificRule": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "operator": {
+                    "type": "string"
+                },
+                "ruleNames": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            },
+            "required": [
+                "operator",
+                "ruleNames"
+            ],
+            "title": "ProductOrSectorSpecificRule"
+        },
+        "SecondaryEmissionFactorSource": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "version": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "name",
+                "version"
+            ],
+            "title": "SecondaryEmissionFactorSource"
+        }
+    }
+}

@@ -107,10 +107,10 @@ namespace PathfinderFx
         public Uri Documentation { get; set; }
 
         [JsonPropertyName("data")]
-        public Data Data { get; set; }
+        public ShipmentExtension Data { get; set; }
     }
 
-    public partial class Data
+    public partial class ShipmentExtension
     {
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("shipmentId")]
@@ -173,6 +173,7 @@ namespace PathfinderFx
         [JsonPropertyName("iLucGhgEmissions")]
         public string ILucGhgEmissions { get; set; }
 
+        //TODO: this should be a decimal serialized as a json string
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("biogenicCarbonWithdrawal")]
         public string BiogenicCarbonWithdrawal { get; set; }
@@ -191,6 +192,7 @@ namespace PathfinderFx
         [JsonPropertyName("productOrSectorSpecificRules")]
         public List<ProductOrSectorSpecificRule> ProductOrSectorSpecificRules { get; set; }
 
+        //TODO: this should be an enum PEF, ISO, GHGP, Quantis
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("biogenicAccountingMethodology")]
         public string BiogenicAccountingMethodology { get; set; }

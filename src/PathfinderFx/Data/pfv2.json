@@ -4,7 +4,7 @@
       "id": "d9be4477-e351-45b3-acd9-e1da05e6f633",
       "specVersion": "2.0.0",
       "version": 1,
-      "created": "2022-05-22T21:47:32Z",
+      "created": "2022-05-22T21:47:32+00:00",
       "status": "Active",
       "companyName": "My Corp",
       "companyIds": [
@@ -39,8 +39,8 @@
           }
         ],
         "boundaryProcessesDescription": "End-of-life included",
-        "referencePeriodStart": "2021-01-01T00:00:00Z",
-        "referencePeriodEnd": "2022-01-01T00:00:00Z",
+        "referencePeriodStart": "2021-01-01T00:00:00+00:00",
+        "referencePeriodEnd": "2022-01-01T00:00:00+00:00",
         "geographyCountry": "FR",
         "secondaryEmissionFactorSources": [
           {
@@ -58,7 +58,7 @@
           "level": "reasonable",
           "boundary": "Cradle-to-Gate",
           "providerName": "My Auditor",
-          "completedAt": "2022-12-08T14:47:32Z",
+          "completedAt": "2022-12-08T14:47:32+00:00",
           "standardName": "ISO ...",
           "comments": "This is a comment"
         }
