@@ -1,10 +1,12 @@
 using System.Security.Claims;
 using Microsoft.AspNetCore;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using OpenIddict.Abstractions;
 using OpenIddict.Server.AspNetCore;
 using PathfinderFx.Helper;
+using PathfinderFx.Model;
 
 namespace PathfinderFx.Controllers;
 
@@ -26,14 +28,21 @@ public class AuthorizationController(
     {
         var request = HttpContext.GetOpenIddictServerRequest();
         if (!request!.IsClientCredentialsGrantType())
-            throw new NotImplementedException("The specified grant type is not implemented.");
+            return new NotImplementedResult(request!.GrantType!);
+        
         // Note: the client credentials are automatically validated by OpenIddict:
         // if client_id or client_secret are invalid, this action won't be invoked.
 
         var application = await applicationManager.FindByClientIdAsync(request!.ClientId!);
         if (application == null)
         {
-            throw new InvalidOperationException("The application details cannot be found in the database.");
+            return Forbid(
+                authenticationSchemes: OpenIddictServerAspNetCoreDefaults.AuthenticationScheme,
+                properties: new AuthenticationProperties(new Dictionary<string, string?>
+                {
+                    [OpenIddictServerAspNetCoreConstants.Properties.Error] = OpenIddictConstants.Errors.InvalidClient,
+                    [OpenIddictServerAspNetCoreConstants.Properties.ErrorDescription] = "The client application was not found in the directory."
+                }));
         }
 
         // Create the claims-based identity that will be used by OpenIddict to generate tokens.
@@ -59,7 +68,7 @@ public class AuthorizationController(
         identity.SetResources(await scopeManager.ListResourcesAsync(identity.GetScopes()).ToListAsync());
         identity.SetDestinations(GetDestinations);
 
-        return SignIn(new ClaimsPrincipal(identity), OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
+        return Ok(SignIn(new ClaimsPrincipal(identity), OpenIddictServerAspNetCoreDefaults.AuthenticationScheme));
 
     }
 
