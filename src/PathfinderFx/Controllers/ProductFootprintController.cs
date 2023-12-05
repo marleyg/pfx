@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using OpenIddict.Abstractions;
 using OpenIddict.Validation.AspNetCore;
 using PathfinderFx.Model;
@@ -36,7 +37,10 @@ public class ProductFootprintController(
     /// </remarks>
     [HttpGet ("footprints")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ProductFootprints))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(SecurityTokenExpiredException))]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [Authorize(AuthenticationSchemes = OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme)]
     public ProductFootprints ListFootprints(int limit = 0, string filter = "")
     {
@@ -71,7 +75,6 @@ public class ProductFootprintController(
     /// <remarks>Currently not implemented.</remarks>
     /// <param name="actionEvent"></param>
     /// <exception cref="NotImplementedException"></exception>
-        
     [HttpPost("events")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(EmptyResult))]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]

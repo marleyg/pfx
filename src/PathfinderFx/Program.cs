@@ -1,4 +1,5 @@
 using System.Reflection;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using PathfinderFx;
@@ -8,18 +9,23 @@ using Quartz;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
+builder.Services.AddCors();
 builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
-    // Configure the context to use sqlite.
-    options.UseSqlite($"Filename={Path.Combine(Path.GetTempPath(), "openiddict-aridka-server.sqlite3")}");
+// Configure the context to use sqlite.
+    options.UseSqlite($"Filename={Path.Combine(Path.GetTempPath(), "openiddict-imynusoph-server.sqlite3")}");
 
     // Register the entity sets needed by OpenIddict.
     // Note: use the generic overload if you need
     // to replace the default OpenIddict entities.
     options.UseOpenIddict();
 });
+
+// Register the Identity services.
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+    .AddEntityFrameworkStores<ApplicationDbContext>()
+    .AddDefaultTokenProviders();
 
 // OpenIddict offers native integration with Quartz.NET to perform scheduled tasks
 // (like pruning orphaned authorizations/tokens from the database) at regular intervals.
@@ -51,10 +57,14 @@ builder.Services.AddOpenIddict()
     .AddServer(options =>
     {
         // Enable the token endpoint.
-        options.SetTokenEndpointUris("connect/token");
+        options.SetTokenEndpointUris("auth/token");
 
-        // Enable the client credentials flow.
-        options.AllowClientCredentialsFlow();
+        // Enable the password and the refresh token flows.
+        options.AllowPasswordFlow()
+            .AllowRefreshTokenFlow();
+        
+        // Accept anonymous clients (i.e clients that don't send a client_id).
+        options.AcceptAnonymousClients();
 
         // Register the signing and encryption credentials.
         options.AddDevelopmentEncryptionCertificate()
@@ -84,7 +94,7 @@ builder.Services.AddSwaggerGen(options =>
     {
         Version = "v1-Conformance 1.0.0",
         Title = "Pathfinder 2.1.0 API - Conformance 1.0.0",
-        Description = "A Request/Response API for WBCSD:PACT Pathfinder 2.'1.0 (Version 2.0.1-20230522) technical specifications, this is the v2.1 Data Model. This API is not intended for production use.",
+        Description = "A Request/Response API for WBCSD:PACT Pathfinder 2.1.0 (Version 2.0.1-20230522) technical specifications, this is the v2.0 Data Model. This API is not intended for production use.",
         Contact = new OpenApiContact
         {
             Name = "Marley Gray",
