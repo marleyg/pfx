@@ -57,7 +57,7 @@ builder.Services.AddOpenIddict()
     .AddServer(options =>
     {
         // Enable the token endpoint.
-        options.SetTokenEndpointUris("auth/token");
+        options.SetTokenEndpointUris("2/auth/token");
 
         // Enable the password and the refresh token flows.
         options.AllowPasswordFlow()

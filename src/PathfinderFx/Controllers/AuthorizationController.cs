@@ -22,7 +22,7 @@ public class AuthorizationController(
     /// <returns></returns>
     /// <exception cref="NotImplementedException"></exception>
     /// <exception cref="InvalidOperationException"></exception>
-    [HttpPost("~/auth/token"), IgnoreAntiforgeryToken, Produces("application/json")]
+    [HttpPost("~/2/auth/token"), IgnoreAntiforgeryToken, Produces("application/json")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status501NotImplemented)]
@@ -77,10 +77,11 @@ public class AuthorizationController(
             identity.SetDestinations(GetDestinations);
 
             // Returning a SignInResult will ask OpenIddict to issue the appropriate access/identity tokens.
-            return SignIn(new ClaimsPrincipal(identity), OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
+            return Ok(SignIn(new ClaimsPrincipal(identity), OpenIddictServerAspNetCoreDefaults.AuthenticationScheme));
         }
 
-        else if (request!.IsRefreshTokenGrantType())
+        if (!request!.IsRefreshTokenGrantType())
+            throw new NotImplementedException("The specified grant type is not implemented.");
         {
             // Retrieve the claims principal stored in the refresh token.
             var result = await HttpContext.AuthenticateAsync(OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
@@ -117,16 +118,14 @@ public class AuthorizationController(
 
             // Override the user claims present in the principal in case they changed since the refresh token was issued.
             identity.SetClaim(OpenIddictConstants.Claims.Subject, await userManager.GetUserIdAsync(user))
-                    .SetClaim(OpenIddictConstants.Claims.Email, await userManager.GetEmailAsync(user))
-                    .SetClaim(OpenIddictConstants.Claims.Name, await userManager.GetUserNameAsync(user))
-                    .SetClaims(OpenIddictConstants.Claims.Role, (await userManager.GetRolesAsync(user)).ToImmutableArray());
+                .SetClaim(OpenIddictConstants.Claims.Email, await userManager.GetEmailAsync(user))
+                .SetClaim(OpenIddictConstants.Claims.Name, await userManager.GetUserNameAsync(user))
+                .SetClaims(OpenIddictConstants.Claims.Role, (await userManager.GetRolesAsync(user)).ToImmutableArray());
 
             identity.SetDestinations(GetDestinations);
 
             return Ok(SignIn(new ClaimsPrincipal(identity), OpenIddictServerAspNetCoreDefaults.AuthenticationScheme));
         }
-
-        throw new NotImplementedException("The specified grant type is not implemented.");
 
     }
 
