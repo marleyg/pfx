@@ -1,9 +1,6 @@
-﻿using System.Net;
-using System.Net.Http.Headers;
-using System.Net.Http.Json;
+﻿using System.Net.Http.Headers;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using OpenIddict.Abstractions;
 using OpenIddict.Client;
 
 var services = new ServiceCollection();
@@ -20,12 +17,11 @@ var clientConfig = new ClientConfig
 
 services.AddOpenIddict()
 
- // Register the OpenIddict client components.
+    // Register the OpenIddict client components.
     .AddClient(options =>
     {
-        // Allow grant_type=password and grant_type=refresh_token to be negotiated.
-        options.AllowPasswordFlow()
-               .AllowRefreshTokenFlow();
+        // Allow grant_type=client_credentials to be negotiated.
+        options.AllowClientCredentialsFlow();
 
         // Disable token storage, which is not necessary for non-interactive flows like
         // grant_type=password, grant_type=client_credentials or grant_type=refresh_token.
@@ -37,78 +33,33 @@ services.AddOpenIddict()
         options.UseSystemNetHttp()
                .SetProductInformation(typeof(Program).Assembly);
 
-        // Add a client registration without a client identifier/secret attached.
+        // Add a client registration matching the client application definition in the server project.
         options.AddRegistration(new OpenIddictClientRegistration
         {
-            Issuer = new Uri(clientConfig.Host, UriKind.Absolute)
+            Issuer = new Uri(clientConfig.Host, UriKind.Absolute),
+
+            ClientId = "console",
+            ClientSecret = "388D45FA-B36B-4988-BA59-B187D329C207"
         });
     });
 
 await using var provider = services.BuildServiceProvider();
 
-const string email = "bob@sample.com", password = "}s>EWG@f4g;_v7nB";
-
-await CreateAccountAsync(provider, email, password, clientConfig);
-
-var tokens = await GetTokensAsync(provider, email, password);
-Console.WriteLine("Initial access token: {0}", tokens.AccessToken);
-Console.WriteLine();
-Console.WriteLine("Initial refresh token: {0}", tokens.RefreshToken);
-
-/*
-Console.WriteLine();
+var token = await GetTokenAsync(provider);
+Console.WriteLine("Access token: {0}", token);
 Console.WriteLine();
 
-tokens = await RefreshTokensAsync(provider, tokens.RefreshToken);
-Console.WriteLine("New access token: {0}", tokens.AccessToken);
-Console.WriteLine();
-Console.WriteLine("New refresh token: {0}", tokens.RefreshToken);
-Console.WriteLine();
-*/
-var footprints = await GetFootprintsAsync(provider, tokens.AccessToken, clientConfig);
-Console.WriteLine("Footprints: {0}", footprints);
+var footprints = await GetFootprintsAsync(provider, token, clientConfig);
+Console.WriteLine("API response: {0}", footprints);
 Console.ReadLine();
 return;
 
-static async Task CreateAccountAsync(IServiceProvider provider, string email, string password, ClientConfig clientConfig)
-{
-    using var client = provider.GetRequiredService<HttpClient>();
-    var response = await client.PostAsJsonAsync(clientConfig.Host + "/Account/Register", new { email, password });
-
-    // Ignore 409 responses, as they indicate that the account already exists.
-    if (response.StatusCode == HttpStatusCode.Conflict)
-    {
-        return;
-    }
-
-    response.EnsureSuccessStatusCode();
-}
-
-static async Task<(string AccessToken, string RefreshToken)> GetTokensAsync(IServiceProvider provider, string email, string password)
+static async Task<string> GetTokenAsync(IServiceProvider provider)
 {
     var service = provider.GetRequiredService<OpenIddictClientService>();
 
-    // Note: the "offline_access" scope must be requested and granted to receive a refresh token.
-    var result = await service.AuthenticateWithPasswordAsync(new OpenIddictClientModels.PasswordAuthenticationRequest
-    {
-        Username = email,
-        Password = password,
-        Scopes = [OpenIddictConstants.Scopes.OfflineAccess]
-    });
-
-    return (result.AccessToken, result.RefreshToken);
-}
-
-static async Task<(string AccessToken, string RefreshToken)> RefreshTokensAsync(IServiceProvider provider, string token)
-{
-    var service = provider.GetRequiredService<OpenIddictClientService>();
-
-    var result = await service.AuthenticateWithRefreshTokenAsync(new OpenIddictClientModels.RefreshTokenAuthenticationRequest
-    {
-        RefreshToken = token
-    });
-
-    return (result.AccessToken, result.RefreshToken);
+    var result = await service.AuthenticateWithClientCredentialsAsync(new());
+    return result.AccessToken;
 }
 
 static async Task<string> GetFootprintsAsync(IServiceProvider provider, string token, ClientConfig clientConfig)
@@ -122,7 +73,6 @@ static async Task<string> GetFootprintsAsync(IServiceProvider provider, string t
 
     return await response.Content.ReadAsStringAsync();
 }
-
 
 internal class ClientConfig
 {
