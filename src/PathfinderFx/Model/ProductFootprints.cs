@@ -10,7 +10,7 @@
 #pragma warning disable CS8601
 #pragma warning disable CS8603
 
-namespace PathfinderFx
+namespace PathfinderFx.Model
 {
     using System;
     using System.Collections.Generic;
@@ -293,7 +293,7 @@ namespace PathfinderFx
         public string Comments { get; set; }
     }
 
-public partial class DataQualityIndicators
+    public partial class DataQualityIndicators
     {
         [JsonPropertyName("coveragePercent")]
         public long? CoveragePercent { get; set; }
@@ -334,15 +334,15 @@ public partial class DataQualityIndicators
 
     public partial class ProductFootprints
     {
-        public static ProductFootprints FromJson(string json) => JsonSerializer.Deserialize<ProductFootprints>(json, PathfinderFx.Converter.Settings);
+        public static ProductFootprints FromJson(string json) => JsonSerializer.Deserialize<ProductFootprints>(json, PathfinderFx.Model.Converter.Settings);
     }
 
-    public static class Serialize
+    public static partial class Serialize
     {
-        public static string ToJson(this ProductFootprints self) => JsonSerializer.Serialize(self, PathfinderFx.Converter.Settings);
+        public static string ToJson(this ProductFootprints self) => JsonSerializer.Serialize(self, PathfinderFx.Model.Converter.Settings);
     }
 
-    internal static class Converter
+    public static class Converter
     {
         public static readonly JsonSerializerOptions Settings = new(JsonSerializerDefaults.General)
         {

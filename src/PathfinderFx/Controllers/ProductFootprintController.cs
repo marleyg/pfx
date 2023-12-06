@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
 using OpenIddict.Abstractions;
 using OpenIddict.Validation.AspNetCore;
 using PathfinderFx.Model;
@@ -17,8 +16,7 @@ public class ProductFootprintController(
     : Controller
 {
 
-    private static ProductFootprints _productFootprints = LoadFootprints();
-    
+    private static readonly ProductFootprints ProductFootprints = LoadFootprints();
     private static ProductFootprints LoadFootprints()
     {
         return ProductFootprints.FromJson(System.IO.File.ReadAllText("Data/pfsv2.json"));
@@ -48,7 +46,6 @@ public class ProductFootprintController(
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ProductFootprints))]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(SecurityTokenExpiredException))]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [Authorize(AuthenticationSchemes = OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme)]
     public Task<IActionResult> ListFootprints(int limit = 0, string filter = "", int offset = 0)
@@ -74,13 +71,13 @@ public class ProductFootprintController(
                 logger.LogInformation("Beginning paging from offset: {Offset}", offset);
                 var retVal = new ProductFootprints();
                 //check to make sure that the nextItemUp is not greater than the number of footprints in _productFootprints
-                if (offset < _productFootprints.Data.Count)
+                if (offset < ProductFootprints.Data.Count)
                 {
                     //if the nextItemUp is less than the number of footprints in _productFootprints, return the footprints starting with the next item up to the limit
-                    retVal.Data = _productFootprints.Data.Skip(offset).Take(limit).ToList();
+                    retVal.Data = ProductFootprints.Data.Skip(offset).Take(limit).ToList();
                     
                     //if there are more footprints remaining update the NextItem header
-                    if (offset + limit < _productFootprints.Data.Count)
+                    if (offset + limit < ProductFootprints.Data.Count)
                     {
                         logger.LogInformation("More footprints remaining, updating paging, offset: {Offset}, limit: {Limit}", offset + limit, limit);
                         var host = HttpContext.Request.Host;
@@ -96,17 +93,14 @@ public class ProductFootprintController(
                 else
                 {
                     //if the nextItemUp is greater than the number of footprints in _productFootprints, return the footprints starting with the next item up to the limit
-                    retVal.Data = _productFootprints.Data.Skip(offset).Take(limit).ToList();
+                    retVal.Data = ProductFootprints.Data.Skip(offset).Take(limit).ToList();
                 }
-
                 return Task.FromResult<IActionResult>(Ok(retVal));
-
             }
-        
         }
 
         //if the limit is > 0 and the number of footprints is greater than the limit, enable paging
-        if (limit > 0 && _productFootprints.Data.Count > limit)
+        if (limit > 0 && ProductFootprints.Data.Count > limit)
         {
             logger.LogInformation("Paging is enabled");
 
@@ -114,7 +108,7 @@ public class ProductFootprintController(
             var host = HttpContext.Request.Host;
             
             //set nextItemUp to the count of footprints - the limit + 1
-            var nextOffset = (_productFootprints.Data.Count - limit + 1).ToString();
+            var nextOffset = (ProductFootprints.Data.Count - limit + 1).ToString();
             
             logger.LogInformation("Paging offset: {NextOffset}", nextOffset);
             //need to add a Link header to the response
@@ -122,14 +116,14 @@ public class ProductFootprintController(
             
             var retVal = new ProductFootprints
             {
-                Data = _productFootprints.Data.Take(limit).ToList()
+                Data = ProductFootprints.Data.Take(limit).ToList()
             };
             return Task.FromResult<IActionResult>(Ok(retVal));
         }
 
         logger.LogInformation("Paging is disabled");
         
-        return Task.FromResult<IActionResult>(Ok(_productFootprints));
+        return Task.FromResult<IActionResult>(Ok(ProductFootprints));
     }
 
     /// <summary>
@@ -150,7 +144,7 @@ public class ProductFootprintController(
         
         var retVal = new ProductFootprints
         {
-            Data = _productFootprints.Data.Where(x => x.Id == new Guid(id)).ToList()
+            Data = ProductFootprints.Data.Where(x => x.Id == new Guid(id)).ToList()
         };
         return Task.FromResult<IActionResult>(Ok(retVal));
         
