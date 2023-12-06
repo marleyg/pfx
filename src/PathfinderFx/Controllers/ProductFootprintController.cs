@@ -57,50 +57,45 @@ public class ProductFootprintController(
         
         if (!string.IsNullOrEmpty(filter))
             logger.LogInformation("Filtering footprints is not implemented");
-
-        //check the HttpContext.Request object for the rel next header
-        var relNext = HttpContext.Request.Headers.Link.ToString();
+        
 
         //if the rel next header is not empty, the limit is the value of the limit query parameter
-        if (relNext != "")
+        if (offset > 0 && limit > 0)
         {
-            logger.LogInformation("Paging is enabled");
-            //if nextItemUp is not empty, return the footprints starting with the next item up to the limit
-            if (offset > 0)
+            logger.LogInformation("Paging is enabled, continuing from offset: {Offset}", offset);
+
+            var retVal = new ProductFootprints();
+            //check to make sure that the nextItemUp is not greater than the number of footprints in _productFootprints
+            if (offset < ProductFootprints.Data.Count)
             {
-                logger.LogInformation("Beginning paging from offset: {Offset}", offset);
-                var retVal = new ProductFootprints();
-                //check to make sure that the nextItemUp is not greater than the number of footprints in _productFootprints
-                if (offset < ProductFootprints.Data.Count)
+                //if the nextItemUp is less than the number of footprints in _productFootprints, return the footprints starting with the next item up to the limit
+                retVal.Data = ProductFootprints.Data.Skip(offset).Take(limit).ToList();
+                
+                //if there are more footprints remaining update the NextItem header
+                if (offset + limit < ProductFootprints.Data.Count)
                 {
-                    //if the nextItemUp is less than the number of footprints in _productFootprints, return the footprints starting with the next item up to the limit
-                    retVal.Data = ProductFootprints.Data.Skip(offset).Take(limit).ToList();
-                    
-                    //if there are more footprints remaining update the NextItem header
-                    if (offset + limit < ProductFootprints.Data.Count)
-                    {
-                        logger.LogInformation("More footprints remaining, updating paging, offset: {Offset}, limit: {Limit}", offset + limit, limit);
-                        var host = HttpContext.Request.Host;
-                        HttpContext.Response.Headers.Append("Link", $"<{host}/2/footprints?limit={limit}&offset={offset + limit}>; rel=\"next\"");
-                    }
-                    else
-                    {
-                        logger.LogInformation("No more footprints remaining, ending paging");
-                        //if there are no more footprints remaining, remove the Link header
-                        HttpContext.Response.Headers.Remove("Link");
-                    }
+                    logger.LogInformation("More footprints remaining, updating paging, offset: {Offset}, limit: {Limit}", offset + limit, limit);
+                    var host = HttpContext.Request.Host;
+                    HttpContext.Response.Headers.Append("Link", $"<https://{host}/2/footprints?limit={limit}&offset={offset + limit}>; rel=\"next\"");
                 }
                 else
                 {
-                    //if the nextItemUp is greater than the number of footprints in _productFootprints, return the footprints starting with the next item up to the limit
-                    retVal.Data = ProductFootprints.Data.Skip(offset).Take(limit).ToList();
+                    logger.LogInformation("No more footprints remaining, ending paging");
+                    //if there are no more footprints remaining, remove the Link header
+                    HttpContext.Response.Headers.Remove("Link");
                 }
-                return Task.FromResult<IActionResult>(Ok(retVal));
             }
+            else
+            {
+                //if the nextItemUp is greater than the number of footprints in _productFootprints, return the footprints starting with the next item up to the limit
+                retVal.Data = ProductFootprints.Data.Skip(offset).Take(limit).ToList();
+            }
+            return Task.FromResult<IActionResult>(Ok(retVal));
+            
         }
 
-        //if the limit is > 0 and the number of footprints is greater than the limit, enable paging
-        if (limit > 0 && ProductFootprints.Data.Count > limit)
+        //if the limit is > 0 and there is no offset and the number of footprints is greater than the limit, enable paging
+        if (limit > 0 && offset == 0 && ProductFootprints.Data.Count > limit)
         {
             logger.LogInformation("Paging is enabled");
 
@@ -108,11 +103,11 @@ public class ProductFootprintController(
             var host = HttpContext.Request.Host;
             
             //set nextItemUp to the count of footprints - the limit + 1
-            var nextOffset = (ProductFootprints.Data.Count - limit + 1).ToString();
+            var nextOffset = limit.ToString();
             
             logger.LogInformation("Paging offset: {NextOffset}", nextOffset);
             //need to add a Link header to the response
-            HttpContext.Response.Headers.Append("Link", $"<{host}/2/footprints?limit={limit}&offset={nextOffset}>; rel=\"next\"");
+            HttpContext.Response.Headers.Append("Link", $"<https://{host}/2/footprints?limit={limit}&offset={nextOffset}>; rel=\"next\"");
             
             var retVal = new ProductFootprints
             {

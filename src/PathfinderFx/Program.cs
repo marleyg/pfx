@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using OpenIddict.Server;
 using PathfinderFx;
+using PathfinderFx.Handlers;
 using PathfinderFx.Model;
 using Quartz;
 
@@ -55,7 +56,9 @@ builder.Services.AddOpenIddict()
         options.SetTokenEndpointUris("2/auth/token");
 
         options.AddEventHandler<OpenIddictServerEvents.ApplyTokenResponseContext>(b =>
-            b.UseSingletonHandler<MyApplyTokenResponseHandler>());
+            b.UseSingletonHandler<PfxCustomHandlers.PfxApplyTokenResponseHandler>());
+        options.AddEventHandler<OpenIddictServerEvents.ApplyVerificationResponseContext>(b =>
+            b.UseSingletonHandler<PfxCustomHandlers.PfxApplyVerificationResponseHandler>());
         
         // Enable the client credentials flow.
         options.AllowClientCredentialsFlow();
