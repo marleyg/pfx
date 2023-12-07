@@ -8,7 +8,8 @@ public class NotImplementedResult(string grantType) : ActionResult
 
     public override void ExecuteResult(ActionContext context)
     {
+        context.HttpContext.Response.ContentType = "application/json";
         context.HttpContext.Response.StatusCode = 400;
-        context.HttpContext.Response.WriteAsync($"{GrantType},not implemented");
+        context.HttpContext.Response.WriteAsync($"{GrantType}");
     }
 }

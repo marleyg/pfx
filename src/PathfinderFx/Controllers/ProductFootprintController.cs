@@ -58,6 +58,12 @@ public class ProductFootprintController(
         if (!string.IsNullOrEmpty(filter))
             logger.LogInformation("Filtering footprints is not implemented");
         
+        //if the offset is greater than the number of footprints in _productFootprints, return a 400
+        if (offset > ProductFootprints.Data.Count)
+        {
+            logger.LogInformation("Offset is greater than the number of footprints, offset: {Offset}, number of footprints: {NumberOfFootprints}", offset, ProductFootprints.Data.Count);
+            return Task.FromResult<IActionResult>(BadRequest(new SimpleErrorMessage("Bad request", "BadRequest")));
+        }
 
         //if the rel next header is not empty, the limit is the value of the limit query parameter
         if (offset > 0 && limit > 0)
@@ -128,21 +134,35 @@ public class ProductFootprintController(
     /// <returns>ProductFootprint</returns>
     [HttpGet("footprints/{id}")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ProductFootprints))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [Authorize(AuthenticationSchemes = OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme)]
     public Task<IActionResult> GetFootprint(string id)
     {
         var authUser = User.FindFirst(OpenIddictConstants.Claims.Subject)?.Value;
         var application = applicationManager.FindByClientIdAsync(authUser ?? string.Empty);
+        
+        //test to see if the id is a valid Guid
+        if (!Guid.TryParse(id, out _))
+        {
+            logger.LogInformation("Invalid id: {Id}", id);
+            return Task.FromResult<IActionResult>(BadRequest(new SimpleErrorMessage("Bad request", "BadRequest")));
+        }
             
         logger.LogInformation("Getting footprint, id: {Id} for user: {User} from application: {Application}", id, authUser, application);
         
+        var fp = ProductFootprints.Data.Where(x => x.Id == new Guid(id)).ToList();
+        if (fp.Count == 0)
+        {
+            logger.LogInformation("Footprint not found, id: {Id}", id);
+            return Task.FromResult<IActionResult>(NotFound(new SimpleErrorMessage("The specified footprint does not exist", "NoSuchFootprint")));
+        }
         var retVal = new ProductFootprints
         {
-            Data = ProductFootprints.Data.Where(x => x.Id == new Guid(id)).ToList()
+            Data = fp
         };
         return Task.FromResult<IActionResult>(Ok(retVal));
-        
     }
         
     /// <summary>
@@ -157,12 +177,13 @@ public class ProductFootprintController(
     [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(NotImplementedResult))]
     [Authorize(AuthenticationSchemes = OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme)]
     //[Consumes("Content-Type: application/cloudevents+json; charset=UTF-8")]
-    public void ActionEvent(PfRequestEvent actionEvent)
+    public Task<IActionResult> ActionEvent(PfRequestEvent actionEvent)
     {
         var authUser = User.FindFirst(OpenIddictConstants.Claims.Subject)?.Value;
         var application = applicationManager.FindByClientIdAsync(authUser ?? string.Empty);
 
         logger.LogInformation("Action Event: {EventBody} for user: {User} from application: {Application}", "actionEvent passed in", authUser, application);
-        throw new NotImplementedException();
+        return Task.FromResult<IActionResult>(new NotImplementedResult(
+            new SimpleErrorMessage("The specified Action or header you provided implies functionality that is not implemented", "NotImplemented").ToJson()));
     }
 }

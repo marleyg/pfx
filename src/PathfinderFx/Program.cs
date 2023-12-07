@@ -12,6 +12,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.Configure<PfxConfig>(
+    builder.Configuration.GetSection("PfxConfig"));
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
     // Configure the context to use sqlite.
@@ -107,6 +109,7 @@ builder.Services.AddSwaggerGen(options =>
     var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
     options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
 });
+
 builder.Services.AddControllers().AddJsonOptions(x =>
     x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 
@@ -125,21 +128,21 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
-
+/*
 //block of customized text responses to errors needed for conformance to the WBCSD:PACT Pathfinder 2.1.0 (Version 2.0.1-20230522) technical specifications, only works after OpenIddict validation is passed
 app.Use(async (context, next) =>
 {
     await next.Invoke();
-    
     switch (context.Response.StatusCode)
     {
         case StatusCodes.Status403Forbidden:
             await context.Response.WriteAsync(new SimpleErrorMessage("Access Denied", "AccessDenied").ToJson());
             break;
         case StatusCodes.Status400BadRequest:
-            await context.Response.WriteAsync(new SimpleErrorMessage("Bad request", "BadRequest").ToJson());
+            //await context.Response.WriteAsync(new SimpleErrorMessage("Bad request", "BadRequest").ToJson());
             break;
         case StatusCodes.Status404NotFound:
+            context.Response.ContentType = "application/json";
             await context.Response.WriteAsync(new SimpleErrorMessage("The specified footprint does not exist", "NoSuchFootprint").ToJson());
             break;
         case StatusCodes.Status501NotImplemented:
@@ -153,6 +156,7 @@ app.Use(async (context, next) =>
             break;
     }
 });
+*/
 
 app.MapControllers();
 app.MapDefaultControllerRoute();
