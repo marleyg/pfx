@@ -7,6 +7,12 @@
     <PackageId>$(AssemblyName)</PackageId>
     <AssemblyName>Microsoft.PathfinderFx</AssemblyName>
     <LangVersion>default</LangVersion>
+    <Version>1.1.1.13</Version>
+    <Title>WBSCD Pathfinder Framework</Title>
+    <Authors>Marley Gray</Authors>
+    <Company>Microsoft</Company>
+    <AssemblyVersion>1.1.1.13</AssemblyVersion>
+    <FileVersion>1.1.1.13</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>
