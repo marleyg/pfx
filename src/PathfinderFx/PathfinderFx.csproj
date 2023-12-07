@@ -30,21 +30,6 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Compile Remove="PathfinderClient\**" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Remove="PathfinderClient\**" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Remove="PathfinderClient\**" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Remove="PathfinderClient\**" />
-  </ItemGroup>
 
   <ItemGroup>
     <_ContentIncludedByDefault Remove="PathfinderClient\obj\PathfinderClient.csproj.nuget.dgspec.json" />
@@ -55,6 +40,7 @@
   <PropertyGroup>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <NoWarn>$(NoWarn);1591</NoWarn>
+    <UserSecretsId>298c4cb5-262b-43a3-b3d7-6eacd09f7a44</UserSecretsId>
   </PropertyGroup>
 
 
