@@ -1,8 +1,8 @@
 {
   "openapi": "3.0.1",
   "info": {
-    "title": "Pathfinder 2.0.0 API - Alpha",
-    "description": "A Request/Response API for WBCSD:PACT Pathfinder 2.0.0 technical specifications, this is the Consultative Review version and not final. This API will be updated to the final specification when released at the end of February. This API is not intended for production use.",
+    "title": "Pathfinder 2.1.0 API - Conformance 1.0.0",
+    "description": "A Request/Response API for WBCSD:PACT Pathfinder 2.1.0 (Version 2.0.1-20230522) technical specifications, this is the v2.0 Data Model. This API is not intended for production use.",
     "contact": {
       "name": "Marley Gray",
       "email": "marleyg@microsoft.com"
@@ -11,31 +11,96 @@
       "name": "MIT License",
       "url": "https://opensource.org/licenses/MIT"
     },
-    "version": "v1"
+    "version": "v1-Conformance 1.0.0"
   },
   "paths": {
-    "/footprints": {
+    "/2/auth/token": {
+      "post": {
+        "tags": [
+          "Authorization"
+        ],
+        "summary": "Authenticates the client application and returns an access token.",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "501": {
+            "description": "Server Error"
+          }
+        }
+      }
+    },
+    "/2/footprints": {
       "get": {
         "tags": [
           "ProductFootprint"
+        ],
+        "summary": "Retrieves available footprints for the authenticated user. You can set a limit to the number of footprints returned and filter the results by product name.",
+        "description": "Get footprints with CPC code \"3342\":\r\n    $filter=productCategoryCpc eq '3342'\r\n\r\nGet footprints scoped for country:\r\n    $filter=pcf/geographyCountry eq 'DE'\r\n\r\nGet footprints for 2023 reporting period:\r\n    $filter=(pcf/reportingPeriodStart ge '2023-01-01T00:00:00.000Z') and (pcf/reportingPeriodStart lt '2024-01-01T00:00:00.000Z') and (pcf/reportingPeriodEnd ge '2023-01-01T00:00:00.000Z') and (pcf/reportingPeriodEnd lt '2024-01-01T00:00:00.000Z')\r\n\r\nGet footprints for a specific product:\r\n    $filter=productIds/any(productId:(productId eq 'urn:...'))",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "",
+            "style": "form",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          },
+          {
+            "name": "filter",
+            "in": "query",
+            "description": "",
+            "style": "form",
+            "schema": {
+              "type": "string",
+              "default": ""
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "optional if a paginated call",
+            "style": "form",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          }
         ],
         "responses": {
           "200": {
             "description": "Success",
             "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProductFootprints"
-                }
-              },
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ProductFootprints"
                 }
-              },
-              "text/json": {
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ProductFootprints"
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
                 }
               }
             }
@@ -43,17 +108,7 @@
           "403": {
             "description": "Forbidden",
             "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
-                }
-              },
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
-                }
-              },
-              "text/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ProblemDetails"
                 }
@@ -63,15 +118,17 @@
         }
       }
     },
-    "/footprints/{id}": {
+    "/2/footprints/{id}": {
       "get": {
         "tags": [
           "ProductFootprint"
         ],
+        "summary": "Retrieves a specific footprint by id.",
         "parameters": [
           {
             "name": "id",
             "in": "path",
+            "description": "UUID/GUID",
             "required": true,
             "style": "simple",
             "schema": {
@@ -83,19 +140,19 @@
           "200": {
             "description": "Success",
             "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProductFootprints"
-                }
-              },
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ProductFootprints"
                 }
-              },
-              "text/json": {
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ProductFootprints"
+                  "$ref": "#/components/schemas/ProblemDetails"
                 }
               }
             }
@@ -103,39 +160,80 @@
           "404": {
             "description": "Not Found",
             "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
-                }
-              },
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
-                }
-              },
-              "text/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ProblemDetails"
                 }
               }
             }
           },
-          "403": {
-            "description": "Forbidden",
+          "401": {
+            "description": "Unauthorized",
             "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
-                }
-              },
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ProblemDetails"
                 }
-              },
-              "text/json": {
+              }
+            }
+          }
+        }
+      }
+    },
+    "/2/events": {
+      "post": {
+        "tags": [
+          "ProductFootprint"
+        ],
+        "summary": "Establish an event one time subscription for the authenticated user to receive notifications when a footprint is created, updated, or deleted.",
+        "description": "Currently not implemented.",
+        "requestBody": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PfRequestEvent"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PfRequestEvent"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/PfRequestEvent"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyResult"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotImplementedResult"
                 }
               }
             }
@@ -149,6 +247,9 @@
       "Assurance": {
         "type": "object",
         "properties": {
+          "assurance": {
+            "type": "boolean"
+          },
           "coverage": {
             "type": "string",
             "nullable": true
@@ -181,28 +282,37 @@
         },
         "additionalProperties": false
       },
-      "Data": {
+      "DataQualityIndicators": {
         "type": "object",
         "properties": {
-          "shipmentId": {
-            "type": "string",
-            "nullable": true
-          },
-          "consignmentId": {
-            "type": "string",
-            "nullable": true
-          },
-          "shipmentType": {
-            "type": "string",
-            "nullable": true
-          },
-          "weight": {
+          "coveragePercent": {
             "type": "integer",
             "format": "int64",
             "nullable": true
           },
-          "transportChainElementId": {
-            "type": "string",
+          "technologicalDQR": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "temporalDQR": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "geographicalDQR": {
+            "type": "integer",
+            "format": "int64",
+            "nullable": true
+          },
+          "completenessDQR": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "reliabilityDQR": {
+            "type": "number",
+            "format": "double",
             "nullable": true
           }
         },
@@ -307,40 +417,8 @@
         },
         "additionalProperties": false
       },
-      "Dqi": {
+      "EmptyResult": {
         "type": "object",
-        "properties": {
-          "coveragePercent": {
-            "type": "integer",
-            "format": "int64",
-            "nullable": true
-          },
-          "technologicalDQR": {
-            "type": "number",
-            "format": "double",
-            "nullable": true
-          },
-          "temporalDQR": {
-            "type": "number",
-            "format": "double",
-            "nullable": true
-          },
-          "geographicalDQR": {
-            "type": "integer",
-            "format": "int64",
-            "nullable": true
-          },
-          "completenessDQR": {
-            "type": "number",
-            "format": "double",
-            "nullable": true
-          },
-          "reliabilityDQR": {
-            "type": "number",
-            "format": "double",
-            "nullable": true
-          }
-        },
         "additionalProperties": false
       },
       "Extension": {
@@ -355,10 +433,19 @@
             "format": "uri",
             "nullable": true
           },
+          "documentation": {
+            "type": "string",
+            "format": "uri",
+            "nullable": true
+          },
           "data": {
-            "$ref": "#/components/schemas/Data"
+            "$ref": "#/components/schemas/ShipmentExtension"
           }
         },
+        "additionalProperties": false
+      },
+      "NotImplementedResult": {
+        "type": "object",
         "additionalProperties": false
       },
       "Pcf": {
@@ -456,7 +543,7 @@
             "type": "string",
             "nullable": true
           },
-          "geography_country": {
+          "geographyCountry": {
             "type": "string",
             "nullable": true
           },
@@ -498,14 +585,57 @@
           },
           "primaryDataShare": {
             "type": "number",
+            "description": "Optional until 2025",
             "format": "double",
             "nullable": true
           },
           "dqi": {
-            "$ref": "#/components/schemas/Dqi"
+            "$ref": "#/components/schemas/DataQualityIndicators"
           },
           "assurance": {
             "$ref": "#/components/schemas/Assurance"
+          }
+        },
+        "additionalProperties": false
+      },
+      "PfRequestData": {
+        "type": "object",
+        "properties": {
+          "pfIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "PfRequestEvent": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "nullable": true
+          },
+          "specVersion": {
+            "type": "string",
+            "nullable": true
+          },
+          "id": {
+            "type": "string",
+            "nullable": true
+          },
+          "source": {
+            "type": "string",
+            "nullable": true
+          },
+          "time": {
+            "type": "string",
+            "nullable": true
+          },
+          "data": {
+            "$ref": "#/components/schemas/PfRequestData"
           }
         },
         "additionalProperties": false
@@ -575,6 +705,33 @@
             "nullable": true
           },
           "version": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ShipmentExtension": {
+        "type": "object",
+        "properties": {
+          "shipmentId": {
+            "type": "string",
+            "nullable": true
+          },
+          "consignmentId": {
+            "type": "string",
+            "nullable": true
+          },
+          "shipmentType": {
+            "type": "string",
+            "nullable": true
+          },
+          "weight": {
+            "type": "integer",
+            "format": "int64",
+            "nullable": true
+          },
+          "transportChainElementId": {
             "type": "string",
             "nullable": true
           }
