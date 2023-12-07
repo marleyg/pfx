@@ -1,19 +1,15 @@
 using System.Reflection;
 using System.Text.Json.Serialization;
-
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
-
 using OpenIddict.Server;
-
 using PathfinderFx.Handlers;
 using PathfinderFx.Model;
-
 using Quartz;
 
 namespace PathfinderFx
 {
-    public class Program
+    public static class Program
     {
         public static void Main(string[] args)
         {
