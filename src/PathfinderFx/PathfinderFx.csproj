@@ -6,7 +6,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <PackageId>$(AssemblyName)</PackageId>
     <AssemblyName>Microsoft.PathfinderFx</AssemblyName>
-    <LangVersion>default</LangVersion>
+    <LangVersion>11</LangVersion>
     <Version>1.1.1.13</Version>
     <Title>WBSCD Pathfinder Framework</Title>
     <Authors>Marley Gray</Authors>

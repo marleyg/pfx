@@ -3,14 +3,19 @@ using System.Text.Json;
 
 namespace PathfinderFx.Model;
 
-public class SimpleErrorMessage(string message, string code)
+public class SimpleErrorMessage
 {
+    public SimpleErrorMessage(string message, string code)
+    {
+        Message = message;
+        Code = code;
+    }
     [JsonPropertyName("message")]
-    public string Message { get; set; } = message;
+    public string Message { get; set; } 
     [JsonPropertyName("code")]
-    public string Code { get; set; } = code;
+    public string Code { get; set; } 
 }
 public static partial class Serialize
 {
-    public static string ToJson(this SimpleErrorMessage self) => JsonSerializer.Serialize(self, PathfinderFx.Model.Converter.Settings);
+    public static string ToJson(this SimpleErrorMessage self) => JsonSerializer.Serialize(self, Converter.Settings);
 }

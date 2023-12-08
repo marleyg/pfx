@@ -2,7 +2,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace PathfinderFx.Model;
 
-public class ApplicationDbContext(DbContextOptions options) : DbContext(options)
+public class ApplicationDbContext : DbContext
 {
+    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
     protected override void OnModelCreating(ModelBuilder builder) { }
 }

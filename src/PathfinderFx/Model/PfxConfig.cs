@@ -8,7 +8,7 @@ public interface IPfxConfig
 
 public class PfxConfig : IPfxConfig
 {
-    public List<ConformanceAccount> ConformanceAccounts { get; set; } = [];
+    public List<ConformanceAccount> ConformanceAccounts { get; set; } = new();
 }
 
 public class ConformanceAccount

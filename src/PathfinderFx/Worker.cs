@@ -4,11 +4,19 @@ using PathfinderFx.Model;
 
 namespace PathfinderFx;
 
-public class Worker(IOptions<PfxConfig> config, IServiceProvider serviceProvider) : IHostedService
+public class Worker : IHostedService
 {
+    private readonly IOptions<PfxConfig> _config;
+    private readonly IServiceProvider _serviceProvider;
+
+    public Worker(IOptions<PfxConfig> config, IServiceProvider serviceProvider)
+    {
+        _config = config;
+        _serviceProvider = serviceProvider;
+    }
     public async Task StartAsync(CancellationToken cancellationToken)
     {
-        await using var scope = serviceProvider.CreateAsyncScope();
+        await using var scope = _serviceProvider.CreateAsyncScope();
 
         var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
         await context.Database.EnsureCreatedAsync(cancellationToken);
@@ -16,7 +24,7 @@ public class Worker(IOptions<PfxConfig> config, IServiceProvider serviceProvider
         var manager = scope.ServiceProvider.GetRequiredService<IOpenIddictApplicationManager>();
         
         //looping through the accounts in the config and creating them if they don't exist
-        foreach (var account in config.Value.ConformanceAccounts)
+        foreach (var account in _config.Value.ConformanceAccounts)
         {
             if (await manager.FindByClientIdAsync(account.ClientId, cancellationToken) == null)
             {

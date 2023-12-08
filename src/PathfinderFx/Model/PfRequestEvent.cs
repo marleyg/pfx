@@ -2,8 +2,13 @@ using System.Text.Json.Serialization;
 
 namespace PathfinderFx.Model;
 
-public class PfRequestEvent(string source)
+public class PfRequestEvent
 {
+    public PfRequestEvent(string source)
+    {
+        Source = source;
+    }
+    
     [JsonPropertyName("type")]
     public string Type { get; set; } = "org.wbcsd.pathfinder.ProductFootprintRequest.Created.v1";
 
@@ -14,7 +19,7 @@ public class PfRequestEvent(string source)
     public string Id { get; set; } = new Guid().ToString();
 
     [JsonPropertyName("source")]
-    public string Source { get; set; } = source;
+    public string Source { get; set; }
 
     [JsonPropertyName("time")]
     public string Time { get; set; } = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ");
@@ -26,5 +31,5 @@ public class PfRequestEvent(string source)
 public class PfRequestData
 {
     [JsonPropertyName("pfIds")]
-    public List<string> PfIds { get; set; } = [];
+    public List<string> PfIds { get; set; } = new();
 }
