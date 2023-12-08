@@ -1,4 +1,5 @@
 using System.Reflection;
+using System.Security.Cryptography.X509Certificates;
 using System.Text.Json.Serialization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
@@ -78,8 +79,19 @@ namespace PathfinderFx
                     options.AllowClientCredentialsFlow();
 
                     // Register the signing and encryption credentials.
-                    options.AddDevelopmentEncryptionCertificate()
-                        .AddDevelopmentSigningCertificate();
+                    if (builder.Environment.IsProduction()){
+                        var pfxCertConfig = builder.Configuration.GetSection("PfxConfig").Get<PfxConfig>() ?? 
+                                            throw new ArgumentNullException(nameof(args) , "PfxConfig is missing from appsettings.json");
+                        options.AddEncryptionCertificate(LoadCertificate(
+                            pfxCertConfig.EncryptionCertificateThumbprint));
+                        options.AddSigningCertificate(LoadCertificate(
+                            pfxCertConfig.SigningCertificateThumbprint));
+                    }
+                    else
+                    {
+                        options.AddDevelopmentEncryptionCertificate()
+                            .AddDevelopmentSigningCertificate();
+                    }
 
                     // Register the ASP.NET Core host and configure the ASP.NET Core-specific options.
                     options.UseAspNetCore()
@@ -174,6 +186,20 @@ namespace PathfinderFx
             app.MapDefaultControllerRoute();
 
             app.Run();
+        }
+        
+        private static X509Certificate2 LoadCertificate(string thumbprint)
+        {
+            try
+            {
+                var bytes = File.ReadAllBytes($"/var/ssl/private/{thumbprint}.p12");
+                return new X509Certificate2(bytes);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
         }
     }
 }
