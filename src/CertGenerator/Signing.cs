@@ -9,7 +9,7 @@ public class Signing
     {
         using var algorithm = RSA.Create(keySizeInBits: 2048);
 
-        var subject = new X500DistinguishedName("CN=Fabrikam Signing Certificate");
+        var subject = new X500DistinguishedName("CN=PathfinderFx Signing Certificate");
         var request = new CertificateRequest(
             subject, algorithm, HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1);
         request.CertificateExtensions.Add(

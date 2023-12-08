@@ -9,7 +9,7 @@ public class Encryption
     {
         using var algorithm = RSA.Create(keySizeInBits: 2048);
 
-        var subject = new X500DistinguishedName("CN=Fabrikam Encryption Certificate");
+        var subject = new X500DistinguishedName("CN=PathfinderFx Encryption Certificate");
         var request = new CertificateRequest(
             subject, algorithm, HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1);
         request.CertificateExtensions.Add(
