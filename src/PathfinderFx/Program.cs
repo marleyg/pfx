@@ -17,8 +17,15 @@ namespace PathfinderFx
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+            
+            var configuration = new ConfigurationBuilder()
+                .AddJsonFile("appsettings.json")
+                .AddEnvironmentVariables()
+                .Build();
+            
             builder.Services.Configure<PfxConfig>(
-                builder.Configuration.GetSection("PfxConfig"));
+                configuration.GetSection("PfxConfig"));
+            
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
             {
                 // Configure the context to use sqlite.
