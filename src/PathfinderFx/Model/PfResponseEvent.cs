@@ -15,17 +15,17 @@ public class PfResponseEvent
     public string Id { get; set; } = new Guid().ToString();
 
     [JsonPropertyName("source")]
-    public string Source { get; set; }
+    public string? Source { get; set; }
 
     [JsonPropertyName("data")]
-    public PfResponseData Data { get; set; }
+    public PfResponseData? Data { get; set; }
 }
 
 public class PfResponseData
 {
     [JsonPropertyName("pfs")]
-    public ProductFootprints Pf { get; set; }
+    public ProductFootprints? Pf { get; set; }
 
     [JsonPropertyName("requestEventId")]
-    public string RequestEventId { get; set; }
+    public string? RequestEventId { get; set; }
 }
