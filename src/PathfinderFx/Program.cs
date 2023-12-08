@@ -18,10 +18,9 @@ namespace PathfinderFx
             // Add services to the container.
             builder.Services.AddControllersWithViews();
             
-            var environmentName = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
             var configuration = new ConfigurationBuilder()
-                .SetBasePath(System.AppContext.BaseDirectory)
-                .AddJsonFile($"appSettings.{environmentName}.json")
+                .AddJsonFile("appsettings.json")
+                .AddEnvironmentVariables()
                 .Build();
             
             builder.Services.Configure<PfxConfig>(
