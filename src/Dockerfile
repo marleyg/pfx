@@ -6,6 +6,7 @@ WORKDIR /app
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 COPY ["PathfinderFx/PathfinderFx.csproj", "."]
+COPY PathfinderFx/appsettings.json /app/appsettings.json
 RUN dotnet restore "./PathfinderFx.csproj"
 COPY . .
 WORKDIR "/src/."
