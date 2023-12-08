@@ -22,7 +22,7 @@ namespace PathfinderFx
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
             {
                 // Configure the context to use sqlite.
-                options.UseSqlite($"Filename={Path.Combine(Path.GetTempPath(), "openiddict-aridka-server.sqlite3")}");
+                options.UseSqlite($"Filename={Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)!, "openiddict-aridka-server.sqlite3")}");
 
                 // Register the entity sets needed by OpenIddict.
                 // Note: use the generic overload if you need
