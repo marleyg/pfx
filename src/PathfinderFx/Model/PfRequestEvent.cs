@@ -2,13 +2,8 @@ using System.Text.Json.Serialization;
 
 namespace PathfinderFx.Model;
 
-public class PfRequestEvent
+public class PfRequestEvent(string source)
 {
-    public PfRequestEvent(string source)
-    {
-        Source = source;
-    }
-    
     [JsonPropertyName("type")]
     public string Type { get; set; } = "org.wbcsd.pathfinder.ProductFootprintRequest.Created.v1";
 
@@ -19,7 +14,7 @@ public class PfRequestEvent
     public string Id { get; set; } = new Guid().ToString();
 
     [JsonPropertyName("source")]
-    public string Source { get; set; }
+    public string Source { get; set; } = source;
 
     [JsonPropertyName("time")]
     public string Time { get; set; } = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ");
@@ -30,6 +25,12 @@ public class PfRequestEvent
 
 public class PfRequestData
 {
-    [JsonPropertyName("pfIds")]
-    public List<string> PfIds { get; set; } = new();
+    /// <summary>
+    /// A product footprint fragment, can be a full or partial footprint for the requested product.
+    /// </summary>
+    [JsonPropertyName("pf")]
+    public ProductFootprint Pf { get; set; } = new();
+    
+    [JsonPropertyName("comment")]
+    public string? Comment { get; set; }
 }

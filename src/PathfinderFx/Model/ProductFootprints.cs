@@ -22,14 +22,16 @@ namespace PathfinderFx.Model
     public partial class ProductFootprints
     {
         [JsonPropertyName("data")]
-        public List<Datum> Data { get; set; }
+        public List<ProductFootprint> Data { get; set; }
     }
 
-    public partial class Datum
+    public partial class ProductFootprint
     {
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("id")]
         public Guid? Id { get; set; }
 
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("specVersion")]
         public string SpecVersion { get; set; }
 
@@ -37,9 +39,11 @@ namespace PathfinderFx.Model
         [JsonPropertyName("precedingPfIds")]
         public List<string> PrecedingPfIds { get; set; }
 
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("version")]
         public long? Version { get; set; }
-
+        
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("created")]
         public DateTimeOffset? Created { get; set; }
 
@@ -47,6 +51,7 @@ namespace PathfinderFx.Model
         [JsonPropertyName("updated")]
         public string Updated { get; set; }
 
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("status")]
         public string Status { get; set; }
 
@@ -62,25 +67,32 @@ namespace PathfinderFx.Model
         [JsonPropertyName("validityPeriodEnd")]
         public DateTimeOffset? ValidityPeriodEnd { get; set; }
 
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("companyName")]
         public string CompanyName { get; set; }
 
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("companyIds")]
         public List<string> CompanyIds { get; set; }
 
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("productDescription")]
         public string ProductDescription { get; set; }
 
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("productIds")]
         public List<string> ProductIds { get; set; }
 
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("productCategoryCpc")]
         [JsonConverter(typeof(ParseStringConverter))]
         public long? ProductCategoryCpc { get; set; }
 
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("productNameCompany")]
         public string ProductNameCompany { get; set; }
 
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("comment")]
         public string Comment { get; set; }
 

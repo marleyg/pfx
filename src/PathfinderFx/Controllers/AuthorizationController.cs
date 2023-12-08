@@ -10,18 +10,11 @@ using PathfinderFx.Model;
 
 namespace PathfinderFx.Controllers;
 
-public class AuthorizationController : Controller
+public class AuthorizationController(
+    IOpenIddictApplicationManager applicationManager,
+    IOpenIddictScopeManager scopeManager)
+    : Controller
 {
-    private readonly IOpenIddictApplicationManager _applicationManager;
-    private readonly IOpenIddictScopeManager _scopeManager;
-
-    public AuthorizationController(
-        IOpenIddictApplicationManager applicationManager,
-        IOpenIddictScopeManager scopeManager)
-    {
-        _applicationManager = applicationManager;
-        _scopeManager = scopeManager;
-    }
     /// <summary>
     /// Authenticates the client application and returns an access token.
     /// </summary>
@@ -41,7 +34,7 @@ public class AuthorizationController : Controller
         // Note: the client credentials are automatically validated by OpenIddict:
         // if client_id or client_secret are invalid, this action won't be invoked.
 
-        var application = await _applicationManager.FindByClientIdAsync(request!.ClientId!);
+        var application = await applicationManager.FindByClientIdAsync(request!.ClientId!);
         if (application == null)
         {
             return Forbid(
@@ -60,8 +53,8 @@ public class AuthorizationController : Controller
             roleType: OpenIddictConstants.Claims.Role);
 
         // Add the claims that will be persisted in the tokens (use the client_id as the subject identifier).
-        identity.SetClaim(OpenIddictConstants.Claims.Subject, await _applicationManager.GetClientIdAsync(application));
-        identity.SetClaim(OpenIddictConstants.Claims.Name, await _applicationManager.GetDisplayNameAsync(application));
+        identity.SetClaim(OpenIddictConstants.Claims.Subject, await applicationManager.GetClientIdAsync(application));
+        identity.SetClaim(OpenIddictConstants.Claims.Name, await applicationManager.GetDisplayNameAsync(application));
 
         // Note: In the original OAuth 2.0 specification, the client credentials grant
         // doesn't return an identity token, which is an OpenID Connect concept.
@@ -73,7 +66,7 @@ public class AuthorizationController : Controller
 
         // Set the list of scopes granted to the client application in access_token.
         identity.SetScopes(request.GetScopes());
-        identity.SetResources(await _scopeManager.ListResourcesAsync(identity.GetScopes()).ToListAsync());
+        identity.SetResources(await scopeManager.ListResourcesAsync(identity.GetScopes()).ToListAsync());
         identity.SetDestinations(GetDestinations);
 
         return SignIn(new ClaimsPrincipal(identity), OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
