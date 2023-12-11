@@ -3,6 +3,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using OpenIddict.Client;
 
+//TODO: make this a full client application using NSwag client.
+
 var services = new ServiceCollection();
 
 //use the appsettings.json file to configure the client

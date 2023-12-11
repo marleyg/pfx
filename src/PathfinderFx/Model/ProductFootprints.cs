@@ -22,10 +22,10 @@ namespace PathfinderFx.Model
     public partial class ProductFootprints
     {
         [JsonPropertyName("data")]
-        public List<Datum> Data { get; set; }
+        public List<ProductFootprint> Data { get; set; }
     }
 
-    public partial class Datum
+    public partial class ProductFootprint
     {
         [JsonPropertyName("id")]
         public Guid? Id { get; set; }
@@ -39,7 +39,7 @@ namespace PathfinderFx.Model
 
         [JsonPropertyName("version")]
         public long? Version { get; set; }
-
+        
         [JsonPropertyName("created")]
         public DateTimeOffset? Created { get; set; }
 
@@ -62,18 +62,23 @@ namespace PathfinderFx.Model
         [JsonPropertyName("validityPeriodEnd")]
         public DateTimeOffset? ValidityPeriodEnd { get; set; }
 
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("companyName")]
         public string CompanyName { get; set; }
 
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("companyIds")]
         public List<string> CompanyIds { get; set; }
 
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("productDescription")]
         public string ProductDescription { get; set; }
 
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("productIds")]
         public List<string> ProductIds { get; set; }
 
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("productCategoryCpc")]
         [JsonConverter(typeof(ParseStringConverter))]
         public long? ProductCategoryCpc { get; set; }
@@ -81,10 +86,10 @@ namespace PathfinderFx.Model
         [JsonPropertyName("productNameCompany")]
         public string ProductNameCompany { get; set; }
 
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("comment")]
         public string Comment { get; set; }
 
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("pcf")]
         public Pcf Pcf { get; set; }
 

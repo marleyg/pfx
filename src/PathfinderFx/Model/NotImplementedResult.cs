@@ -2,15 +2,10 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace PathfinderFx.Model;
 
-public class NotImplementedResult : ActionResult
+public class NotImplementedResult(string grantType) : ActionResult
 {
-    private string GrantType { get; set; }
+    private string GrantType { get; set; } = grantType;
 
-    public NotImplementedResult(string grantType)
-    {
-        GrantType = grantType;
-    }
-    
     public override void ExecuteResult(ActionContext context)
     {
         context.HttpContext.Response.ContentType = "application/json";

@@ -142,7 +142,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ProductFootprints"
+                  "$ref": "#/components/schemas/ProductFootprint"
                 }
               }
             }
@@ -313,105 +313,6 @@
           "reliabilityDQR": {
             "type": "number",
             "format": "double",
-            "nullable": true
-          }
-        },
-        "additionalProperties": false
-      },
-      "Datum": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "format": "uuid",
-            "nullable": true
-          },
-          "specVersion": {
-            "type": "string",
-            "nullable": true
-          },
-          "precedingPfIds": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "nullable": true
-          },
-          "version": {
-            "type": "integer",
-            "format": "int64",
-            "nullable": true
-          },
-          "created": {
-            "type": "string",
-            "format": "date-time",
-            "nullable": true
-          },
-          "updated": {
-            "type": "string",
-            "nullable": true
-          },
-          "status": {
-            "type": "string",
-            "nullable": true
-          },
-          "statusComment": {
-            "type": "string",
-            "nullable": true
-          },
-          "validityPeriodStart": {
-            "type": "string",
-            "format": "date-time",
-            "nullable": true
-          },
-          "validityPeriodEnd": {
-            "type": "string",
-            "format": "date-time",
-            "nullable": true
-          },
-          "companyName": {
-            "type": "string",
-            "nullable": true
-          },
-          "companyIds": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "nullable": true
-          },
-          "productDescription": {
-            "type": "string",
-            "nullable": true
-          },
-          "productIds": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "nullable": true
-          },
-          "productCategoryCpc": {
-            "type": "integer",
-            "format": "int64",
-            "nullable": true
-          },
-          "productNameCompany": {
-            "type": "string",
-            "nullable": true
-          },
-          "comment": {
-            "type": "string",
-            "nullable": true
-          },
-          "pcf": {
-            "$ref": "#/components/schemas/Pcf"
-          },
-          "extensions": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/Extension"
-            },
             "nullable": true
           }
         },
@@ -601,11 +502,11 @@
       "PfRequestData": {
         "type": "object",
         "properties": {
-          "pfIds": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
+          "pf": {
+            "$ref": "#/components/schemas/ProductFootprint"
+          },
+          "comment": {
+            "type": "string",
             "nullable": true
           }
         },
@@ -667,13 +568,112 @@
         },
         "additionalProperties": { }
       },
+      "ProductFootprint": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "specVersion": {
+            "type": "string",
+            "nullable": true
+          },
+          "precedingPfIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "version": {
+            "type": "integer",
+            "format": "int64",
+            "nullable": true
+          },
+          "created": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "updated": {
+            "type": "string",
+            "nullable": true
+          },
+          "status": {
+            "type": "string",
+            "nullable": true
+          },
+          "statusComment": {
+            "type": "string",
+            "nullable": true
+          },
+          "validityPeriodStart": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "validityPeriodEnd": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "companyName": {
+            "type": "string",
+            "nullable": true
+          },
+          "companyIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "productDescription": {
+            "type": "string",
+            "nullable": true
+          },
+          "productIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "productCategoryCpc": {
+            "type": "integer",
+            "format": "int64",
+            "nullable": true
+          },
+          "productNameCompany": {
+            "type": "string",
+            "nullable": true
+          },
+          "comment": {
+            "type": "string",
+            "nullable": true
+          },
+          "pcf": {
+            "$ref": "#/components/schemas/Pcf"
+          },
+          "extensions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Extension"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
       "ProductFootprints": {
         "type": "object",
         "properties": {
           "data": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/Datum"
+              "$ref": "#/components/schemas/ProductFootprint"
             },
             "nullable": true
           }
