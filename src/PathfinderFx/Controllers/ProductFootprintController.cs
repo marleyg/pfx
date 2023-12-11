@@ -134,7 +134,7 @@ public class ProductFootprintController(
     /// <param name="id">UUID/GUID</param>
     /// <returns>ProductFootprint</returns>
     [HttpGet("footprints/{id}")]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ProductFootprints))]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ProductFootprint))]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -153,17 +153,14 @@ public class ProductFootprintController(
             
         logger.LogInformation("Getting footprint, id: {Id} for user: {User} from application: {Application}", id, authUser, application);
         
-        var fp = ProductFootprints.Data.Where(x => x.Id == new Guid(id)).ToList();
-        if (fp.Count == 0)
+        var matchFp = ProductFootprints.Data.FirstOrDefault(x => x.Id == new Guid(id));
+        
+        if (matchFp != null)
         {
-            logger.LogInformation("Footprint not found, id: {Id}", id);
-            return Task.FromResult<IActionResult>(NotFound(new SimpleErrorMessage("The specified footprint does not exist", "NoSuchFootprint")));
+            return Task.FromResult<IActionResult>(Ok(matchFp));
         }
-        var retVal = new ProductFootprints
-        {
-            Data = fp
-        };
-        return Task.FromResult<IActionResult>(Ok(retVal));
+        logger.LogInformation("Footprint not found, id: {Id}", id);
+        return Task.FromResult<IActionResult>(NotFound(new SimpleErrorMessage("The specified footprint does not exist", "NoSuchFootprint")));
     }
         
     /// <summary>

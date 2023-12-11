@@ -27,11 +27,9 @@ namespace PathfinderFx.Model
 
     public partial class ProductFootprint
     {
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("id")]
         public Guid? Id { get; set; }
 
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("specVersion")]
         public string SpecVersion { get; set; }
 
@@ -39,11 +37,9 @@ namespace PathfinderFx.Model
         [JsonPropertyName("precedingPfIds")]
         public List<string> PrecedingPfIds { get; set; }
 
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("version")]
         public long? Version { get; set; }
         
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("created")]
         public DateTimeOffset? Created { get; set; }
 
@@ -51,7 +47,6 @@ namespace PathfinderFx.Model
         [JsonPropertyName("updated")]
         public string Updated { get; set; }
 
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("status")]
         public string Status { get; set; }
 
@@ -88,7 +83,6 @@ namespace PathfinderFx.Model
         [JsonConverter(typeof(ParseStringConverter))]
         public long? ProductCategoryCpc { get; set; }
 
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("productNameCompany")]
         public string ProductNameCompany { get; set; }
 
@@ -96,7 +90,6 @@ namespace PathfinderFx.Model
         [JsonPropertyName("comment")]
         public string Comment { get; set; }
 
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("pcf")]
         public Pcf Pcf { get; set; }
 
