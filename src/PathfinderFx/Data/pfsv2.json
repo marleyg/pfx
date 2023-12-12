@@ -2,7 +2,7 @@
   "data": [
     {
       "id": "d9be4477-e351-45b3-acd9-e1da05e6f633",
-      "specVersion": "2.0.0",
+      "specVersion": "2.1.0",
       "version": 1,
       "created": "2022-05-22T21:47:32+00:00",
       "status": "Active",
@@ -65,7 +65,7 @@
       },
       "extensions": [
         {
-          "specVersion": "2.0.0",
+          "specVersion": "2.1.0",
           "dataSchema": "https://catalog.carbon-transparency.com/shipment/1.0.0/data-model.json",
           "data": {
             "shipmentId": "S1234567890",
@@ -79,7 +79,7 @@
     },
     {
       "id": "6b24e0de-e282-466d-8b9a-ad862d325c4f",
-      "specVersion": "2.0.0",
+      "specVersion": "2.1.0",
       "precedingPfIds": [
         "9d454aec-04f9-48a8-bf04-519c7873bba3"
       ],
@@ -158,7 +158,7 @@
     },
     {
       "id": "a8f051f7-1e67-4643-91a1-b634545a6fff",
-      "specVersion": "2.0.0",
+      "specVersion": "2.1.0",
       "precedingPfIds": [
         "56c831e2-5337-45dd-82af-e4428ef1b41a"
       ],
@@ -248,7 +248,7 @@
       },
       "extensions": [
         {
-          "specVersion": "2.0.0",
+          "specVersion": "2.1.0",
           "dataSchema": "https://catalog.carbon-transparency.com/shipment/1.0.0/data-model.json",
           "data": {
             "shipmentId": "S1234567890",
@@ -262,7 +262,7 @@
     },
     {
       "id": "4b5c7992-dab0-4c31-9c6c-1ac2432b6094",
-      "specVersion": "2.0.0",
+      "specVersion": "2.1.0",
       "version": 1,
       "created": "2022-05-22T21:47:32+00:00",
       "status": "Active",
@@ -325,7 +325,7 @@
       },
       "extensions": [
         {
-          "specVersion": "2.0.0",
+          "specVersion": "2.1.0",
           "dataSchema": "https://catalog.carbon-transparency.com/shipment/1.0.0/data-model.json",
           "data": {
             "shipmentId": "S1234567890",
@@ -339,7 +339,7 @@
     },
     {
       "id": "ae59f69c-9b72-4657-a96f-e22cd9d74840",
-      "specVersion": "2.0.0",
+      "specVersion": "2.1.0",
       "version": 1,
       "created": "2022-05-22T21:47:32+00:00",
       "status": "Active",
@@ -402,7 +402,7 @@
       },
       "extensions": [
         {
-          "specVersion": "2.0.0",
+          "specVersion": "2.1.0",
           "dataSchema": "https://catalog.carbon-transparency.com/shipment/1.0.0/data-model.json",
           "data": {
             "shipmentId": "S1234567890",
