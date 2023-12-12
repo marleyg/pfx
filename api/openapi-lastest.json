@@ -503,7 +503,9 @@
         "type": "object",
         "properties": {
           "pf": {
-            "$ref": "#/components/schemas/ProductFootprint"
+            "type": "string",
+            "description": "A product footprint fragment, can be a full or partial footprint for the requested product.",
+            "nullable": true
           },
           "comment": {
             "type": "string",
