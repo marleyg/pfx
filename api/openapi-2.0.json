@@ -1,0 +1,607 @@
+{
+    "swagger": "2.0",
+    "info": {
+      "title": "Pathfinder 2.1.0 API - Conformance 1.0.0",
+      "description": "A Request/Response API for WBCSD:PACT Pathfinder 2.1.0 (Version 2.0.1-20230522) technical specifications, this is the v2.0 Data Model. This API is not intended for production use.",
+      "contact": {
+        "name": "Marley Gray",
+        "email": "marleyg@microsoft.com"
+      },
+      "license": {
+        "name": "MIT License",
+        "url": "https://opensource.org/licenses/MIT"
+      },
+      "version": "v1-Conformance 1.0.0"
+    },
+    "paths": {
+      "/2/auth/token": {
+        "post": {
+          "tags": [
+            "Authorization"
+          ],
+          "summary": "Authenticates the client application and returns an access token.",
+          "responses": {
+            "200": {
+              "description": "Success"
+            },
+            "403": {
+              "description": "Forbidden"
+            },
+            "501": {
+              "description": "Server Error"
+            }
+          }
+        }
+      },
+      "/2/footprints": {
+        "get": {
+          "tags": [
+            "ProductFootprint"
+          ],
+          "summary": "Retrieves available footprints for the authenticated user. You can set a limit to the number of footprints returned and filter the results by product name.",
+          "description": "Get footprints with CPC code \"3342\":\r\n    $filter=productCategoryCpc eq '3342'\r\n\r\nGet footprints scoped for country:\r\n    $filter=pcf/geographyCountry eq 'DE'\r\n\r\nGet footprints for 2023 reporting period:\r\n    $filter=(pcf/reportingPeriodStart ge '2023-01-01T00:00:00.000Z') and (pcf/reportingPeriodStart lt '2024-01-01T00:00:00.000Z') and (pcf/reportingPeriodEnd ge '2023-01-01T00:00:00.000Z') and (pcf/reportingPeriodEnd lt '2024-01-01T00:00:00.000Z')\r\n\r\nGet footprints for a specific product:\r\n    $filter=productIds/any(productId:(productId eq 'urn:...'))",
+          "produces": [
+            "application/json"
+          ],
+          "parameters": [
+            {
+              "in": "query",
+              "name": "limit",
+              "description": "",
+              "type": "integer",
+              "format": "int32",
+              "default": 0,
+              "collectionFormat": "multi"
+            },
+            {
+              "in": "query",
+              "name": "filter",
+              "description": "",
+              "type": "string",
+              "default": "",
+              "collectionFormat": "multi"
+            },
+            {
+              "in": "query",
+              "name": "offset",
+              "description": "optional if a paginated call",
+              "type": "integer",
+              "format": "int32",
+              "default": 0,
+              "collectionFormat": "multi"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success",
+              "schema": {
+                "$ref": "#/definitions/ProductFootprints"
+              }
+            },
+            "400": {
+              "description": "Bad Request",
+              "schema": {
+                "$ref": "#/definitions/ProblemDetails"
+              }
+            },
+            "401": {
+              "description": "Unauthorized",
+              "schema": {
+                "$ref": "#/definitions/ProblemDetails"
+              }
+            },
+            "403": {
+              "description": "Forbidden",
+              "schema": {
+                "$ref": "#/definitions/ProblemDetails"
+              }
+            }
+          }
+        }
+      },
+      "/2/footprints/{id}": {
+        "get": {
+          "tags": [
+            "ProductFootprint"
+          ],
+          "summary": "Retrieves a specific footprint by id.",
+          "produces": [
+            "application/json"
+          ],
+          "parameters": [
+            {
+              "in": "path",
+              "name": "id",
+              "description": "UUID/GUID",
+              "required": true,
+              "type": "string"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success",
+              "schema": {
+                "$ref": "#/definitions/ProductFootprint"
+              }
+            },
+            "400": {
+              "description": "Bad Request",
+              "schema": {
+                "$ref": "#/definitions/ProblemDetails"
+              }
+            },
+            "404": {
+              "description": "Not Found",
+              "schema": {
+                "$ref": "#/definitions/ProblemDetails"
+              }
+            },
+            "401": {
+              "description": "Unauthorized",
+              "schema": {
+                "$ref": "#/definitions/ProblemDetails"
+              }
+            }
+          }
+        }
+      },
+      "/2/events": {
+        "post": {
+          "tags": [
+            "ProductFootprint"
+          ],
+          "summary": "Establish an event one time subscription for the authenticated user to receive notifications when a footprint is created, updated, or deleted.",
+          "description": "Currently not implemented.",
+          "consumes": [
+            "application/json",
+            "text/json",
+            "application/*+json"
+          ],
+          "produces": [
+            "application/json"
+          ],
+          "parameters": [
+            {
+              "in": "body",
+              "name": "body",
+              "description": "",
+              "schema": {
+                "$ref": "#/definitions/PfRequestEvent"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success",
+              "schema": {
+                "$ref": "#/definitions/EmptyResult"
+              }
+            },
+            "401": {
+              "description": "Unauthorized",
+              "schema": {
+                "$ref": "#/definitions/ProblemDetails"
+              }
+            },
+            "400": {
+              "description": "Bad Request",
+              "schema": {
+                "$ref": "#/definitions/NotImplementedResult"
+              }
+            }
+          }
+        }
+      }
+    },
+    "definitions": {
+      "Assurance": {
+        "type": "object",
+        "properties": {
+          "assurance": {
+            "type": "boolean"
+          },
+          "coverage": {
+            "type": "string"
+          },
+          "level": {
+            "type": "string"
+          },
+          "boundary": {
+            "type": "string"
+          },
+          "providerName": {
+            "type": "string"
+          },
+          "completedAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "standardName": {
+            "type": "string"
+          },
+          "comments": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "DataQualityIndicators": {
+        "type": "object",
+        "properties": {
+          "coveragePercent": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "technologicalDQR": {
+            "format": "double",
+            "type": "number"
+          },
+          "temporalDQR": {
+            "format": "double",
+            "type": "number"
+          },
+          "geographicalDQR": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "completenessDQR": {
+            "format": "double",
+            "type": "number"
+          },
+          "reliabilityDQR": {
+            "format": "double",
+            "type": "number"
+          }
+        },
+        "additionalProperties": false
+      },
+      "EmptyResult": {
+        "type": "object",
+        "additionalProperties": false
+      },
+      "Extension": {
+        "type": "object",
+        "properties": {
+          "specVersion": {
+            "type": "string"
+          },
+          "dataSchema": {
+            "format": "uri",
+            "type": "string"
+          },
+          "documentation": {
+            "format": "uri",
+            "type": "string"
+          },
+          "data": {
+            "$ref": "#/definitions/ShipmentExtension"
+          }
+        },
+        "additionalProperties": false
+      },
+      "NotImplementedResult": {
+        "type": "object",
+        "additionalProperties": false
+      },
+      "Pcf": {
+        "type": "object",
+        "properties": {
+          "declaredUnit": {
+            "type": "string"
+          },
+          "unitaryProductAmount": {
+            "type": "string"
+          },
+          "pCfExcludingBiogenic": {
+            "type": "string"
+          },
+          "pCfIncludingBiogenic": {
+            "type": "string"
+          },
+          "fossilGhgEmissions": {
+            "type": "string"
+          },
+          "fossilCarbonContent": {
+            "type": "string"
+          },
+          "biogenicCarbonContent": {
+            "type": "string"
+          },
+          "dLucGhgEmissions": {
+            "type": "string"
+          },
+          "landManagementGhgEmissions": {
+            "type": "string"
+          },
+          "otherBiogenicGhgEmissions": {
+            "type": "string"
+          },
+          "iLucGhgEmissions": {
+            "type": "string"
+          },
+          "biogenicCarbonWithdrawal": {
+            "type": "string"
+          },
+          "aircraftGhgEmissions": {
+            "type": "string"
+          },
+          "characterizationFactors": {
+            "type": "string"
+          },
+          "crossSectoralStandardsUsed": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "productOrSectorSpecificRules": {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/ProductOrSectorSpecificRule"
+            }
+          },
+          "biogenicAccountingMethodology": {
+            "type": "string"
+          },
+          "boundaryProcessesDescription": {
+            "type": "string"
+          },
+          "referencePeriodStart": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "referencePeriodEnd": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "geographyCountrySubdivision": {
+            "type": "string"
+          },
+          "geographyCountry": {
+            "type": "string"
+          },
+          "geographyRegionOrSubregion": {
+            "type": "string"
+          },
+          "secondaryEmissionFactorSources": {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/SecondaryEmissionFactorSource"
+            }
+          },
+          "exemptedEmissionsPercent": {
+            "format": "double",
+            "type": "number"
+          },
+          "exemptedEmissionsDescription": {
+            "type": "string"
+          },
+          "packagingEmissionsIncluded": {
+            "type": "boolean"
+          },
+          "packagingGhgEmissions": {
+            "type": "string"
+          },
+          "allocationRulesDescription": {
+            "type": "string"
+          },
+          "uncertaintyAssessmentDescription": {
+            "type": "string"
+          },
+          "primaryDataShare": {
+            "format": "double",
+            "description": "Optional until 2025",
+            "type": "number"
+          },
+          "dqi": {
+            "$ref": "#/definitions/DataQualityIndicators"
+          },
+          "assurance": {
+            "$ref": "#/definitions/Assurance"
+          }
+        },
+        "additionalProperties": false
+      },
+      "PfRequestData": {
+        "type": "object",
+        "properties": {
+          "pf": {
+            "description": "A product footprint fragment, can be a full or partial footprint for the requested product.",
+            "type": "string"
+          },
+          "comment": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "PfRequestEvent": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "specVersion": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "source": {
+            "type": "string"
+          },
+          "time": {
+            "type": "string"
+          },
+          "data": {
+            "$ref": "#/definitions/PfRequestData"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ProblemDetails": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "status": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "detail": {
+            "type": "string"
+          },
+          "instance": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": { }
+      },
+      "ProductFootprint": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "specVersion": {
+            "type": "string"
+          },
+          "precedingPfIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "version": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "created": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "updated": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "statusComment": {
+            "type": "string"
+          },
+          "validityPeriodStart": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "validityPeriodEnd": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "companyName": {
+            "type": "string"
+          },
+          "companyIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "productDescription": {
+            "type": "string"
+          },
+          "productIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "productCategoryCpc": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "productNameCompany": {
+            "type": "string"
+          },
+          "comment": {
+            "type": "string"
+          },
+          "pcf": {
+            "$ref": "#/definitions/Pcf"
+          },
+          "extensions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/Extension"
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      "ProductFootprints": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/ProductFootprint"
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      "ProductOrSectorSpecificRule": {
+        "type": "object",
+        "properties": {
+          "operator": {
+            "type": "string"
+          },
+          "ruleNames": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      "SecondaryEmissionFactorSource": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "version": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ShipmentExtension": {
+        "type": "object",
+        "properties": {
+          "shipmentId": {
+            "type": "string"
+          },
+          "consignmentId": {
+            "type": "string"
+          },
+          "shipmentType": {
+            "type": "string"
+          },
+          "weight": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "transportChainElementId": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  }

@@ -142,7 +142,7 @@ namespace PathfinderFx
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
-                app.UseSwagger();
+                app.UseSwagger(p => p.SerializeAsV2 = true);
                 app.UseSwaggerUI();
                 app.UseDeveloperExceptionPage();
             }
