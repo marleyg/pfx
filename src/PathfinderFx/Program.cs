@@ -117,7 +117,7 @@ namespace PathfinderFx
                 {
                     Version = "v1-Conformance 1.0.0",
                     Title = "Pathfinder 2.1.0 API - Conformance 1.0.0",
-                    Description = "A Request/Response API for WBCSD:PACT Pathfinder 2.1.0 (Version 2.0.1-20230522) technical specifications, this is the v2.0 Data Model. This API is not intended for production use.",
+                    Description = "A Request/Response API for WBCSD:PACT Pathfinder 2.1.0 (Version 2.1.0-20231207) technical specifications, this is the v2.0 Data Model. This API is not intended for production use.",
                     Contact = new OpenApiContact
                     {
                         Name = "Marley Gray",
