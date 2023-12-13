@@ -2,7 +2,7 @@
     "data": [
         {
             "id": "d9be4477-e351-45b3-acd9-e1da05e6f633",
-            "specVersion": "2.0.0",
+            "specVersion": "2.1.0",
             "version": 1,
             "created": "2022-05-22T21:47:32+00:00",
             "status": "Active",
@@ -64,7 +64,7 @@
             },
             "extensions": [
                 {
-                    "specVersion": "2.0.0",
+                    "specVersion": "2.1.0",
                     "dataSchema": "https://catalog.carbon-transparency.com/shipment/1.0.0/data-model.json",
                     "data": {
                         "shipmentId": "S1234567890",
@@ -78,7 +78,7 @@
         },
         {
             "id": "6b24e0de-e282-466d-8b9a-ad862d325c4f",
-            "specVersion": "2.0.0",
+            "specVersion": "2.1.0",
             "precedingPfIds": [
                 "9d454aec-04f9-48a8-bf04-519c7873bba3"
             ],
