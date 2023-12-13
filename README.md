@@ -11,6 +11,8 @@ The code samples are built using the following Microsoft technologies:
 - [Microsoft Entra Id](https://www.microsoft.com/en-us/security/business/microsoft-entra)
 - [Microsoft Power Platform](https://powerplatform.microsoft.com/en-us/)
 
+See the [FAQ](./docs/faq.md) for more information about the Pathfinder Framework and what conformance to PACT means for the Microsoft Cloud for Sustainability.
+
 ## Getting Started
 
 The example `host` API implementation can be access via REST API at the following URL: https://pathfinderfx.azurewebsites.net.
