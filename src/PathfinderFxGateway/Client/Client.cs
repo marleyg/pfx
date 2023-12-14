@@ -24,13 +24,12 @@ namespace PathfinderFxGateway.Client
     [System.CodeDom.Compiler.GeneratedCode("NSwag", "13.20.0.0 (NJsonSchema v10.9.0.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class Client : GatewayClientBase
     {
-        private System.Net.Http.HttpClient _httpClient;
         private System.Lazy<Newtonsoft.Json.JsonSerializerSettings> _settings;
 
         public Client(ILoggerFactory loggerFactory, IGatewayConfig config) : base(loggerFactory, config)
         {
+            _settings = new System.Lazy<Newtonsoft.Json.JsonSerializerSettings>(CreateSerializerSettings);
         }
-
 
         private Newtonsoft.Json.JsonSerializerSettings CreateSerializerSettings()
         {
@@ -68,7 +67,7 @@ namespace PathfinderFxGateway.Client
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/2/auth/token");
 
-            var client_ = _httpClient;
+            var client_ = HttpClient;
             var disposeClient_ = false;
             try
             {
@@ -81,7 +80,10 @@ namespace PathfinderFxGateway.Client
 
                     var url_ = urlBuilder_.ToString();
                     request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
-
+                    request_.Headers.Add("Content-Type", "application/x-www-form-urlencoded");
+                    request_.Headers.Add("client_id", Config.ClientId);
+                    request_.Headers.Add("grant_type", "client_credentials");
+                    request_.Headers.Add("client_secret", Config.ClientSecret);
                     PrepareRequest(client_, request_, url_);
 
                     var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
@@ -196,7 +198,7 @@ namespace PathfinderFxGateway.Client
             }
             urlBuilder_.Length--;
 
-            var client_ = _httpClient;
+            var client_ = HttpClient;
             var disposeClient_ = false;
             try
             {
@@ -312,7 +314,7 @@ namespace PathfinderFxGateway.Client
             urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/2/footprints/{id}");
             urlBuilder_.Replace("{id}", System.Uri.EscapeDataString(ConvertToString(id, System.Globalization.CultureInfo.InvariantCulture)));
 
-            var client_ = _httpClient;
+            var client_ = HttpClient;
             var disposeClient_ = false;
             try
             {
@@ -428,7 +430,7 @@ namespace PathfinderFxGateway.Client
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/2/events");
 
-            var client_ = _httpClient;
+            var client_ = HttpClient;
             var disposeClient_ = false;
             try
             {

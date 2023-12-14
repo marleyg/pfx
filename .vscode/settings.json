@@ -1,3 +1,9 @@
 {
-    "dotnet.defaultSolution": "src/PathfinderFx/PathfinderFx.sln"
+    "dotnet.defaultSolution": "src/PathfinderFx/PathfinderFx.sln",
+    "azureFunctions.deploySubpath": "src/PathfinderFxGateway/bin/Release/net8.0/publish",
+    "azureFunctions.projectLanguage": "C#",
+    "azureFunctions.projectRuntime": "~4",
+    "debug.internalConsoleOptions": "neverOpen",
+    "azureFunctions.projectSubpath": "src/PathfinderFxGateway",
+    "azureFunctions.preDeployTask": "publish (functions)"
 }

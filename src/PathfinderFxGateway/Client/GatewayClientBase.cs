@@ -1,10 +1,8 @@
-using System;
-using System.Net.Http;
+using System.Globalization;
 using System.Net.Http.Headers;
-using System.Threading;
-using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using RestSharp;
 
 namespace PathfinderFxGateway.Client
@@ -13,23 +11,26 @@ namespace PathfinderFxGateway.Client
     {
         
     private readonly ILogger _logger;
-    private readonly IGatewayConfig _config;
-    private BearerToken _bearer;
+    protected readonly IGatewayConfig Config;
+    private BearerToken? _bearer;
+    protected readonly HttpClient HttpClient;
 
     /// <summary>
     ///     Constructor for GatewayClientBase, for use with type specific dependency injection in .NET Core
     /// </summary>
-    public GatewayClientBase(ILoggerFactory loggerFactory, IGatewayConfig config)
+    protected GatewayClientBase(ILoggerFactory loggerFactory, IGatewayConfig config)
     {
         _logger = loggerFactory.CreateLogger<GatewayClientBase>();
-        _config = config;
+        Config = config;
+        HttpClient = new HttpClient();
+        BaseUrl = Config.HostUrl ?? throw new InvalidOperationException();
     }
 
     protected string BaseUrl { get; set; }
 
     internal async Task<HttpRequestMessage> CreateHttpRequestMessageAsync(CancellationToken cancellationToken)
     {
-        await GetBearerToken(_config.clientId, _config.clientSecret);
+        await GetBearerToken(Config.ClientId, Config.ClientSecret);
         var requestMessage = new HttpRequestMessage();
         //the bearer token from Evident is called a Token, not AccessToken
         requestMessage.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _bearer?.Token);
@@ -79,21 +80,21 @@ namespace PathfinderFxGateway.Client
 
     private async Task<string> GetAuthToken()
     {
-        _logger.LogInformation("Getting Authorization Token from {Name}", BaseUrl);
-        
+        _logger.LogTrace("Getting Authorization Token from {Name}", Config.HostUrl);
         var options =
-            new RestClientOptions(_config?.HostUrl ?? throw new InvalidOperationException())
+            new RestClientOptions(Config.AuthUrl  ?? throw new InvalidOperationException())
             {
                 ThrowOnAnyError = true,
                 MaxTimeout = 600000
             };
         var client = new RestClient(options);
         var request = new RestRequest();
-        request.AddHeader("Content-Type", "application/json");
+        request.AddHeader("Content-Type", "application/x-www-form-urlencoded");
+        request.AddParameter("client_id", Config.ClientId);
+        request.AddParameter("grant_type", "client_credentials");
+        request.AddParameter("client_secret", Config.ClientSecret);
 
-        var payload = "{\"email\": \"" + email + "\", \"token\": \"" + apiToken + "\"}";
-        request.AddParameter("application/json", payload, ParameterType.RequestBody);
-        RestResponse response;
+        RestResponse? response;
         try
         {
             response = await client.PostAsync(request);
@@ -101,7 +102,7 @@ namespace PathfinderFxGateway.Client
         catch (Exception e)
         {
             _logger.LogError("GetAuthToken failed to {Service}, exception message {Message}",
-                _config?.AuthApiUri, e.Message);
+                Config.HostUrl, e.Message);
             throw;
         }
 
@@ -117,26 +118,65 @@ namespace PathfinderFxGateway.Client
         [JsonProperty("host_url")]
         string HostUrl { get; set; }
         
+        [JsonProperty("auth_url")]
+        string AuthUrl { get; set; }
+        
         [JsonProperty("client_id")]
-        string clientId { get; set; }
+        string ClientId { get; set; }
         
         [JsonProperty("client_secret")]
-        string clientSecret { get; set; }
+        string ClientSecret { get; set; }
     }
     public class GatewayConfig : IGatewayConfig
     {
         public string HostUrl { get; set; }
-        public string clientId { get; set; }
-        public string clientSecret { get; set; }
+        public string AuthUrl { get; set; }
+        public string ClientId { get; set; }
+        public string ClientSecret { get; set; }
     }
 
-    internal class BearerToken
+    public partial class BearerToken
     {
-        public string Token { get; set; }
-        public int ExpiresIn { get; set; }
-        public DateTime ReceivedIn { get; set; }
-        public int RefreshIn { get; set; }
+        [JsonProperty("token_type")]
+        public string TokenType { get; set; }
 
-        public static BearerToken FromJson(string json) => JsonSerializer.Deserialize<BearerToken>(json);
+        [JsonProperty("scope")]
+        public string Scope { get; set; }
+
+        [JsonProperty("expires_in")]
+        public long ExpiresIn { get; set; }
+
+        [JsonProperty("ext_expires_in")]
+        public long ExtExpiresIn { get; set; }
+
+        [JsonProperty("access_token")]
+        public string AccessToken { get; set; }
+        
+        [JsonProperty("token")]
+        public string Token { get; set; }
+        
+        [JsonProperty("received_in")]
+        public DateTime ReceivedIn { get; set; }
+        
+        [JsonProperty("refresh_in")]
+        public int RefreshIn { get; set; }
+        
+    }
+
+    public partial class BearerToken
+    {
+        public static BearerToken FromJson(string json) => JsonConvert.DeserializeObject<BearerToken>(json, TokenConverter.Settings);
+    }
+    internal static class TokenConverter
+    {
+        public static readonly JsonSerializerSettings Settings = new JsonSerializerSettings
+        {
+            MetadataPropertyHandling = MetadataPropertyHandling.Ignore,
+            DateParseHandling = DateParseHandling.None,
+            Converters =
+            {
+                new IsoDateTimeConverter { DateTimeStyles = DateTimeStyles.AssumeUniversal }
+            },
+        };
     }
 }

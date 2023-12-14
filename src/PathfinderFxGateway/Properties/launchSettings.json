@@ -2,7 +2,7 @@
   "profiles": {
     "PathfinderFxGateway": {
       "commandName": "Project",
-      "commandLineArgs": "--port 7053",
+      "commandLineArgs": "--port 7143",
       "launchBrowser": false
     }
   }
