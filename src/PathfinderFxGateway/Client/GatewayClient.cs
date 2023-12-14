@@ -22,11 +22,11 @@ namespace PathfinderFxGateway.Client
     using System = global::System;
 
     [System.CodeDom.Compiler.GeneratedCode("NSwag", "13.20.0.0 (NJsonSchema v10.9.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Client : GatewayClientBase
+    public partial class GatewayClient : GatewayClientBase
     {
         private System.Lazy<Newtonsoft.Json.JsonSerializerSettings> _settings;
 
-        public Client(ILoggerFactory loggerFactory, IGatewayConfig config) : base(loggerFactory, config)
+        public GatewayClient(ILoggerFactory loggerFactory, IGatewayConfig config) : base(loggerFactory, config)
         {
             _settings = new System.Lazy<Newtonsoft.Json.JsonSerializerSettings>(CreateSerializerSettings);
         }
