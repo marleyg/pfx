@@ -19,8 +19,7 @@ namespace PathfinderFxGateway
         {
             _logger.LogInformation("C# HTTP trigger function processed a request.");
 
-            //initialize the PathfinderFx client with the client_id and client_secret passed in the req
-            var clientId = req["client_id"];
+            //initialize the PathfinderFx client with the config
 
             var response = req.CreateResponse(HttpStatusCode.OK);
             response.Headers.Add("Content-Type", "text/plain; charset=utf-8");
