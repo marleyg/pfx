@@ -16,3 +16,10 @@ See the [FAQ](./docs/faq.md) for more information about the Pathfinder Framework
 ## Getting Started
 
 The example `host` API implementation can be access via REST API at the following URL: https://pathfinderfx.azurewebsites.net.
+
+## Solution Samples
+
+The PathfinderFx sample can be used to build a Pathfinder API implementation and also be used in integrated Solution Samples. The following Solution Samples are available:
+
+- [Custom API Connector]() - A custom API connector to import data from a Pathfinder Host into Microsoft Power Platform and Dataverse applications like [Sustainability Manager](https://appsource.microsoft.com/en-us/product/dynamics-365/mscrm.6b0b9b9e-2b1e-4e9f-9d9c-2b9e8c4d8c6a?tab=Overview) and [Sustainability Reporting](https://appsource.microsoft.com/en-us/product/dynamics-365/mscrm.6b0b9b9e-2b1e-4e9f-9d9c-2b9e8c4d8c6a?tab=Overview).
+- [Dataverse Custom API](https://learn.microsoft.com/en-us/power-apps/developer/data-platform/custom-api) - a solution that can request Product Footprint data from many different Pathfinder Hosts and store the data in Dataverse.
