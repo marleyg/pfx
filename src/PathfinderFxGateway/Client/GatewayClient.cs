@@ -293,9 +293,9 @@ namespace PathfinderFxGateway.Client
         /// <param name="id">UUID/GUID</param>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<ProductFootprint> Footprints2Async(string id)
+        public virtual System.Threading.Tasks.Task<ProductFootprint> FootprintAsync(string id)
         {
-            return Footprints2Async(id, System.Threading.CancellationToken.None);
+            return FootprintAsync(id, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
@@ -305,7 +305,7 @@ namespace PathfinderFxGateway.Client
         /// <param name="id">UUID/GUID</param>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<ProductFootprint> Footprints2Async(string id, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<ProductFootprint> FootprintAsync(string id, System.Threading.CancellationToken cancellationToken)
         {
             if (id == null)
                 throw new System.ArgumentNullException("id");

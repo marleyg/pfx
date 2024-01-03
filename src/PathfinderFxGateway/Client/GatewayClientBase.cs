@@ -115,23 +115,23 @@ namespace PathfinderFxGateway.Client
     public interface IGatewayConfig
     {
         [JsonProperty("host_url")]
-        string HostUrl { get; set; }
+        string? HostUrl { get; set; }
         
         [JsonProperty("auth_url")]
-        string AuthUrl { get; set; }
+        string? AuthUrl { get; set; }
         
         [JsonProperty("client_id")]
-        string ClientId { get; set; }
+        string? ClientId { get; set; }
         
         [JsonProperty("client_secret")]
-        string ClientSecret { get; set; }
+        string? ClientSecret { get; set; }
     }
     public class GatewayConfig : IGatewayConfig
     {
-        public string HostUrl { get; set; }
-        public string AuthUrl { get; set; }
-        public string ClientId { get; set; }
-        public string ClientSecret { get; set; }
+        public string? HostUrl { get; set; }
+        public string? AuthUrl { get; set; }
+        public string? ClientId { get; set; }
+        public string? ClientSecret { get; set; }
     }
 
     public partial class BearerToken
@@ -175,7 +175,22 @@ namespace PathfinderFxGateway.Client
             Converters =
             {
                 new IsoDateTimeConverter { DateTimeStyles = DateTimeStyles.AssumeUniversal }
-            },
+            }
         };
+    }
+
+    public partial class ProductFootprint
+    {
+        public static readonly JsonSerializerSettings Settings = new JsonSerializerSettings
+        {
+            MetadataPropertyHandling = MetadataPropertyHandling.Ignore,
+            DateParseHandling = DateParseHandling.None,
+            Converters =
+            {
+                new IsoDateTimeConverter { DateTimeStyles = DateTimeStyles.AssumeUniversal }
+            }
+        };
+        
+        public static string ToJson(ProductFootprint self) => JsonConvert.SerializeObject(self, Settings);
     }
 }
