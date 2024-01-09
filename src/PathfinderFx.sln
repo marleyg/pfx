@@ -10,6 +10,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CertGenerator", "CertGenera
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PathfinderFxGateway", "PathfinderFxGateway\PathfinderFxGateway.csproj", "{83E86B2D-A24D-49A0-925D-84D7FC7FF054}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntegrationHarness", "IntegrationHarness\IntegrationHarness.csproj", "{BCFE6456-7A79-4431-BDD0-9C771D1255F0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PathfinderFx.Integration", "PathfinderFx.Integration\PathfinderFx.Integration.csproj", "{E76EB493-EB99-4A63-852B-4EB90E4EDC67}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -32,6 +36,14 @@ Global
 		{83E86B2D-A24D-49A0-925D-84D7FC7FF054}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{83E86B2D-A24D-49A0-925D-84D7FC7FF054}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{83E86B2D-A24D-49A0-925D-84D7FC7FF054}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BCFE6456-7A79-4431-BDD0-9C771D1255F0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BCFE6456-7A79-4431-BDD0-9C771D1255F0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BCFE6456-7A79-4431-BDD0-9C771D1255F0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BCFE6456-7A79-4431-BDD0-9C771D1255F0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E76EB493-EB99-4A63-852B-4EB90E4EDC67}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E76EB493-EB99-4A63-852B-4EB90E4EDC67}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E76EB493-EB99-4A63-852B-4EB90E4EDC67}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E76EB493-EB99-4A63-852B-4EB90E4EDC67}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

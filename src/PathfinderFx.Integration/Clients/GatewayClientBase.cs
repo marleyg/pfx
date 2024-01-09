@@ -3,10 +3,10 @@ using System.Net.Http.Headers;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
-using PathfinderFxGateway.Model;
+using PathfinderFx.Integration.Model;
 using RestSharp;
 
-namespace PathfinderFxGateway.Clients
+namespace PathfinderFx.Integration.Clients
 {
     public class GatewayClientBase
     {
@@ -160,7 +160,7 @@ namespace PathfinderFxGateway.Clients
 
     public partial class ProductFootprint
     {
-        public static readonly JsonSerializerSettings Settings = new JsonSerializerSettings
+        private static readonly JsonSerializerSettings Settings = new JsonSerializerSettings
         {
             MetadataPropertyHandling = MetadataPropertyHandling.Ignore,
             DateParseHandling = DateParseHandling.None,

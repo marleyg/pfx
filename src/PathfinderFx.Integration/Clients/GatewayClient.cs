@@ -5,7 +5,8 @@
 //----------------------
 
 using Microsoft.Extensions.Logging;
-using PathfinderFxGateway.Model;
+using PathfinderFx.Integration.Clients;
+using PathfinderFx.Integration.Model;
 
 #pragma warning disable 108 // Disable "CS0108 '{derivedDto}.ToJson()' hides inherited member '{dtoBase}.ToJson()'. Use the new keyword if hiding was intended."
 #pragma warning disable 114 // Disable "CS0114 '{derivedDto}.RaisePropertyChanged(String)' hides inherited member 'dtoBase.RaisePropertyChanged(String)'. To make the current member override that implementation, add the override keyword. Otherwise add the new keyword."
@@ -18,7 +19,7 @@ using PathfinderFxGateway.Model;
 #pragma warning disable 8603 // Disable "CS8603 Possible null reference return"
 #pragma warning disable 8604 // Disable "CS8604 Possible null reference argument for parameter"
 
-namespace PathfinderFxGateway.Clients
+namespace PathfinderFx.Integration.Clients
 {
     using System = global::System;
 
@@ -294,7 +295,7 @@ namespace PathfinderFxGateway.Clients
         /// <param name="id">UUID/GUID</param>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<ProductFootprint> FootprintAsync(string id)
+        public virtual System.Threading.Tasks.Task<PathfinderFx.Integration.Clients.ProductFootprint> FootprintAsync(string id)
         {
             return FootprintAsync(id, System.Threading.CancellationToken.None);
         }
@@ -306,7 +307,7 @@ namespace PathfinderFxGateway.Clients
         /// <param name="id">UUID/GUID</param>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<ProductFootprint> FootprintAsync(string id, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<PathfinderFx.Integration.Clients.ProductFootprint> FootprintAsync(string id, System.Threading.CancellationToken cancellationToken)
         {
             if (id == null)
                 throw new System.ArgumentNullException("id");
@@ -347,7 +348,7 @@ namespace PathfinderFxGateway.Clients
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProductFootprint>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<PathfinderFx.Integration.Clients.ProductFootprint>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -938,7 +939,7 @@ namespace PathfinderFxGateway.Clients
     public partial class ProductFootprints
     {
         [Newtonsoft.Json.JsonProperty("data", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.Generic.ICollection<ProductFootprint> Data { get; set; }
+        public System.Collections.Generic.ICollection<PathfinderFx.Integration.Clients.ProductFootprint> Data { get; set; }
 
     }
 

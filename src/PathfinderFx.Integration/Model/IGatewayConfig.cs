@@ -1,6 +1,6 @@
 using Newtonsoft.Json;
 
-namespace PathfinderFxGateway.Model;
+namespace PathfinderFx.Integration.Model;
 
 public interface IGatewayConfig
 {

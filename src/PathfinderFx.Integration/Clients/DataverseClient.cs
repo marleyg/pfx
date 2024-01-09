@@ -1,9 +1,9 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.PowerPlatform.Dataverse.Client;
 using Microsoft.Xrm.Sdk;
-using PathfinderFxGateway.Model;
+using PathfinderFx.Integration.Model;
 
-namespace PathfinderFxGateway.Clients;
+namespace PathfinderFx.Integration.Clients;
 
 public class DataverseClient(ILoggerFactory loggerFactory, IDataverseConfig config)
 {

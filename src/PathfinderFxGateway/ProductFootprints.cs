@@ -2,10 +2,11 @@ using System.Net;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Logging;
+using PathfinderFx.Integration.Clients;
 
 namespace PathfinderFxGateway;
 
-public class ProductFootprint(ILoggerFactory loggerFactory)
+public class ProductFootprints(ILoggerFactory loggerFactory)
 {
     [Function("GetProductFootprint")]
     public async Task<HttpResponseData> GetProductFootprint([HttpTrigger(AuthorizationLevel.Function, "get", "post")] HttpRequestData req,
@@ -18,7 +19,7 @@ public class ProductFootprint(ILoggerFactory loggerFactory)
         var gatewayClient = new GatewayClient(loggerFactory, Configuration.GatewayConfig);
         var productFootprint = await gatewayClient.FootprintAsync(pfId);
         
-        var csvResult = Utils.JsonToCsv(Clients.ProductFootprint.ToJson(productFootprint), ",");
+        var csvResult = Utils.JsonToCsv(ProductFootprint.ToJson(productFootprint), ",");
         
         var response = req.CreateResponse(HttpStatusCode.OK);
         response.Headers.Add("Content-Type", "text/plain; charset=utf-8");

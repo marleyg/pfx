@@ -1,4 +1,4 @@
-namespace PathfinderFxGateway.Model;
+namespace PathfinderFx.Integration.Model;
 
 public class GatewayConfig: IGatewayConfig
 {
