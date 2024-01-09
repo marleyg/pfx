@@ -5,6 +5,7 @@
 //----------------------
 
 using Microsoft.Extensions.Logging;
+using PathfinderFxGateway.Model;
 
 #pragma warning disable 108 // Disable "CS0108 '{derivedDto}.ToJson()' hides inherited member '{dtoBase}.ToJson()'. Use the new keyword if hiding was intended."
 #pragma warning disable 114 // Disable "CS0114 '{derivedDto}.RaisePropertyChanged(String)' hides inherited member 'dtoBase.RaisePropertyChanged(String)'. To make the current member override that implementation, add the override keyword. Otherwise add the new keyword."
@@ -17,7 +18,7 @@ using Microsoft.Extensions.Logging;
 #pragma warning disable 8603 // Disable "CS8603 Possible null reference return"
 #pragma warning disable 8604 // Disable "CS8604 Possible null reference argument for parameter"
 
-namespace PathfinderFxGateway.Client
+namespace PathfinderFxGateway.Clients
 {
     using System = global::System;
 
