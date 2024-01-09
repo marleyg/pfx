@@ -63,8 +63,12 @@ namespace PathfinderFx.Integration.Clients
                 async Task NewBearer()
                 {
                     _bearer = BearerToken.FromJson(await GetAuthToken());
-                    _bearer.ReceivedIn = DateTime.Now;
-                    _bearer.RefreshIn = 60;
+                    if (_bearer != null)
+                    {
+                        _bearer.ReceivedIn = DateTime.Now;
+                        _bearer.RefreshIn = 60;
+                    }
+
                     _logger.LogInformation("BearerToken Refreshed");
                 }
 
@@ -78,7 +82,7 @@ namespace PathfinderFx.Integration.Clients
             }
         }
 
-        private async Task<string> GetAuthToken()
+        private async Task<string?> GetAuthToken()
         {
             _logger.LogTrace("Getting Authorization Token from {Name}", Config.HostUrl);
             var options =
@@ -116,10 +120,10 @@ namespace PathfinderFx.Integration.Clients
     public partial class BearerToken
     {
         [JsonProperty("token_type")]
-        public string TokenType { get; set; }
+        public string? TokenType { get; set; }
 
         [JsonProperty("scope")]
-        public string Scope { get; set; }
+        public string? Scope { get; set; }
 
         [JsonProperty("expires_in")]
         public long ExpiresIn { get; set; }
@@ -128,10 +132,10 @@ namespace PathfinderFx.Integration.Clients
         public long ExtExpiresIn { get; set; }
 
         [JsonProperty("access_token")]
-        public string AccessToken { get; set; }
+        public string? AccessToken { get; set; }
         
         [JsonProperty("token")]
-        public string Token { get; set; }
+        public string? Token { get; set; }
         
         [JsonProperty("received_in")]
         public DateTime ReceivedIn { get; set; }
@@ -143,11 +147,11 @@ namespace PathfinderFx.Integration.Clients
 
     public partial class BearerToken
     {
-        public static BearerToken FromJson(string json) => JsonConvert.DeserializeObject<BearerToken>(json, TokenConverter.Settings);
+        public static BearerToken? FromJson(string? json) => JsonConvert.DeserializeObject<BearerToken>(json!, TokenConverter.Settings);
     }
     internal static class TokenConverter
     {
-        public static readonly JsonSerializerSettings Settings = new JsonSerializerSettings
+        public static readonly JsonSerializerSettings? Settings = new JsonSerializerSettings
         {
             MetadataPropertyHandling = MetadataPropertyHandling.Ignore,
             DateParseHandling = DateParseHandling.None,
