@@ -9,7 +9,7 @@ namespace PathfinderFxGateway
     public class Configuration(ILoggerFactory loggerFactory)
     {
         private readonly ILogger _logger = loggerFactory.CreateLogger<Configuration>();
-        internal static IGatewayConfig GatewayConfig = new GatewayConfig();
+        internal static IPathfinderConfig PathfinderConfig = new PathfinderConfig();
         internal static IDataverseConfig DataverseConfig = new DataverseConfig();
 
         [Function("SetGatewayConfiguration")]
@@ -19,20 +19,20 @@ namespace PathfinderFxGateway
 
             try
             {
-                var config = await System.Text.Json.JsonSerializer.DeserializeAsync<GatewayConfig>(req.Body);
+                var config = await System.Text.Json.JsonSerializer.DeserializeAsync<PathfinderConfig>(req.Body);
                 if (config == null)
                 {
-                    GatewayConfig.AuthUrl = Environment.GetEnvironmentVariable("AuthUrl");
-                    GatewayConfig.ClientId = Environment.GetEnvironmentVariable("ClientId");
-                    GatewayConfig.ClientSecret = Environment.GetEnvironmentVariable("ClientSecret");
-                    GatewayConfig.HostUrl = Environment.GetEnvironmentVariable("HostUrl");
+                    PathfinderConfig.AuthUrl = Environment.GetEnvironmentVariable("AuthUrl");
+                    PathfinderConfig.ClientId = Environment.GetEnvironmentVariable("ClientId");
+                    PathfinderConfig.ClientSecret = Environment.GetEnvironmentVariable("ClientSecret");
+                    PathfinderConfig.HostUrl = Environment.GetEnvironmentVariable("HostUrl");
                 }
                 else
                 {
-                    GatewayConfig.AuthUrl = config.AuthUrl;
-                    GatewayConfig.ClientId = config.ClientId;
-                    GatewayConfig.ClientSecret = config.ClientSecret;
-                    GatewayConfig.HostUrl = config.HostUrl;
+                    PathfinderConfig.AuthUrl = config.AuthUrl;
+                    PathfinderConfig.ClientId = config.ClientId;
+                    PathfinderConfig.ClientSecret = config.ClientSecret;
+                    PathfinderConfig.HostUrl = config.HostUrl;
                     
                     Environment.SetEnvironmentVariable("ClientId", config.ClientId);
                     Environment.SetEnvironmentVariable("ClientSecret", config.ClientSecret);

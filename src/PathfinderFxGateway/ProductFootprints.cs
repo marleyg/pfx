@@ -16,7 +16,7 @@ public class ProductFootprints(ILoggerFactory loggerFactory)
         logger.LogInformation("GetProductFootprint called");
         
         var pfId = req.Query["pfId"];
-        var gatewayClient = new GatewayClient(loggerFactory, Configuration.GatewayConfig);
+        var gatewayClient = new PathfinderClient(loggerFactory, Configuration.PathfinderConfig);
         var productFootprint = await gatewayClient.FootprintAsync(pfId);
         
         var csvResult = Utils.JsonToCsv(ProductFootprint.ToJson(productFootprint), ",");

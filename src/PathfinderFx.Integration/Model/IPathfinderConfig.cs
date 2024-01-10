@@ -2,7 +2,7 @@ using Newtonsoft.Json;
 
 namespace PathfinderFx.Integration.Model;
 
-public interface IGatewayConfig
+public interface IPathfinderConfig
 {
     [JsonProperty("host_url")]
     string? HostUrl { get; set; }

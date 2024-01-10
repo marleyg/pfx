@@ -8,19 +8,19 @@ using RestSharp;
 
 namespace PathfinderFx.Integration.Clients
 {
-    public class GatewayClientBase
+    public class PathfinderClientBase
     {
         private readonly ILogger _logger;
-        protected readonly IGatewayConfig Config;
+        protected readonly IPathfinderConfig Config;
         private BearerToken? _bearer;
         protected readonly HttpClient HttpClient;
 
         /// <summary>
-        ///     Constructor for GatewayClientBase, for use with type specific dependency injection in .NET Core
+        ///     Constructor for PathfinderClientBase, for use with type specific dependency injection in .NET Core
         /// </summary>
-        protected GatewayClientBase(ILoggerFactory loggerFactory, IGatewayConfig config)
+        protected PathfinderClientBase(ILoggerFactory loggerFactory, IPathfinderConfig config)
         {
-            _logger = loggerFactory.CreateLogger<GatewayClientBase>();
+            _logger = loggerFactory.CreateLogger<PathfinderClientBase>();
             Config = config;
             HttpClient = new HttpClient();
             BaseUrl = Config.HostUrl ?? throw new InvalidOperationException();
