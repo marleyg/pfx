@@ -157,11 +157,14 @@ namespace PathfinderFx.Integration.Clients
         /// <param name="offset">optional if a paginated call</param>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<ProductFootprints> FootprintsAsync(int? limit, string filter, int? offset)
+        public virtual System.Threading.Tasks.Task<ProductFootprints> FootprintsAsync(int? limit, int? offset, string filter = null)
         {
-            return FootprintsAsync(limit, filter, offset, System.Threading.CancellationToken.None);
+            return FootprintsAsync(limit, offset, filter, System.Threading.CancellationToken.None);
         }
 
+        /// <param name="limit"></param>
+        /// <param name="filter"></param>
+        /// <param name="offset">optional if a paginated call</param>
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
         /// Retrieves available footprints for the authenticated user. You can set a limit to the number of footprints returned and filter the results by product name.
@@ -179,10 +182,9 @@ namespace PathfinderFx.Integration.Clients
         /// <br/>Get footprints for a specific product:
         /// <br/>    $filter=productIds/any(productId:(productId eq 'urn:...'))
         /// </remarks>
-        /// <param name="offset">optional if a paginated call</param>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<ProductFootprints> FootprintsAsync(int? limit, string filter, int? offset, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<ProductFootprints> FootprintsAsync(int? limit, int? offset, string filter = null, System.Threading.CancellationToken cancellationToken = default)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/2/footprints?");

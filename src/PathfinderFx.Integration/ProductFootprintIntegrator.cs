@@ -1,4 +1,3 @@
-using System.Runtime.CompilerServices;
 using Microsoft.Extensions.Logging;
 using PathfinderFx.Integration.Clients;
 using PathfinderFx.Integration.Model;
@@ -8,11 +7,11 @@ namespace PathfinderFx.Integration;
 public class ProductFootprintIntegrator
 {
     private readonly ILogger _logger = Utils.AppLogger.MyLoggerFactory.CreateLogger<ProductFootprintIntegrator>();
-    private static IPathfinderConfig PathfinderConfig = new PathfinderConfig();
-    private static IDataverseConfig DataverseConfig = new DataverseConfig();
+    private static readonly IPathfinderConfig PathfinderConfig = new PathfinderConfig();
+    private static readonly IDataverseConfig DataverseConfig = new DataverseConfig();
 
-    private PathfinderClient _pathfinderClient;
-    private DataverseClient _dataverseClient;
+    private PathfinderClient? _pathfinderClient;
+    private DataverseClient? _dataverseClient;
     
     public ProductFootprintIntegrator()
     {
@@ -68,9 +67,12 @@ public class ProductFootprintIntegrator
         _logger.LogInformation("SetDataverseConfiguration called");
         if (dataverseConfig == null)
         {
-            DataverseConfig.Password = Environment.GetEnvironmentVariable("Password");
-            DataverseConfig.Url = Environment.GetEnvironmentVariable("Url");
-            DataverseConfig.UserName = Environment.GetEnvironmentVariable("UserName");
+            DataverseConfig.Password = "!HProtagon1$t";
+            DataverseConfig.Url = "https://orgc4897a3b.crm10.dynamics.com/";
+            DataverseConfig.UserName = "marleyg@mcfstoday.onmicrosoft.com";
+            Environment.SetEnvironmentVariable("Password", DataverseConfig.Password);
+            Environment.SetEnvironmentVariable("Url", DataverseConfig.Url);
+            Environment.SetEnvironmentVariable("UserName", DataverseConfig.UserName);
         }
         else
         {
@@ -98,19 +100,27 @@ public class ProductFootprintIntegrator
     public async Task<IntegrationResult> IntegrateProductFootprints()
     {
         _logger.LogInformation("IntegrateProductFootprints called");
+        
         var result = new IntegrationResult();
 
-        var pfs = await _pathfinderClient.FootprintsAsync(null, "", null);
+        _logger.LogInformation("Getting footprints from Pathfinder");
+        var pfs = await _pathfinderClient?.FootprintsAsync(null, null, null)!;
         if (pfs == null)
         {
             result.Success = false;
             result.Message = "Error getting footprints from Pathfinder";
             return result;
         }
-
+        _logger.LogInformation("Got {Count} footprints from Pathfinder", pfs.Data.Count);
+        
+        _logger.LogInformation("Processing footprints for Dataverse");
+        _logger.LogInformation("Accessing Dataverse as {WhoAmI}", _dataverseClient!.WhoAmI());
         foreach (var footprint in pfs.Data)
         {
-            
+            _logger.LogInformation("Processing footprint {FootprintId}", footprint.Id);
+            result.RecordsProcessed++;
+            result.Success = true;
+            result.Message = "Success";
         }
 
         return result;

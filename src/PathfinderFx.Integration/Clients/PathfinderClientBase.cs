@@ -33,7 +33,7 @@ namespace PathfinderFx.Integration.Clients
             await GetBearerToken();
             var requestMessage = new HttpRequestMessage();
             //the bearer token from Evident is called a Token, not AccessToken
-            requestMessage.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _bearer?.Token);
+            requestMessage.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _bearer?.AccessToken);
 
             return requestMessage;
         }
