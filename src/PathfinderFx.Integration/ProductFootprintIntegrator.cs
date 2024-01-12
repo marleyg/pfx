@@ -68,7 +68,7 @@ public class ProductFootprintIntegrator
         if (dataverseConfig == null)
         {
             DataverseConfig.Password = "!HProtagon1$t";
-            DataverseConfig.Url = "https://orgc4897a3b.crm10.dynamics.com/";
+            DataverseConfig.Url = "https://orgbbfc830d.api.crm10.dynamics.com/api/data/v9.2";
             DataverseConfig.UserName = "marleyg@mcfstoday.onmicrosoft.com";
             Environment.SetEnvironmentVariable("Password", DataverseConfig.Password);
             Environment.SetEnvironmentVariable("Url", DataverseConfig.Url);
