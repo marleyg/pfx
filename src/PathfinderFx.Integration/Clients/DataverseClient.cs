@@ -34,18 +34,20 @@ public class DataverseClient
         }
     }
 
-    public async Task<List<Msdyn_SustainabilityProductFootprint>> GetProductFootprints()
+    public string AddOrUpdateProductFootprint(Msdyn_SustainabilityProductFootprint productFootprint)
     {
-        _logger.LogInformation("GetProductCarbonFootprints called");
+        _logger.LogInformation("AddOrUpdateProductFootprint called with productFootprint: {ProductFootprintId}", 
+            productFootprint.Msdyn_SustainabilityProductFootprintId);
         try
         {
-            var footprints = await _context.Msdyn_SustainabilityProductFootprintSet.ToListAsync();
-            return footprints;
+            _context.AddObject(productFootprint);
+            _context.SaveChanges();
+            return productFootprint.Id.ToString();
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "Error in GetProductCarbonFootprints");
-            return new List<Msdyn_SustainabilityProductFootprint>();
+            _logger.LogError(e, "Error in AddOrUpdateProductFootprint");
+            return e.Message;
         }
     }
 }

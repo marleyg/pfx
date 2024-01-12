@@ -1,6 +1,7 @@
 using Microsoft.Extensions.Logging;
 using PathfinderFx.Integration.Clients;
 using PathfinderFx.Integration.Model;
+using PathfinderFx.Integration.Model.Entities;
 
 namespace PathfinderFx.Integration;
 
@@ -118,11 +119,87 @@ public class ProductFootprintIntegrator
         foreach (var footprint in pfs.Data)
         {
             _logger.LogInformation("Processing footprint {FootprintId}", footprint.Id);
+            
+            var dataversePf = GetDataversePf(footprint);
+            var dataversePcf = GetDataversePcf(footprint.Pcf);
+            
+            _dataverseClient.AddOrUpdateProductFootprint()
             result.RecordsProcessed++;
             result.Success = true;
             result.Message = "Success";
         }
 
         return result;
+    }
+
+
+    private Msdyn_SustainabilityProductFootprint GetDataversePfEntity(ProductFootprint pf)
+    {
+        _logger.LogInformation("GetDataversePfEntity called");
+        var dataversePf = new Msdyn_SustainabilityProductFootprint
+        {
+            Msdyn_SustainabilityProductFootprintId = pf.Id,
+            Msdyn_Name = pf.ProductNameCompany,
+            Msdyn_Comment = pf.Comment,
+            Msdyn_Version = (int?)pf.Version,
+            Msdyn_SpecVersion = pf.SpecVersion,
+            Msdyn_StatusComment = pf.StatusComment,
+            Msdyn_OriginCorrelationId = pf.Id.ToString()!,
+            Msdyn_ValidityPeriodStart = pf.ValidityPeriodStart?.DateTime,
+            Msdyn_ValidityPeriodEnd = pf.ValidityPeriodEnd?.DateTime
+        };
+        return dataversePf;
+    }
+    private Msdyn_SustainabilityProductCarbonFootprint GetDataversePcfEntity(Pcf footprintPcf)
+    {
+        _logger.LogInformation("GetDataversePcfEntity called");
+        var dataversePcf = new Msdyn_SustainabilityProductCarbonFootprint
+        {
+            Msdyn_CoveragePercent = Convert.ToDecimal(footprintPcf.Assurance.Coverage),
+            Msdyn_GeographyCountry = footprintPcf.GeographyCountry,
+            Msdyn_AllocationRulesDescription = footprintPcf.AllocationRulesDescription,
+            Msdyn_BiogenicCarbonContent = Convert.ToDecimal(footprintPcf.BiogenicCarbonContent),
+            Msdyn_BiogenicCarbonWithdrawal = Convert.ToDecimal(footprintPcf.BiogenicCarbonWithdrawal),
+            Msdyn_BoundaryProcessesDescription = footprintPcf.BoundaryProcessesDescription,
+            Msdyn_ExemptedEmissionsDescription = footprintPcf.ExemptedEmissionsDescription,
+            Msdyn_ExemptedEmissionsPercent = Convert.ToDecimal(footprintPcf.ExemptedEmissionsPercent),
+            Msdyn_FossilCarbonContent = Convert.ToDecimal(footprintPcf.FossilCarbonContent),
+            Msdyn_GeographyCountrySubdivision = footprintPcf.GeographyCountrySubdivision,
+            Msdyn_PackagingEmissionsIncluded = footprintPcf.PackagingEmissionsIncluded,
+            Msdyn_PrimaryDataShare = Convert.ToDecimal(footprintPcf.PrimaryDataShare),
+            Msdyn_ReferencePeriodStart = footprintPcf.ReferencePeriodStart?.DateTime,
+            Msdyn_ReferencePeriodEnd = footprintPcf.ReferencePeriodEnd?.DateTime,
+            Msdyn_UncertaintyAssessmentDescription = footprintPcf.UncertaintyAssessmentDescription,
+            Msdyn_UnitaryProductAmount = Convert.ToDecimal(footprintPcf.UnitaryProductAmount),
+            Msdyn_CompletenessDQR = Convert.ToDecimal(footprintPcf.Dqi.CompletenessDQR),
+            Msdyn_GeographicalDQR = Convert.ToDecimal(footprintPcf.Dqi.GeographicalDQR),
+            Msdyn_GeographyRegionOrSubregion = footprintPcf.GeographyRegionOrSubregion,
+            Msdyn_PcFExcludingBiogenic = Convert.ToDecimal(footprintPcf.PCfExcludingBiogenic),
+            Msdyn_PcFIncludingBiogenic = Convert.ToDecimal(footprintPcf.PCfIncludingBiogenic),
+            Msdyn_ReliabilityDQR = Convert.ToDecimal(footprintPcf.Dqi.ReliabilityDQR),
+            Msdyn_TemporalDQR = Convert.ToDecimal(footprintPcf.Dqi.TemporalDQR),
+            Msdyn_TechnologicalDQR = Convert.ToDecimal(footprintPcf.Dqi.TechnologicalDQR),
+            Msdyn_AircraftGHGEmissions = Convert.ToDecimal(footprintPcf.AircraftGhgEmissions),
+            Msdyn_LandManagementGHGEmissions = Convert.ToDecimal(footprintPcf.LandManagementGhgEmissions),
+            Msdyn_OtherBiogenicGHGEmissions = Convert.ToDecimal(footprintPcf.OtherBiogenicGhgEmissions),
+            Msdyn_DLuCGHGEmissions = Convert.ToDecimal(footprintPcf.DLucGhgEmissions),
+            Msdyn_FossilGHGemIsSiOns = Convert.ToDecimal(footprintPcf.FossilGhgEmissions),
+            Msdyn_ILuCGHGEmissions = Convert.ToDecimal(footprintPcf.ILucGhgEmissions),
+            Msdyn_PackAgInGgHGEmissions = Convert.ToDecimal(footprintPcf.PackagingGhgEmissions),
+            Msdyn
+        };
+
+        dataversePcf.Msdyn_BiogenicAccountingMethodology = footprintPcf.BiogenicAccountingMethodology switch
+        {
+            "ISO" => Msdyn_SustainabilityProductCarbonFootprint_Msdyn_BiogenicAccountingMethodology.Iso,
+            "GHGP" => Msdyn_SustainabilityProductCarbonFootprint_Msdyn_BiogenicAccountingMethodology.Ghgp,
+            _ => Msdyn_SustainabilityProductCarbonFootprint_Msdyn_BiogenicAccountingMethodology.Ghgp
+        };
+        
+        //foreach on cross sectorial
+        
+        //foreach for other collections and enums
+
+        return dataversePcf;
     }
 }
