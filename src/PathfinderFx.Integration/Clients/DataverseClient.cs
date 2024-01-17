@@ -1,3 +1,4 @@
+using System.Text;
 using Microsoft.Crm.Sdk.Messages;
 using Microsoft.Extensions.Logging;
 using Microsoft.PowerPlatform.Dataverse.Client;
@@ -34,20 +35,72 @@ public class DataverseClient
         }
     }
 
-    public string AddOrUpdateProductFootprint(Msdyn_SustainabilityProductFootprint productFootprint)
+    public string AddOrUpdateProductFootprint(Msdyn_SustainabilityProductFootprint dataversePf,
+        Msdyn_SustainabilityProductCarbonFootprint dataversePcf)
     {
-        _logger.LogInformation("AddOrUpdateProductFootprint called with productFootprint: {ProductFootprintId}", 
-            productFootprint.Msdyn_SustainabilityProductFootprintId);
+        _logger.LogInformation("AddOrUpdateProductFootprint called with dataversePf: {ProductFootprintId}", 
+            dataversePf.Msdyn_SustainabilityProductFootprintId);
+        var retVal = new StringBuilder();
         try
         {
-            _context.AddObject(productFootprint);
+            _context.AddObject(dataversePf);
             _context.SaveChanges();
-            return productFootprint.Id.ToString();
+            retVal.Append("Msdyn_SustainabilityProductFootprint:" + dataversePf.Id + " created/updated; ");
         }
         catch (Exception e)
         {
             _logger.LogError(e, "Error in AddOrUpdateProductFootprint");
             return e.Message;
+        }
+
+        try
+        {
+            _context.AddObject(dataversePcf);
+            _context.SaveChanges();
+            retVal.Append("Msdyn_SustainabilityProductCarbonFootprint:" + dataversePcf.Id + " created/updated");
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Error in AddOrUpdateProductCarbonFootprint");
+            return e.Message;
+        }
+
+        return retVal.ToString();
+    }
+
+    public Msdyn_SustainabilityProductFootprint? GetProductFootprintByOriginCorrelationId(string? toString)
+    {
+        _logger.LogInformation("GetProductFootprintByOriginCorrelationId called with correlationId: {CorrelationId}", 
+            toString);
+        try
+        {
+            var query = from pf in _context.Msdyn_SustainabilityProductFootprintSet
+                where pf.Msdyn_OriginCorrelationId == toString
+                select pf;
+            return query.FirstOrDefault();
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Error in GetProductFootprintByOriginCorrelationId");
+            return null;
+        }
+    }
+
+    public Msdyn_SustainabilityProductCarbonFootprint? GetProductCarbonFootprintByOriginCorrelationId(string? toString)
+    {
+        _logger.LogInformation("GetProductCarbonFootprintByOriginCorrelationId called with correlationId: {CorrelationId}", 
+            toString);
+        try
+        {
+            var query = from pf in _context.Msdyn_SustainabilityProductCarbonFootprintSet
+                where pf.Msdyn_OriginCorrelationId == toString
+                select pf;
+            return query.FirstOrDefault();
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Error in GetProductCarbonFootprintByOriginCorrelationId");
+            return null;
         }
     }
 }
