@@ -30,9 +30,9 @@ namespace PathfinderFx.Integration.Model.Messages
 		{
 			get
 			{
-				if (this.Parameters.Contains("text"))
+				if (Parameters.Contains("text"))
 				{
-					return ((string)(this.Parameters["text"]));
+					return ((string)(Parameters["text"]));
 				}
 				else
 				{
@@ -41,7 +41,7 @@ namespace PathfinderFx.Integration.Model.Messages
 			}
 			set
 			{
-				this.Parameters["text"] = value;
+				Parameters["text"] = value;
 			}
 		}
 		
@@ -49,9 +49,9 @@ namespace PathfinderFx.Integration.Model.Messages
 		{
 			get
 			{
-				if (this.Parameters.Contains("modelId"))
+				if (Parameters.Contains("modelId"))
 				{
-					return ((string)(this.Parameters["modelId"]));
+					return ((string)(Parameters["modelId"]));
 				}
 				else
 				{
@@ -60,7 +60,7 @@ namespace PathfinderFx.Integration.Model.Messages
 			}
 			set
 			{
-				this.Parameters["modelId"] = value;
+				Parameters["modelId"] = value;
 			}
 		}
 		
@@ -68,9 +68,9 @@ namespace PathfinderFx.Integration.Model.Messages
 		{
 			get
 			{
-				if (this.Parameters.Contains("language"))
+				if (Parameters.Contains("language"))
 				{
-					return ((string)(this.Parameters["language"]));
+					return ((string)(Parameters["language"]));
 				}
 				else
 				{
@@ -79,14 +79,14 @@ namespace PathfinderFx.Integration.Model.Messages
 			}
 			set
 			{
-				this.Parameters["language"] = value;
+				Parameters["language"] = value;
 			}
 		}
 		
 		public AnalyzeSentimentRequest()
 		{
-			this.RequestName = "AnalyzeSentiment";
-			this.Text = default(string);
+			RequestName = "AnalyzeSentiment";
+			Text = default(string);
 		}
 	}
 	
@@ -112,9 +112,9 @@ namespace PathfinderFx.Integration.Model.Messages
 		{
 			get
 			{
-				if (this.Results.Contains("documentScores"))
+				if (Results.Contains("documentScores"))
 				{
-					return ((Microsoft.Xrm.Sdk.Entity)(this.Results["documentScores"]));
+					return ((Microsoft.Xrm.Sdk.Entity)(Results["documentScores"]));
 				}
 				else
 				{
@@ -123,7 +123,7 @@ namespace PathfinderFx.Integration.Model.Messages
 			}
 			set
 			{
-				this.Results["DocumentsCores"] = value;
+				Results["DocumentsCores"] = value;
 			}
 		}
 		
@@ -131,9 +131,9 @@ namespace PathfinderFx.Integration.Model.Messages
 		{
 			get
 			{
-				if (this.Results.Contains("sentences"))
+				if (Results.Contains("sentences"))
 				{
-					return ((Microsoft.Xrm.Sdk.EntityCollection)(this.Results["sentences"]));
+					return ((Microsoft.Xrm.Sdk.EntityCollection)(Results["sentences"]));
 				}
 				else
 				{
@@ -142,7 +142,7 @@ namespace PathfinderFx.Integration.Model.Messages
 			}
 			set
 			{
-				this.Results["Sentences"] = value;
+				Results["Sentences"] = value;
 			}
 		}
 		
@@ -150,9 +150,9 @@ namespace PathfinderFx.Integration.Model.Messages
 		{
 			get
 			{
-				if (this.Results.Contains("sentiment"))
+				if (Results.Contains("sentiment"))
 				{
-					return ((string)(this.Results["sentiment"]));
+					return ((string)(Results["sentiment"]));
 				}
 				else
 				{
@@ -161,7 +161,7 @@ namespace PathfinderFx.Integration.Model.Messages
 			}
 			set
 			{
-				this.Results["Sentiment"] = value;
+				Results["Sentiment"] = value;
 			}
 		}
 	}

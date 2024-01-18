@@ -148,12 +148,11 @@ public class ProductFootprintIntegrator
         var dataversePf = new Msdyn_SustainabilityProductFootprint
         {
             Msdyn_SustainabilityProductFootprintId = pf.Id,
-            Msdyn_Name = pf.ProductNameCompany,
+            Msdyn_Name = pf.Id.ToString() ?? string.Empty,
             Msdyn_Comment = pf.Comment,
             Msdyn_Version = (int?)pf.Version,
             Msdyn_SpecVersion = pf.SpecVersion,
             Msdyn_StatusComment = pf.StatusComment,
-            Msdyn_OriginCorrelationId = pf.Id.ToString()!,
             Msdyn_ValidityPeriodStart = pf.ValidityPeriodStart?.DateTime,
             Msdyn_ValidityPeriodEnd = pf.ValidityPeriodEnd?.DateTime
         };
@@ -164,7 +163,7 @@ public class ProductFootprintIntegrator
     {
         _logger.LogInformation("UpdatePfLocalEntityData called for ProductFootprint {ProductFootprintId}", footprint.Id);
         //update the existingPf from the values in footprint
-        existingPf.Msdyn_Name = footprint.ProductNameCompany;
+        existingPf.Msdyn_Name = footprint.Id.ToString() ?? string.Empty;
         existingPf.Msdyn_Comment = footprint.Comment;
         existingPf.Msdyn_Version = (int?)footprint.Version;
         existingPf.Msdyn_SpecVersion = footprint.SpecVersion;
@@ -214,7 +213,7 @@ public class ProductFootprintIntegrator
             Msdyn_FossilGHGemIsSiOns = Convert.ToDecimal(footprint.Pcf.FossilGhgEmissions),
             Msdyn_ILuCGHGEmissions = Convert.ToDecimal(footprint.Pcf.ILucGhgEmissions),
             Msdyn_PackAgInGgHGEmissions = Convert.ToDecimal(footprint.Pcf.PackagingGhgEmissions),
-            Msdyn_Name = footprint.ProductNameCompany,
+            Msdyn_Name = footprint.Id.ToString() ?? string.Empty,
             Msdyn_SustainabilityProductCarbonFootprintId = footprint.Id,
             Msdyn_BiogenicAccountingMethodology = footprint.Pcf.BiogenicAccountingMethodology switch
             {

@@ -33,44 +33,77 @@ namespace PathfinderFx.Integration.Model
 		/// <summary>
 		/// Gets a binding to the set of all <see cref="Msdyn_ProductCarbonFootprintAssurance"/> entities.
 		/// </summary>
-		public System.Linq.IQueryable<Msdyn_ProductCarbonFootprintAssurance> Msdyn_ProductCarbonFootprintAssuranceSet
+		public IQueryable<Msdyn_ProductCarbonFootprintAssurance> Msdyn_ProductCarbonFootprintAssuranceSet
 		{
 			get
 			{
-				return this.CreateQuery<Msdyn_ProductCarbonFootprintAssurance>();
+				return CreateQuery<Msdyn_ProductCarbonFootprintAssurance>();
 			}
 		}
 		
 		/// <summary>
 		/// Gets a binding to the set of all <see cref="Msdyn_ProductFootprintRuleMapping"/> entities.
 		/// </summary>
-		public System.Linq.IQueryable<Msdyn_ProductFootprintRuleMapping> Msdyn_ProductFootprintRuleMappingSet
+		public IQueryable<Msdyn_ProductFootprintRuleMapping> Msdyn_ProductFootprintRuleMappingSet
 		{
 			get
 			{
-				return this.CreateQuery<Msdyn_ProductFootprintRuleMapping>();
+				return CreateQuery<Msdyn_ProductFootprintRuleMapping>();
+			}
+		}
+		
+		/// <summary>
+		/// Gets a binding to the set of all <see cref="Msdyn_ProductOrSectorSpecificRule"/> entities.
+		/// </summary>
+		public IQueryable<Msdyn_ProductOrSectorSpecificRule> Msdyn_ProductOrSectorSpecificRuleSet
+		{
+			get
+			{
+				return CreateQuery<Msdyn_ProductOrSectorSpecificRule>();
+			}
+		}
+		
+		/// <summary>
+		/// Gets a binding to the set of all <see cref="Msdyn_SustainabilityProduct"/> entities.
+		/// </summary>
+		public IQueryable<Msdyn_SustainabilityProduct> Msdyn_SustainabilityProductSet
+		{
+			get
+			{
+				return CreateQuery<Msdyn_SustainabilityProduct>();
 			}
 		}
 		
 		/// <summary>
 		/// Gets a binding to the set of all <see cref="Msdyn_SustainabilityProductCarbonFootprint"/> entities.
 		/// </summary>
-		public System.Linq.IQueryable<Msdyn_SustainabilityProductCarbonFootprint> Msdyn_SustainabilityProductCarbonFootprintSet
+		public IQueryable<Msdyn_SustainabilityProductCarbonFootprint> Msdyn_SustainabilityProductCarbonFootprintSet
 		{
 			get
 			{
-				return this.CreateQuery<Msdyn_SustainabilityProductCarbonFootprint>();
+				return CreateQuery<Msdyn_SustainabilityProductCarbonFootprint>();
 			}
 		}
 		
 		/// <summary>
 		/// Gets a binding to the set of all <see cref="Msdyn_SustainabilityProductFootprint"/> entities.
 		/// </summary>
-		public System.Linq.IQueryable<Msdyn_SustainabilityProductFootprint> Msdyn_SustainabilityProductFootprintSet
+		public IQueryable<Msdyn_SustainabilityProductFootprint> Msdyn_SustainabilityProductFootprintSet
 		{
 			get
 			{
-				return this.CreateQuery<Msdyn_SustainabilityProductFootprint>();
+				return CreateQuery<Msdyn_SustainabilityProductFootprint>();
+			}
+		}
+		
+		/// <summary>
+		/// Gets a binding to the set of all <see cref="Msdyn_SustainabilityProductIdentifier"/> entities.
+		/// </summary>
+		public IQueryable<Msdyn_SustainabilityProductIdentifier> Msdyn_SustainabilityProductIdentifierSet
+		{
+			get
+			{
+				return CreateQuery<Msdyn_SustainabilityProductIdentifier>();
 			}
 		}
 	}
@@ -78,13 +111,13 @@ namespace PathfinderFx.Integration.Model
 	/// <summary>
 	/// Attribute to handle storing the OptionSet's Metadata.
 	/// </summary>
-	[AttributeUsage(System.AttributeTargets.Field)]
-	public sealed class OptionSetMetadataAttribute : System.Attribute
+	[AttributeUsage(AttributeTargets.Field)]
+	public sealed class OptionSetMetadataAttribute : Attribute
 	{
 		
 		private object[] _nameObjects;
 		
-		private System.Collections.Generic.Dictionary<int, string> _names;
+		private Dictionary<int, string> _names;
 		
 		/// <summary>
 		/// Color of the OptionSetValue.
@@ -114,7 +147,7 @@ namespace PathfinderFx.Integration.Model
 		/// <summary>
 		/// Names of the OptionSetValue.
 		/// </summary>
-		public System.Collections.Generic.Dictionary<int, string> Names
+		public Dictionary<int, string> Names
 		{
 			get
 			{
@@ -145,17 +178,17 @@ namespace PathfinderFx.Integration.Model
 		/// <param name="names">Names of the value.</param>
 		public OptionSetMetadataAttribute(string name, int displayIndex, string color = null, string description = null, string externalValue = null, params object[] names)
 		{
-			this.Color = color;
-			this.Description = description;
-			this._nameObjects = names;
-			this.ExternalValue = externalValue;
-			this.DisplayIndex = displayIndex;
-			this.Name = name;
+			Color = color;
+			Description = description;
+			_nameObjects = names;
+			ExternalValue = externalValue;
+			DisplayIndex = displayIndex;
+			Name = name;
 		}
 		
-		private System.Collections.Generic.Dictionary<int, string> CreateNames()
+		private Dictionary<int, string> CreateNames()
 		{
-			System.Collections.Generic.Dictionary<int, string> names = new System.Collections.Generic.Dictionary<int, string>();
+			Dictionary<int, string> names = new Dictionary<int, string>();
 			for (int i = 0; (i < _nameObjects.Length); i = (i + 2))
 			{
 				names.Add(((int)(_nameObjects[i])), ((string)(_nameObjects[(i + 1)])));
@@ -176,24 +209,24 @@ namespace PathfinderFx.Integration.Model
 		/// <typeparam name="T">OptionSet Enum Type</typeparam>
 		/// <param name="value">Enum Value with OptionSetMetadataAttribute</param>
 		public static OptionSetMetadataAttribute GetMetadata<T>(this T value)
-			where T :  struct, System.IConvertible
+			where T :  struct, IConvertible
 		{
-			System.Type enumType = typeof(T);
+			Type enumType = typeof(T);
 			if (!enumType.IsEnum)
 			{
-				throw new System.ArgumentException("T must be an enum!");
+				throw new ArgumentException("T must be an enum!");
 			}
 			System.Reflection.MemberInfo[] members = enumType.GetMember(value.ToString());
 			for (int i = 0; (i < members.Length); i++
 			)
 			{
-				System.Attribute attribute = System.Reflection.CustomAttributeExtensions.GetCustomAttribute(members[i], typeof(OptionSetMetadataAttribute));
+				Attribute attribute = System.Reflection.CustomAttributeExtensions.GetCustomAttribute(members[i], typeof(OptionSetMetadataAttribute));
 				if (attribute != null)
 				{
 					return ((OptionSetMetadataAttribute)(attribute));
 				}
 			}
-			throw new System.ArgumentException("T must be an enum adorned with an OptionSetMetadataAttribute!");
+			throw new ArgumentException("T must be an enum adorned with an OptionSetMetadataAttribute!");
 		}
 	}
 }

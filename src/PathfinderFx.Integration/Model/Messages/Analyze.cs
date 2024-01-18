@@ -29,9 +29,9 @@ namespace PathfinderFx.Integration.Model.Messages
 		{
 			get
 			{
-				if (this.Parameters.Contains("version"))
+				if (Parameters.Contains("version"))
 				{
-					return ((string)(this.Parameters["version"]));
+					return ((string)(Parameters["version"]));
 				}
 				else
 				{
@@ -40,7 +40,7 @@ namespace PathfinderFx.Integration.Model.Messages
 			}
 			set
 			{
-				this.Parameters["version"] = value;
+				Parameters["version"] = value;
 			}
 		}
 		
@@ -48,9 +48,9 @@ namespace PathfinderFx.Integration.Model.Messages
 		{
 			get
 			{
-				if (this.Parameters.Contains("Target"))
+				if (Parameters.Contains("Target"))
 				{
-					return ((Microsoft.Xrm.Sdk.EntityReference)(this.Parameters["Target"]));
+					return ((Microsoft.Xrm.Sdk.EntityReference)(Parameters["Target"]));
 				}
 				else
 				{
@@ -59,15 +59,15 @@ namespace PathfinderFx.Integration.Model.Messages
 			}
 			set
 			{
-				this.Parameters["Target"] = value;
+				Parameters["Target"] = value;
 			}
 		}
 		
 		public AnalyzeRequest()
 		{
-			this.RequestName = "Analyze";
-			this.Version = default(string);
-			this.Target = default(Microsoft.Xrm.Sdk.EntityReference);
+			RequestName = "Analyze";
+			Version = default(string);
+			Target = default(Microsoft.Xrm.Sdk.EntityReference);
 		}
 	}
 	
@@ -91,9 +91,9 @@ namespace PathfinderFx.Integration.Model.Messages
 		{
 			get
 			{
-				if (this.Results.Contains("response"))
+				if (Results.Contains("response"))
 				{
-					return ((string)(this.Results["response"]));
+					return ((string)(Results["response"]));
 				}
 				else
 				{
@@ -102,7 +102,7 @@ namespace PathfinderFx.Integration.Model.Messages
 			}
 			set
 			{
-				this.Results["Response"] = value;
+				Results["Response"] = value;
 			}
 		}
 	}
