@@ -1,5 +1,6 @@
 using System.Text;
 using Microsoft.Extensions.Logging;
+using Microsoft.Xrm.Sdk;
 using PathfinderFx.Integration.Clients;
 using PathfinderFx.Integration.Model;
 using PathfinderFx.Integration.Model.Entities;
@@ -122,9 +123,8 @@ public class ProductFootprintIntegrator
             _logger.LogInformation("Processing footprint {FootprintId}", footprint.Id);
             
             var dataversePf = GetDataversePfEntity(footprint);
-            var dataversePcf = GetDataversePcfEntity(footprint);
-            
-            var resultMsg = _dataverseClient.AddOrUpdateProductFootprint(dataversePf, dataversePcf);
+            if (dataversePf == null) continue;
+            var resultMsg = _dataverseClient.AddOrUpdateProductFootprint(dataversePf);
             result.RecordsProcessed++;
             result.Success = true;
             result.Message = resultMsg;
@@ -133,7 +133,7 @@ public class ProductFootprintIntegrator
         return result;
     }
 
-    private Msdyn_SustainabilityProductFootprint GetDataversePfEntity(ProductFootprint pf)
+    private ProductFootprintEntityCollection? GetDataversePfEntity(ProductFootprint pf)
     {
         _logger.LogInformation("GetDataversePfEntity called");
         
@@ -143,8 +143,105 @@ public class ProductFootprintIntegrator
         if (existingPf != null)
         {
             _logger.LogInformation("ProductFootprint {ProductFootprintId} already exists in Dataverse", pf.Id);
-            return UpdatePfLocalEntityData(existingPf, pf);
+            return null;
         }
+
+        var dataversePfEntityCollection = new ProductFootprintEntityCollection();
+        
+        //get the SustainabilityProductIdentifier entity from the ProductFootprint
+        var identifier = new Msdyn_SustainabilityProductIdentifier
+        {
+            Msdyn_SustainabilityProductIdentifierId = pf.Id,
+            Msdyn_Name = pf.Id.ToString() ?? string.Empty,
+        };
+        dataversePfEntityCollection.Msdyn_SustainabilityProductIdentifier = identifier;
+
+        //get the SustainabilityProduct entity from the ProductFootprint
+        var product = GetSustainabilityProduct(pf);
+        dataversePfEntityCollection.Msdyn_SustainabilityProduct = product;
+        
+        //get the SustainabilityProductFootprint entity from the ProductFootprint
+        var dataversePf = GetSustainabilityProductFootprint(pf);
+        dataversePfEntityCollection.Msdyn_SustainabilityProductFootprint = dataversePf;
+        
+        //get the SustainabilityProductCarbonFootprint entity from the ProductFootprint
+        var dataversePcf = GetDataversePcfEntity(pf);
+        dataversePfEntityCollection.Msdyn_SustainabilityProductCarbonFootprint = dataversePcf;
+        
+        //get the ProductFootprintRuleMapping entity from the ProductFootprint
+        var dataversePfRm = GetProductRuleOrSectorRuleAndMappingEntities(pf);
+        dataversePfEntityCollection.Msdyn_ProductOrSectorSpecificRule = dataversePfRm.rules;
+        dataversePfEntityCollection.Msdyn_ProductFootprintRuleMapping = dataversePfRm.mapping;
+        
+        //get the ProductCarbonFootprintAssurance entity from the ProductFootprint
+        var dataversePcfA = GetDataversePcfAssuranceEntity(pf);
+        dataversePfEntityCollection.Msdyn_ProductCarbonFootprintAssurance = dataversePcfA;
+        
+        return dataversePfEntityCollection;
+    }
+
+    private Msdyn_ProductCarbonFootprintAssurance GetDataversePcfAssuranceEntity(ProductFootprint pf)
+    {
+        throw new NotImplementedException();
+    }
+
+    private (List<Msdyn_ProductOrSectorSpecificRule> rules, Msdyn_ProductFootprintRuleMapping mapping) GetProductRuleOrSectorRuleAndMappingEntities(ProductFootprint pf)
+    {
+        var rules = new List<Msdyn_ProductOrSectorSpecificRule>();
+        foreach (var rule in pf.Pcf.ProductOrSectorSpecificRules)
+        {
+            var newRule = new Msdyn_ProductOrSectorSpecificRule
+            {
+                Msdyn_OtherOperatorName = rule.Operator,
+            };
+            var ruleName = new StringBuilder();
+            foreach(var name in rule.RuleNames)
+            {
+                if (ruleName.Length > 0)
+                {
+                    ruleName.Append(',');
+                }
+                ruleName.Append(name);
+            }
+            rules.Add(newRule);
+        }
+        
+        var mapping = new Msdyn_ProductFootprintRuleMapping
+        {
+            Msdyn_ProductFootprintRuleMappingId = pf.Id,
+            Msdyn_Name = pf.Id.ToString() ?? string.Empty,
+        };
+        return (rules, mapping);
+    }
+
+
+    private static Msdyn_SustainabilityProduct GetSustainabilityProduct(ProductFootprint pf)
+    {
+        var product = new Msdyn_SustainabilityProduct
+        {
+            Msdyn_Name = pf.ProductNameCompany,
+            Msdyn_ProductDescription = pf.ProductDescription,
+            Msdyn_ProductCategoryCPc = Convert.ToString(pf.ProductCategoryCpc) ?? string.Empty,
+            Msdyn_SustainabilityProductId = pf.Id,
+        };
+
+        if (pf.ProductIds == null) return product;
+        var productIds = new StringBuilder();
+        foreach (var productId in pf.ProductIds)
+        {
+            if (productIds.Length > 0)
+            {
+                productIds.Append(',');
+            }
+            productIds.Append(productId);
+        }
+        product.Msdyn_OriginCorrelationId = productIds.ToString();
+
+        return product;
+    }
+
+    private static Msdyn_SustainabilityProductFootprint GetSustainabilityProductFootprint(ProductFootprint pf)
+    {
         var dataversePf = new Msdyn_SustainabilityProductFootprint
         {
             Msdyn_SustainabilityProductFootprintId = pf.Id,
@@ -154,37 +251,33 @@ public class ProductFootprintIntegrator
             Msdyn_SpecVersion = pf.SpecVersion,
             Msdyn_StatusComment = pf.StatusComment,
             Msdyn_ValidityPeriodStart = pf.ValidityPeriodStart?.DateTime,
-            Msdyn_ValidityPeriodEnd = pf.ValidityPeriodEnd?.DateTime
+            Msdyn_ValidityPeriodEnd = pf.ValidityPeriodEnd?.DateTime,
+            Msdyn_FootprintStatus = pf.Status switch
+            {
+                "Draft" => Msdyn_SustainabilityProductFootprint_Msdyn_FootprintStatus.Active,
+                "Published" => Msdyn_SustainabilityProductFootprint_Msdyn_FootprintStatus.Inactive,
+                _ => Msdyn_SustainabilityProductFootprint_Msdyn_FootprintStatus.Active
+            }
         };
-        return dataversePf;
-    }
 
-    private Msdyn_SustainabilityProductFootprint UpdatePfLocalEntityData(Msdyn_SustainabilityProductFootprint existingPf, ProductFootprint footprint)
-    {
-        _logger.LogInformation("UpdatePfLocalEntityData called for ProductFootprint {ProductFootprintId}", footprint.Id);
-        //update the existingPf from the values in footprint
-        existingPf.Msdyn_Name = footprint.Id.ToString() ?? string.Empty;
-        existingPf.Msdyn_Comment = footprint.Comment;
-        existingPf.Msdyn_Version = (int?)footprint.Version;
-        existingPf.Msdyn_SpecVersion = footprint.SpecVersion;
-        existingPf.Msdyn_StatusComment = footprint.StatusComment;
-        existingPf.Msdyn_OriginCorrelationId = footprint.Id.ToString()!;
-        existingPf.Msdyn_ValidityPeriodStart = footprint.ValidityPeriodStart?.DateTime;
-        existingPf.Msdyn_ValidityPeriodEnd = footprint.ValidityPeriodEnd?.DateTime;
-        return existingPf;
+        if (pf.PrecedingPfIds == null) return dataversePf;
+        var precedingPfIds = new StringBuilder();
+        foreach (var precedingPfId in pf.PrecedingPfIds)
+        {
+            if (precedingPfIds.Length > 0)
+            {
+                precedingPfIds.Append(',');
+            }
+            precedingPfIds.Append(precedingPfId);
+        }
+        dataversePf.Msdyn_OriginCorrelationId = precedingPfIds.ToString();
+
+        return dataversePf;
     }
 
     private Msdyn_SustainabilityProductCarbonFootprint GetDataversePcfEntity(ProductFootprint footprint)
     {
         _logger.LogInformation("GetDataversePcfEntity called");
-        
-        //check to see if the product already exists in Dataverse
-        var existingPcf = _dataverseClient!.GetProductCarbonFootprintByOriginCorrelationId(footprint.Id.ToString());
-        if(existingPcf != null)
-        {
-            _logger.LogInformation("ProductCarbonFootprint {ProductCarbonFootprintId} already exists in Dataverse", footprint.Id);
-            return UpdatePcfLocalEntityData(existingPcf, footprint);
-        }
         
         var dataversePcf = new Msdyn_SustainabilityProductCarbonFootprint
         {
@@ -256,80 +349,5 @@ public class ProductFootprintIntegrator
         dataversePcf.Msdyn_SecondaryEmissionFactorSources = secondaryEmissionFactorSources.ToString();
         
         return dataversePcf;
-    }
-
-    private Msdyn_SustainabilityProductCarbonFootprint UpdatePcfLocalEntityData(Msdyn_SustainabilityProductCarbonFootprint existingPcf, ProductFootprint footprint)
-    {
-        _logger.LogInformation("UpdatePcfLocalEntityData called for ProductCarbonFootprint {ProductCarbonFootprintId}", footprint.Id);
-        
-        //update the existingPcf from the values in footprint.Pcf
-        existingPcf.Msdyn_GeographyCountry = footprint.Pcf.GeographyCountry;
-        existingPcf.Msdyn_AllocationRulesDescription = footprint.Pcf.AllocationRulesDescription;
-        existingPcf.Msdyn_BiogenicCarbonContent = Convert.ToDecimal(footprint.Pcf.BiogenicCarbonContent);
-        existingPcf.Msdyn_BiogenicCarbonWithdrawal = Convert.ToDecimal(footprint.Pcf.BiogenicCarbonWithdrawal);
-        existingPcf.Msdyn_BoundaryProcessesDescription = footprint.Pcf.BoundaryProcessesDescription;
-        existingPcf.Msdyn_ExemptedEmissionsDescription = footprint.Pcf.ExemptedEmissionsDescription;
-        existingPcf.Msdyn_ExemptedEmissionsPercent = Convert.ToDecimal(footprint.Pcf.ExemptedEmissionsPercent);
-        existingPcf.Msdyn_FossilCarbonContent = Convert.ToDecimal(footprint.Pcf.FossilCarbonContent);
-        existingPcf.Msdyn_GeographyCountrySubdivision = footprint.Pcf.GeographyCountrySubdivision;
-        existingPcf.Msdyn_PackagingEmissionsIncluded = footprint.Pcf.PackagingEmissionsIncluded;
-        existingPcf.Msdyn_PrimaryDataShare = Convert.ToDecimal(footprint.Pcf.PrimaryDataShare);
-        existingPcf.Msdyn_ReferencePeriodStart = footprint.Pcf.ReferencePeriodStart?.DateTime;
-        existingPcf.Msdyn_ReferencePeriodEnd = footprint.Pcf.ReferencePeriodEnd?.DateTime;
-        existingPcf.Msdyn_UncertaintyAssessmentDescription = footprint.Pcf.UncertaintyAssessmentDescription;
-        existingPcf.Msdyn_UnitaryProductAmount = Convert.ToDecimal(footprint.Pcf.UnitaryProductAmount);
-        existingPcf.Msdyn_GeographyRegionOrSubregion = footprint.Pcf.GeographyRegionOrSubregion;
-        existingPcf.Msdyn_PcFExcludingBiogenic = Convert.ToDecimal(footprint.Pcf.PCfExcludingBiogenic);
-        existingPcf.Msdyn_PcFIncludingBiogenic = Convert.ToDecimal(footprint.Pcf.PCfIncludingBiogenic);
-        existingPcf.Msdyn_AircraftGHGEmissions = Convert.ToDecimal(footprint.Pcf.AircraftGhgEmissions);
-        existingPcf.Msdyn_LandManagementGHGEmissions = Convert.ToDecimal(footprint.Pcf.LandManagementGhgEmissions);
-        existingPcf.Msdyn_OtherBiogenicGHGEmissions = Convert.ToDecimal(footprint.Pcf.OtherBiogenicGhgEmissions);
-        existingPcf.Msdyn_DLuCGHGEmissions = Convert.ToDecimal(footprint.Pcf.DLucGhgEmissions);
-        existingPcf.Msdyn_FossilGHGemIsSiOns = Convert.ToDecimal(footprint.Pcf.FossilGhgEmissions);
-        existingPcf.Msdyn_ILuCGHGEmissions = Convert.ToDecimal(footprint.Pcf.ILucGhgEmissions);
-        existingPcf.Msdyn_PackAgInGgHGEmissions = Convert.ToDecimal(footprint.Pcf.PackagingGhgEmissions);
-        existingPcf.Msdyn_Name = footprint.ProductNameCompany;
-        existingPcf.Msdyn_SustainabilityProductCarbonFootprintId = footprint.Id;
-        existingPcf.Msdyn_BiogenicAccountingMethodology = footprint.Pcf.BiogenicAccountingMethodology switch
-        {
-            "ISO" => Msdyn_SustainabilityProductCarbonFootprint_Msdyn_BiogenicAccountingMethodology.Iso,
-            "GHGP" => Msdyn_SustainabilityProductCarbonFootprint_Msdyn_BiogenicAccountingMethodology.Ghgp,
-            "GGP" => Msdyn_SustainabilityProductCarbonFootprint_Msdyn_BiogenicAccountingMethodology.Ghgp,
-            "PEF" => Msdyn_SustainabilityProductCarbonFootprint_Msdyn_BiogenicAccountingMethodology.Pef,
-            "Quantis" => Msdyn_SustainabilityProductCarbonFootprint_Msdyn_BiogenicAccountingMethodology.Quantis,
-            _ => Msdyn_SustainabilityProductCarbonFootprint_Msdyn_BiogenicAccountingMethodology.Ghgp
-        };
-        
-        //foreach on footprint.Pcf.CharacterizationFactors
-        existingPcf.Msdyn_CharacterizationFactors = footprint.Pcf.CharacterizationFactors switch
-        {
-            "AR5" => Msdyn_SustainabilityProductCarbonFootprint_Msdyn_CharacterizationFactors.Ar5,
-            "AR6" => Msdyn_SustainabilityProductCarbonFootprint_Msdyn_CharacterizationFactors.Ar6,
-            _ => Msdyn_SustainabilityProductCarbonFootprint_Msdyn_CharacterizationFactors.Ar6
-        };
-        
-        if (footprint.Pcf.Dqi != null)
-        {
-            existingPcf.Msdyn_CoveragePercent = Convert.ToDecimal(footprint.Pcf.Dqi.CoveragePercent);
-            existingPcf.Msdyn_CompletenessDQR = Convert.ToDecimal(footprint.Pcf.Dqi.CompletenessDQR);
-            existingPcf.Msdyn_GeographicalDQR = Convert.ToDecimal(footprint.Pcf.Dqi.GeographicalDQR);
-            existingPcf.Msdyn_ReliabilityDQR = Convert.ToDecimal(footprint.Pcf.Dqi.ReliabilityDQR);
-            existingPcf.Msdyn_TemporalDQR = Convert.ToDecimal(footprint.Pcf.Dqi.TemporalDQR);
-            existingPcf.Msdyn_TechnologicalDQR = Convert.ToDecimal(footprint.Pcf.Dqi.TechnologicalDQR);
-        }
-
-        //list of secondary emission factor sources from the collection
-        var secondaryEmissionFactorSources = new StringBuilder();
-        foreach (var secEm in footprint.Pcf.SecondaryEmissionFactorSources)
-        {
-            if (secondaryEmissionFactorSources.Length > 0)
-            {
-                secondaryEmissionFactorSources.Append(',');
-            }
-            secondaryEmissionFactorSources.Append(secEm.Name + ": " + secEm.Version);
-        }
-        existingPcf.Msdyn_SecondaryEmissionFactorSources = secondaryEmissionFactorSources.ToString();
-
-        return existingPcf;
     }
 }

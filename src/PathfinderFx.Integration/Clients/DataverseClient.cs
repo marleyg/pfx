@@ -35,34 +35,104 @@ public class DataverseClient
         }
     }
 
-    public string AddOrUpdateProductFootprint(Msdyn_SustainabilityProductFootprint dataversePf,
-        Msdyn_SustainabilityProductCarbonFootprint dataversePcf)
+    public string AddOrUpdateProductFootprint(ProductFootprintEntityCollection dataversePfCollection)
     {
         _logger.LogInformation("AddOrUpdateProductFootprint called with dataversePf: {ProductFootprintId}", 
-            dataversePf.Msdyn_SustainabilityProductFootprintId);
+            dataversePfCollection.Msdyn_SustainabilityProduct.Msdyn_SustainabilityProductId);
         var retVal = new StringBuilder();
         try
         {
-            _context.AddObject(dataversePf);
+            _context.AddObject(dataversePfCollection.Msdyn_SustainabilityProductIdentifier);
             _context.SaveChanges();
-            retVal.Append("Msdyn_SustainabilityProductFootprint:" + dataversePf.Id + " created/updated; ");
+            retVal.Append("Msdyn_SustainabilityProductIdentifier:" + dataversePfCollection.Msdyn_SustainabilityProductIdentifier.Id + " created/updated");
+            retVal.Append(Environment.NewLine);
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "Error in AddOrUpdateProductFootprint");
-            return e.Message;
+            _logger.LogError(e, "Error in Msdyn_SustainabilityProductIdentifier");
+            retVal.Append("Error in Msdyn_SustainabilityProductIdentifier:" + e);
+            retVal.Append(Environment.NewLine);
         }
 
         try
         {
-            _context.AddObject(dataversePcf);
+            _context.AddObject(dataversePfCollection.Msdyn_SustainabilityProduct);
             _context.SaveChanges();
-            retVal.Append("Msdyn_SustainabilityProductCarbonFootprint:" + dataversePcf.Id + " created/updated");
+            retVal.Append("Msdyn_SustainabilityProduct:" + dataversePfCollection.Msdyn_SustainabilityProduct.Msdyn_Name + " created/updated");
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "Error in AddOrUpdateProductCarbonFootprint");
-            return e.Message;
+            _logger.LogError(e, "Error in SustainabilityProduct");
+            retVal.Append("Error in Msdyn_SustainabilityProduct:" + e);
+            retVal.Append(Environment.NewLine);
+        }
+
+        try
+        {
+            _context.AddObject(dataversePfCollection.Msdyn_SustainabilityProductFootprint);
+            _context.SaveChanges();
+            retVal.Append("Msdyn_SustainabilityProductFootprint:" + dataversePfCollection.Msdyn_SustainabilityProductFootprint.Msdyn_SustainabilityProductFootprintId + " created/updated");
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Error in SustainabilityProductFootprint");
+            retVal.Append("Error in Msdyn_SustainabilityProductFootprint:" + e);
+            retVal.Append(Environment.NewLine);
+        }
+
+        try
+        {
+            _context.AddObject(dataversePfCollection.Msdyn_SustainabilityProductCarbonFootprint);
+            _context.SaveChanges();
+            retVal.Append("Msdyn_SustainabilityProductCarbonFootprint:" + dataversePfCollection.Msdyn_SustainabilityProductCarbonFootprint.Msdyn_SustainabilityProductCarbonFootprintId + " created/updated");
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Error in SustainabilityProductCarbonFootprint");
+            retVal.Append("Error in Msdyn_SustainabilityProductCarbonFootprint:" + e);
+            retVal.Append(Environment.NewLine);
+        }
+
+        try
+        {
+            _context.AddObject(dataversePfCollection.Msdyn_ProductCarbonFootprintAssurance);
+            _context.SaveChanges();
+            retVal.Append("Msdyn_ProductCarbonFootprintAssurance:" + dataversePfCollection.Msdyn_ProductCarbonFootprintAssurance.Msdyn_ProductCarbonFootprintAssuranceId + " created/updated");
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Error in ProductCarbonFootprintAssurance");
+            retVal.Append("Error in Msdyn_ProductCarbonFootprintAssurance:" + e);
+            retVal.Append(Environment.NewLine);
+        }
+
+        try
+        {
+            foreach (var rule in dataversePfCollection.Msdyn_ProductOrSectorSpecificRule)
+            {
+                _context.AddObject(rule);
+                _context.SaveChanges();
+                retVal.Append("Msdyn_ProductOrSectorSpecificRule:" + rule.Msdyn_ProductOrSectorSpecificRuleId + " created/updated");
+            }
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Error in ProductOrSectorSpecificRule");
+            retVal.Append("Error in Msdyn_ProductOrSectorSpecificRule:" + e);
+            retVal.Append(Environment.NewLine);
+        }
+
+        try
+        {
+            _context.AddObject(dataversePfCollection.Msdyn_ProductFootprintRuleMapping);
+            _context.SaveChanges();
+            retVal.Append("Msdyn_ProductFootprintRuleMapping:" + dataversePfCollection.Msdyn_ProductFootprintRuleMapping.Msdyn_ProductFootprintRuleMappingId + " created/updated");
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Error in ProductFootprintRuleMapping");
+            retVal.Append("Error in Msdyn_ProductFootprintRuleMapping:" + e);
+            retVal.Append(Environment.NewLine);
         }
 
         return retVal.ToString();
