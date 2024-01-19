@@ -25,7 +25,9 @@ public static class Harness
         };
 
         var pfIntegrator = new ProductFootprintIntegrator(pathfinderConfig);
-        var result = pfIntegrator.IntegrateProductFootprints().Result;
-        Console.WriteLine(result);
+        var result = pfIntegrator.IntegrateProductFootprints(true).Result;
+        Console.WriteLine("Footprints processed: " + result.RecordsProcessed);
+        Console.WriteLine("Successful: " + result.Success);
+        Console.WriteLine("Details: " + result.Message);
     }
 }

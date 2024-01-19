@@ -1,6 +1,5 @@
 using System.Text;
 using Microsoft.Extensions.Logging;
-using Microsoft.Xrm.Sdk;
 using PathfinderFx.Integration.Clients;
 using PathfinderFx.Integration.Model;
 using PathfinderFx.Integration.Model.Entities;
@@ -16,6 +15,7 @@ public class ProductFootprintIntegrator
     private PathfinderClient? _pathfinderClient;
     private DataverseClient? _dataverseClient;
     
+    #region constructors
     public ProductFootprintIntegrator()
     {
         _logger.LogInformation("ProductFootprintIntegrator constructor called");
@@ -29,9 +29,11 @@ public class ProductFootprintIntegrator
         SetPathfinderConfiguration(pathfinderConfig);
         SetDataverseConfiguration(dataverseConfig);
     }
+    
+    #endregion
 
-        
-    public bool SetPathfinderConfiguration(IPathfinderConfig? config = null)
+    #region configuration
+    private void SetPathfinderConfiguration(IPathfinderConfig? config = null)
     {
         _logger.LogInformation("SetPathfinderConfiguration called");
         if (config == null)
@@ -58,14 +60,13 @@ public class ProductFootprintIntegrator
             catch (Exception e)
             {
                 _logger.LogError(e, "Error deserializing configuration");
-                return false;
+                return;
             }
         }
         _pathfinderClient = new PathfinderClient(Utils.AppLogger.MyLoggerFactory, PathfinderConfig);
-        return true;
     }
-    
-    public bool SetDataverseConfiguration(IDataverseConfig? dataverseConfig = null)
+
+    private void SetDataverseConfiguration(IDataverseConfig? dataverseConfig = null)
     {
         _logger.LogInformation("SetDataverseConfiguration called");
         if (dataverseConfig == null)
@@ -93,16 +94,24 @@ public class ProductFootprintIntegrator
             catch (Exception e)
             {
                 _logger.LogError(e, "Error deserializing configuration");
-                return false;
+                return;
             }
         }
         _dataverseClient = new DataverseClient(Utils.AppLogger.MyLoggerFactory, DataverseConfig);
-        return true;
     }
 
-    public async Task<IntegrationResult> IntegrateProductFootprints()
+    #endregion
+    
+    public async Task<IntegrationResult> IntegrateProductFootprints(bool cleanDataverse = false)
     {
         _logger.LogInformation("IntegrateProductFootprints called");
+
+        if (cleanDataverse)
+        {
+            _logger.LogInformation("Cleaning Dataverse of ProductFootprints");
+            var cleanResult = _dataverseClient?.CleanDataverseTables();
+            _logger.LogInformation("Clean result: {Result}", cleanResult);
+        }
         
         var result = new IntegrationResult();
 
@@ -124,21 +133,21 @@ public class ProductFootprintIntegrator
             
             var dataversePf = GetDataversePfEntity(footprint);
             if (dataversePf == null) continue;
-            var resultMsg = _dataverseClient.AddOrUpdateProductFootprint(dataversePf);
+            var resultMsg = _dataverseClient.AddProductFootprint(dataversePf);
             result.RecordsProcessed++;
             result.Success = true;
             result.Message = resultMsg;
         }
-
         return result;
     }
 
+    #region entity collections
     private ProductFootprintEntityCollection? GetDataversePfEntity(ProductFootprint pf)
     {
         _logger.LogInformation("GetDataversePfEntity called");
         
         //check to see if the product already exists in Dataverse
-        var existingPf = _dataverseClient!.GetProductFootprintByOriginCorrelationId(pf.Id.ToString());
+        var existingPf = _dataverseClient!.GetProductFootprintIdentifierById(pf.Id.ToString());
         
         if (existingPf != null)
         {
@@ -179,13 +188,52 @@ public class ProductFootprintIntegrator
         
         return dataversePfEntityCollection;
     }
-
-    private Msdyn_ProductCarbonFootprintAssurance GetDataversePcfAssuranceEntity(ProductFootprint pf)
+    
+    private Msdyn_SustainabilityProduct GetSustainabilityProductFootprintEntityTree(ProductFootprint pf)
     {
-        throw new NotImplementedException();
+        var dataversePf = GetSustainabilityProductFootprint(pf);
+        dataversePf.Msdyn_SustainabilityProductCarbonFootprint = GetDataversePcfEntity(pf);
     }
 
-    private (List<Msdyn_ProductOrSectorSpecificRule> rules, Msdyn_ProductFootprintRuleMapping mapping) GetProductRuleOrSectorRuleAndMappingEntities(ProductFootprint pf)
+    private Msdyn_ProductCarbonFootprintAssurance? GetDataversePcfAssuranceEntity(ProductFootprint pf)
+    {
+        _logger.LogInformation("GetDataversePcfAssuranceEntity called for {ProductFootprintId}", pf.Id);
+        if (pf.Pcf.Assurance == null) return null;
+        var assuranceData = pf.Pcf.Assurance;
+        var assurance = new Msdyn_ProductCarbonFootprintAssurance
+        {
+            Msdyn_ProviderName = assuranceData.ProviderName,
+            Msdyn_Comments = assuranceData.Comments,
+            Msdyn_StandardName = assuranceData.StandardName,
+            Msdyn_CompletedDate = assuranceData.CompletedAt?.DateTime,
+            Msdyn_Name = pf.Id.ToString() ?? string.Empty,
+            Msdyn_ProductCarbonFootprintAssuranceId = pf.Id,
+            Msdyn_Boundary = assuranceData.Boundary switch
+            {
+                "Cradle-to-Gate" => Msdyn_ProductCarbonFootprintAssurance_Msdyn_Boundary.CradleToGate,
+                "Gate-to-Gate" => Msdyn_ProductCarbonFootprintAssurance_Msdyn_Boundary.GateToGate,
+                _ => Msdyn_ProductCarbonFootprintAssurance_Msdyn_Boundary.CradleToGate
+            },
+            Msdyn_Coverage = assuranceData.Coverage.ToLower() switch
+            {
+                "product line" => Msdyn_ProductCarbonFootprintAssurance_Msdyn_Coverage.ProductLine,
+                "product level" => Msdyn_ProductCarbonFootprintAssurance_Msdyn_Coverage.ProductLevel,
+                "corporate level" => Msdyn_ProductCarbonFootprintAssurance_Msdyn_Coverage.CorporateLevel,
+                "pcf system" => Msdyn_ProductCarbonFootprintAssurance_Msdyn_Coverage.PcfSystem,
+                _ => Msdyn_ProductCarbonFootprintAssurance_Msdyn_Coverage.ProductLine
+            },
+            Msdyn_Level = assuranceData.Level.ToLower() switch
+            {
+                "limited" => Msdyn_ProductCarbonFootprintAssurance_Msdyn_Level.Limited,
+                "reasonable" => Msdyn_ProductCarbonFootprintAssurance_Msdyn_Level.Reasonable,
+                _ => Msdyn_ProductCarbonFootprintAssurance_Msdyn_Level.Limited
+            }
+        };
+
+        return assurance;
+    }
+
+    private static (List<Msdyn_ProductOrSectorSpecificRule> rules, Msdyn_ProductFootprintRuleMapping mapping) GetProductRuleOrSectorRuleAndMappingEntities(ProductFootprint pf)
     {
         var rules = new List<Msdyn_ProductOrSectorSpecificRule>();
         foreach (var rule in pf.Pcf.ProductOrSectorSpecificRules)
@@ -219,10 +267,10 @@ public class ProductFootprintIntegrator
     {
         var product = new Msdyn_SustainabilityProduct
         {
-            Msdyn_Name = pf.ProductNameCompany,
-            Msdyn_ProductDescription = pf.ProductDescription,
+            Msdyn_Name = pf.Id.ToString() ?? string.Empty,
+            Msdyn_ProductDescription = pf.ProductNameCompany + ": " + pf.ProductDescription,
             Msdyn_ProductCategoryCPc = Convert.ToString(pf.ProductCategoryCpc) ?? string.Empty,
-            Msdyn_SustainabilityProductId = pf.Id,
+            Msdyn_SustainabilityProductId = pf.Id
         };
 
         if (pf.ProductIds == null) return product;
@@ -235,7 +283,7 @@ public class ProductFootprintIntegrator
             }
             productIds.Append(productId);
         }
-        product.Msdyn_OriginCorrelationId = productIds.ToString();
+        product.Msdyn_ProductDescription += ", Company Product Ids: " + productIds;
 
         return product;
     }
@@ -270,7 +318,7 @@ public class ProductFootprintIntegrator
             }
             precedingPfIds.Append(precedingPfId);
         }
-        dataversePf.Msdyn_OriginCorrelationId = precedingPfIds.ToString();
+        dataversePf.Msdyn_Comment += ", Preceding Product Footprint Ids:  " + precedingPfIds;
 
         return dataversePf;
     }
@@ -350,4 +398,6 @@ public class ProductFootprintIntegrator
         
         return dataversePcf;
     }
+    
+    #endregion
 }
