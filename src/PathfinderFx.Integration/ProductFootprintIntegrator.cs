@@ -193,6 +193,10 @@ public class ProductFootprintIntegrator
     {
         var dataversePf = GetSustainabilityProductFootprint(pf);
         dataversePf.Msdyn_SustainabilityProductCarbonFootprint = GetDataversePcfEntity(pf);
+
+        dataversePf.Msdyn_SustainabilityProductCarbonFootprint.Msdyn_ProductCarbonFootprintAssurance = new Msdyn_ProdcutCarbonFootprintAssurance();
+
+
     }
 
     private Msdyn_ProductCarbonFootprintAssurance? GetDataversePcfAssuranceEntity(ProductFootprint pf)
