@@ -23,6 +23,8 @@ public class DataverseClient
         _orgService = new ServiceClient(config.ConnectionString);
         _context = new DataverseContext(_orgService);
     }
+    
+    #region test authentication
     public string WhoAmI()
     {
         _logger.LogInformation("WhoAmI called");
@@ -38,6 +40,10 @@ public class DataverseClient
         }
     }
 
+    #endregion
+    
+    #region Add and Updates
+    
     public string AddProductFootprint(ProductFootprintEntityCollection dataversePfCollection)
     {
         _logger.LogInformation("AddProductFootprint called with dataversePf: {ProductFootprintId}", 
@@ -49,9 +55,10 @@ public class DataverseClient
         {
             try
             {
+                retVal.Append("Msdyn_SustainabilityProduct: " + dataversePfCollection.Msdyn_SustainabilityProduct.Msdyn_Name + " provided");
                 productId = CreateProduct(dataversePfCollection.Msdyn_SustainabilityProduct);
                 retVal.Append("Msdyn_SustainabilityProduct:" +
-                              productId + " created");
+                              productId + " created or updated");
                 retVal.Append(Environment.NewLine);
             }
             catch (Exception e)
@@ -63,7 +70,7 @@ public class DataverseClient
         }
         else
         {
-            retVal.Append("Msdyn_SustainabilityProductIdentifier: is null or not provided");
+            retVal.Append("Msdyn_SustainabilityProduct: is null or not provided");
             retVal.Append(Environment.NewLine);
         }
         
@@ -89,52 +96,127 @@ public class DataverseClient
             retVal.Append(Environment.NewLine);
         }
 
+        Guid footprintId = default;
+        if (dataversePfCollection.Msdyn_SustainabilityProductFootprint != null)
+        {
+            try
+            {
+                footprintId = CreateProductFootprint(dataversePfCollection.Msdyn_SustainabilityProductFootprint, productId);
+                retVal.Append("Msdyn_SustainabilityProductFootprint:" +
+                              footprintId + " created");
+                retVal.Append(Environment.NewLine);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error in Msdyn_SustainabilityProductFootprint");
+                retVal.Append("Error in Msdyn_SustainabilityProductFootprint:" + e);
+                retVal.Append(Environment.NewLine);
+            }
+        }
+        
+        Guid carbonFootprintId = default;
+        if (dataversePfCollection.Msdyn_SustainabilityProductCarbonFootprint != null)
+        {
+            try
+            {
+                if (dataversePfCollection.Msdyn_ProductCarbonFootprintAssurance != null)
+                {
+                    var assuranceId = CreateProductCarbonFootprintAssurance(dataversePfCollection
+                        .Msdyn_ProductCarbonFootprintAssurance);
+
+                    dataversePfCollection.Msdyn_SustainabilityProductCarbonFootprint
+                            .Msdyn_ProductCarbonFootprintAssurance =
+                        new EntityReference(Msdyn_ProductCarbonFootprintAssurance.EntityLogicalName, assuranceId);
+                }
+
+                carbonFootprintId = CreateProductCarbonFootprint(dataversePfCollection.Msdyn_SustainabilityProductCarbonFootprint);
+                retVal.Append("Msdyn_SustainabilityProductCarbonFootprint:" +
+                              carbonFootprintId + " created");
+                retVal.Append(Environment.NewLine);
+                var updatePfResult = UpdateProductFootprint(footprintId, carbonFootprintId);
+                retVal.Append("Msdyn_SustainabilityProductFootprint reference updated:" +
+                              updatePfResult);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error in Msdyn_SustainabilityProductCarbonFootprint");
+                retVal.Append("Error in Msdyn_SustainabilityProductCarbonFootprint:" + e);
+                retVal.Append(Environment.NewLine);
+            }
+        }
+        
+        if (dataversePfCollection.Msdyn_ProductOrSectorSpecificRule != null)
+        {
+            try
+            {
+                foreach (var rule in dataversePfCollection.Msdyn_ProductOrSectorSpecificRule)
+                {
+                    var ruleId =
+                        CreateProductOrSectorSpecificRule(rule);
+                    retVal.Append("Msdyn_ProductOrSectorSpecificRule:" +
+                                  ruleId + " created");
+                    retVal.Append(Environment.NewLine);
+                    
+                    var mappingResult = CreateRuleMapping(ruleId, carbonFootprintId);
+                    retVal.Append("Msdyn_ProductFootprintRuleMapping:" +
+                                  mappingResult + " created");
+                    retVal.Append(Environment.NewLine);
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error in Msdyn_ProductOrSectorSpecificRule");
+                retVal.Append("Error in Msdyn_ProductOrSectorSpecificRule:" + e);
+                retVal.Append(Environment.NewLine);
+            }
+        }
+        
         return retVal.ToString();
     }
 
-    public Msdyn_SustainabilityProductIdentifier? GetProductFootprintIdentifierById(string? id)
-    {
-        _logger.LogInformation("GetSustainabilityProductIdentifier called with Id: {Id}", 
-            id);
-        try
-        {
-            var query = from pf in _context.Msdyn_SustainabilityProductIdentifierSet
-                where pf.Msdyn_Name == id
-                select pf;
-            return query.FirstOrDefault();
-        }
-        catch (Exception e)
-        {
-            _logger.LogError(e, "Error in GetProductFootprintByOriginCorrelationId");
-            return null;
-        }
-    }
-    
-   
-    
     public Guid CreateProduct(Msdyn_SustainabilityProduct product)
     {
         _logger.LogInformation("CreateProduct called with product: {Product}", 
             product.Msdyn_Name);
-        
-        var request = new CreateRequest
+        try
         {
-            // Set the Target property
-            Target = product
-        };
+            var query = from pf in _context.Msdyn_SustainabilityProductSet
+                where pf.Msdyn_Name == product.Msdyn_Name
+                select pf;
+            var existingIdentifier = query.FirstOrDefault();
+            if (existingIdentifier != null)
+            {
+                _logger.LogInformation(
+                    "Product already exists, updating the reference and returning existing id: {Id}",
+                    existingIdentifier.Msdyn_Name);
+                return new Guid(product.Msdyn_Name);
+            }
 
-        // Send the request using the IOrganizationService.Execute method
-        // Cast the OrganizationResponse into a CreateResponse
-        var response = (CreateResponse) _context.Execute(request);
-        _logger.LogInformation("Product created with id: {Id}", 
-            response.id);
-        // Return the id property value
-        return response.id;
+            _logger.LogInformation("Product does not exist, creating new SustainabilityProduct");
+            var request = new CreateRequest
+            {
+                // Set the Target property
+                Target = product
+            };
+
+            // Send the request using the IOrganizationService.Execute method
+            // Cast the OrganizationResponse into a CreateResponse
+            var response = (CreateResponse)_context.Execute(request);
+            _logger.LogInformation("Product created with id: {Id}",
+                response.id);
+            // Return the id property value
+            return response.id;
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Error in CreateProduct");
+            return Guid.Empty;
+        }
     }
     
     public Guid? CreateProductIdentifier(Msdyn_SustainabilityProductIdentifier identifier, Guid productId)
     {
-        _logger.LogInformation("CreateProductIdentifier called with identifier: {Identifier}", 
+        _logger.LogInformation("CreateProductIdentifier called with productCarbonFootprint: {Identifier}", 
             identifier.Msdyn_Name);
         try
         {
@@ -153,7 +235,7 @@ public class DataverseClient
                 return existingIdentifier.Msdyn_SustainabilityProductIdentifierId;
             }
 
-            _logger.LogInformation("ProductIdentifier does not exist, creating new identifier");
+            _logger.LogInformation("ProductIdentifier does not exist, creating new productCarbonFootprint");
             identifier.Msdyn_SustainabilityProduct = new EntityReference(Msdyn_SustainabilityProduct.EntityLogicalName, productId);
             
             var request = new CreateRequest
@@ -175,6 +257,257 @@ public class DataverseClient
             return Guid.Empty;
         }
     }
+    
+    public Guid CreateProductFootprint(Msdyn_SustainabilityProductFootprint productFootprint, Guid productId)
+    {
+        _logger.LogInformation("CreateProductFootprint called with ProductId: {Identifier}", 
+            productId);
+        try
+        {
+            var query = from pf in _context.Msdyn_SustainabilityProductFootprintSet
+                where pf.Msdyn_Name == productFootprint.Msdyn_Name
+                select pf;
+            var existingProductFootprint = query.FirstOrDefault();
+            if (existingProductFootprint != null)
+            {
+                _logger.LogInformation("ProductIdentifier already exists, updating the reference and returning existing id: {Id}", 
+                    existingProductFootprint.Msdyn_Name);
+                
+                existingProductFootprint.Msdyn_SustainabilityProduct = new EntityReference(Msdyn_SustainabilityProduct.EntityLogicalName, productId);
+                _context.UpdateObject(existingProductFootprint);
+                _context.SaveChanges();
+                return new Guid(existingProductFootprint.Msdyn_Name);
+            }
+
+            _logger.LogInformation("ProductFootprint does not exist, creating new ProductFootprint");
+            productFootprint.Msdyn_SustainabilityProduct = new EntityReference(Msdyn_SustainabilityProduct.EntityLogicalName, productId);
+            
+            var request = new CreateRequest
+            {
+                Target = productFootprint
+            };
+
+            // Send the request using the IOrganizationService.Execute method
+            // Cast the OrganizationResponse into a CreateResponse
+            var response = (CreateResponse) _context.Execute(request);
+            
+            _logger.LogInformation("ProductFootprint created with id: {Id}", 
+                response.id);
+            return response.id;
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Error in ProductFootprint");
+            return Guid.Empty;
+        }
+    }
+    
+    private bool UpdateProductFootprint(Guid footprintId, Guid carbonFootprintId)
+    {
+        _logger.LogInformation("UpdateProductFootprint called with FootprintId: {Identifier} to add entity reference to PCF: {CarbonFootprintId}", 
+            footprintId, carbonFootprintId);
+        try
+        {
+            var query = from pf in _context.Msdyn_SustainabilityProductFootprintSet
+                where pf.Msdyn_SustainabilityProductFootprintId == footprintId
+                select pf;
+            var existingProductFootprint = query.FirstOrDefault();
+            if (existingProductFootprint != null)
+            {
+                _logger.LogInformation("ProductFootprint found, updating the reference and returning existing id: {Id}", 
+                    existingProductFootprint.Msdyn_Name);
+                
+                existingProductFootprint.Msdyn_SustainabilityProductCarbonFootprint = new EntityReference(Msdyn_SustainabilityProductCarbonFootprint.EntityLogicalName, footprintId);
+                _context.UpdateObject(existingProductFootprint);
+                _context.SaveChanges();
+                return existingProductFootprint.Msdyn_SustainabilityProductFootprintId != null;
+            }
+
+            return false;
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Error in ProductFootprint");
+            return false;
+        }
+    }
+    
+    public Guid CreateProductCarbonFootprint(Msdyn_SustainabilityProductCarbonFootprint productCarbonFootprint)
+    {
+        _logger.LogInformation("CreateProductCarbonFootprint called with ProductId: {Identifier}", 
+            productCarbonFootprint.Msdyn_Name);
+        try
+        {
+            var query = from pf in _context.Msdyn_SustainabilityProductCarbonFootprintSet
+                where pf.Msdyn_Name == productCarbonFootprint.Msdyn_Name
+                select pf;
+            var existingProductCarbonFootprint = query.FirstOrDefault();
+            if (existingProductCarbonFootprint != null)
+            {
+                _logger.LogInformation("ProductCarbonFootprint already exists, updating the reference and returning existing id: {Id}", 
+                    existingProductCarbonFootprint.Msdyn_Name);
+                return new Guid(existingProductCarbonFootprint.Msdyn_Name);
+            }
+
+            _logger.LogInformation("ProductFootprint does not exist, creating new ProductFootprint");
+            
+            var request = new CreateRequest
+            {
+                Target = productCarbonFootprint
+            };
+
+            // Send the request using the IOrganizationService.Execute method
+            // Cast the OrganizationResponse into a CreateResponse
+            var response = (CreateResponse) _context.Execute(request);
+            
+            _logger.LogInformation("ProductCarbonFootprint created with id: {Id}", 
+                response.id);
+            return response.id;
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Error in ProductCarbonFootprint");
+            return Guid.Empty;
+        }
+    }
+    
+    private Guid CreateProductCarbonFootprintAssurance(Msdyn_ProductCarbonFootprintAssurance productCarbonFootprintAssurance)
+    {
+        _logger.LogInformation("CreateProductCarbonFootprintAssurance called with ProductId: {Identifier}", 
+            productCarbonFootprintAssurance.Msdyn_Name);
+        try
+        {
+            var query = from pf in _context.Msdyn_ProductCarbonFootprintAssuranceSet
+                where pf.Msdyn_Name == productCarbonFootprintAssurance.Msdyn_Name
+                select pf;
+            var existingProductCarbonFootprintAssurance = query.FirstOrDefault();
+            if (existingProductCarbonFootprintAssurance != null)
+            {
+                _logger.LogInformation("ProductCarbonFootprintAssurance already exists, updating the reference and returning existing id: {Id}", 
+                    existingProductCarbonFootprintAssurance.Msdyn_Name);
+                return new Guid(existingProductCarbonFootprintAssurance.Msdyn_Name);
+            }
+
+            _logger.LogInformation("ProductCarbonFootprintAssurance does not exist, creating new ProductCarbonFootprintAssurance");
+            
+            var request = new CreateRequest
+            {
+                Target = productCarbonFootprintAssurance
+            };
+
+            // Send the request using the IOrganizationService.Execute method
+            // Cast the OrganizationResponse into a CreateResponse
+            var response = (CreateResponse) _context.Execute(request);
+            
+            _logger.LogInformation("ProductCarbonFootprintAssurance created with id: {Id}", 
+                response.id);
+            return response.id;
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Error in ProductCarbonFootprintAssurance");
+            return Guid.Empty;
+        }
+    }
+
+    private Guid CreateProductOrSectorSpecificRule(Msdyn_ProductOrSectorSpecificRule productOrSectorSpecificRule)
+    {
+        _logger.LogInformation("CreateProductOrSectorSpecificRule called with Operator: {Identifier}", 
+            productOrSectorSpecificRule.Msdyn_Operator);
+        try
+        {
+            var query = from pf in _context.Msdyn_ProductOrSectorSpecificRuleSet
+                where pf.Msdyn_Operator == productOrSectorSpecificRule.Msdyn_Operator &&
+                      pf.Msdyn_RuleNames == productOrSectorSpecificRule.Msdyn_RuleNames
+                select pf;
+            var existingProductOrSectorSpecificRule = query.FirstOrDefault();
+            if (existingProductOrSectorSpecificRule != null)
+            {
+                _logger.LogInformation("ProductOrSectorSpecificRule already exists, updating the reference and returning existing id: {Id}", 
+                    existingProductOrSectorSpecificRule.Msdyn_ProductOrSectorSpecificRuleId);
+                return existingProductOrSectorSpecificRule.Msdyn_ProductOrSectorSpecificRuleId ?? new Guid();
+            }
+
+            _logger.LogInformation("ProductOrSectorSpecificRule does not exist, creating new ProductOrSectorSpecificRule");
+            
+            var request = new CreateRequest
+            {
+                Target = productOrSectorSpecificRule
+            };
+
+            // Send the request using the IOrganizationService.Execute method
+            // Cast the OrganizationResponse into a CreateResponse
+            var response = (CreateResponse) _context.Execute(request);
+            
+            _logger.LogInformation("ProductOrSectorSpecificRule created with id: {Id}", 
+                response.id);
+            return response.id;
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Error in ProductOrSectorSpecificRule");
+            return Guid.Empty;
+        }
+    }
+    
+    private Guid CreateRuleMapping(Guid ruleId, Guid carbonFootprintId)
+    {
+        _logger.LogInformation("CreateRuleMapping called with ruleId: {Identifier} and carbonFootprintId: {CarbonFootprintId}",
+            ruleId, carbonFootprintId);
+        try
+        {
+            var newMapping = new Msdyn_ProductFootprintRuleMapping
+            {
+                Msdyn_ProductOrSectorSpecificRule =
+                    new EntityReference(Msdyn_ProductOrSectorSpecificRule.EntityLogicalName, ruleId),
+                Msdyn_ProductCarbonFootprint =
+                    new EntityReference(Msdyn_SustainabilityProductCarbonFootprint.EntityLogicalName, carbonFootprintId)
+            };
+            
+            var request = new CreateRequest
+            {
+                Target = newMapping
+            };
+
+            var response = (CreateResponse) _context.Execute(request);
+            _logger.LogInformation("ProductOrSectorSpecificRule created with id: {Id}", 
+                response.id);
+            return response.id;
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Error in CreateRuleMapping");
+            return Guid.Empty;
+        }
+    }
+
+    #endregion
+
+    #region Queries
+
+    
+    public Msdyn_SustainabilityProductIdentifier? GetProductFootprintIdentifierById(Guid id)
+    {
+        _logger.LogInformation("GetSustainabilityProductIdentifier called with Id: {Id}", 
+            id);
+        try
+        {
+            var query = from pf in _context.Msdyn_SustainabilityProductIdentifierSet
+                where pf.Msdyn_SustainabilityProductIdentifierId == id
+                select pf;
+            return query.FirstOrDefault();
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Error in GetProductFootprintByOriginCorrelationId");
+            return null;
+        }
+    }
+
+    
+
+    #endregion
+    
     
     #region clean dataverse tables
     

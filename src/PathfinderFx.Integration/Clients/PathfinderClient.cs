@@ -879,7 +879,7 @@ namespace PathfinderFx.Integration.Clients
     public partial class ProductFootprint
     {
         [Newtonsoft.Json.JsonProperty("id", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Guid? Id { get; set; }
+        public System.Guid Id { get; set; }
 
         [Newtonsoft.Json.JsonProperty("specVersion", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string SpecVersion { get; set; }

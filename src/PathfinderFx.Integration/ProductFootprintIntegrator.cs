@@ -148,7 +148,7 @@ public class ProductFootprintIntegrator
         _logger.LogInformation("GetDataversePfEntity called");
         
         //check to see if the product already exists in Dataverse
-        var existingPf = _dataverseClient!.GetProductFootprintIdentifierById(pf.Id.ToString());
+        var existingPf = _dataverseClient!.GetProductFootprintIdentifierById(pf.Id);
         
         if (existingPf != null)
         {
@@ -161,8 +161,8 @@ public class ProductFootprintIntegrator
         //get the SustainabilityProductIdentifier entity from the ProductFootprint
         var identifier = new Msdyn_SustainabilityProductIdentifier
         {
-            Msdyn_SustainabilityProductIdentifierId = pf.Id,
-            Msdyn_Name = pf.Id.ToString() ?? string.Empty,
+            Msdyn_Name = pf.Id.ToString(),
+            Msdyn_SustainabilityProductIdentifierId = pf.Id
         };
         dataversePfEntityCollection.Msdyn_SustainabilityProductIdentifier = identifier;
 
@@ -179,25 +179,14 @@ public class ProductFootprintIntegrator
         dataversePfEntityCollection.Msdyn_SustainabilityProductCarbonFootprint = dataversePcf;
         
         //get the ProductFootprintRuleMapping entity from the ProductFootprint
-        var dataversePfRm = GetProductRuleOrSectorRuleAndMappingEntities(pf);
-        dataversePfEntityCollection.Msdyn_ProductOrSectorSpecificRule = dataversePfRm.rules;
-        dataversePfEntityCollection.Msdyn_ProductFootprintRuleMapping = dataversePfRm.mapping;
+        var dataversePfRm = GetProductRuleOrSectorRules(pf);
+        dataversePfEntityCollection.Msdyn_ProductOrSectorSpecificRule = dataversePfRm;
         
         //get the ProductCarbonFootprintAssurance entity from the ProductFootprint
         var dataversePcfA = GetDataversePcfAssuranceEntity(pf);
         dataversePfEntityCollection.Msdyn_ProductCarbonFootprintAssurance = dataversePcfA;
         
         return dataversePfEntityCollection;
-    }
-    
-    private Msdyn_SustainabilityProduct GetSustainabilityProductFootprintEntityTree(ProductFootprint pf)
-    {
-        var dataversePf = GetSustainabilityProductFootprint(pf);
-        dataversePf.Msdyn_SustainabilityProductCarbonFootprint = GetDataversePcfEntity(pf);
-
-        dataversePf.Msdyn_SustainabilityProductCarbonFootprint = new EntityReference(GetDataversePcfEntity(pf).ToEntityReference(),)
-
-
     }
 
     private Msdyn_ProductCarbonFootprintAssurance? GetDataversePcfAssuranceEntity(ProductFootprint pf)
@@ -238,7 +227,7 @@ public class ProductFootprintIntegrator
         return assurance;
     }
 
-    private static (List<Msdyn_ProductOrSectorSpecificRule> rules, Msdyn_ProductFootprintRuleMapping mapping) GetProductRuleOrSectorRuleAndMappingEntities(ProductFootprint pf)
+    private static List<Msdyn_ProductOrSectorSpecificRule> GetProductRuleOrSectorRules(ProductFootprint pf)
     {
         var rules = new List<Msdyn_ProductOrSectorSpecificRule>();
         foreach (var rule in pf.Pcf.ProductOrSectorSpecificRules)
@@ -247,24 +236,19 @@ public class ProductFootprintIntegrator
             {
                 Msdyn_OtherOperatorName = rule.Operator,
             };
-            var ruleName = new StringBuilder();
+            var ruleNames = new StringBuilder();
             foreach(var name in rule.RuleNames)
             {
-                if (ruleName.Length > 0)
+                if (ruleNames.Length > 0)
                 {
-                    ruleName.Append(',');
+                    ruleNames.Append(',');
                 }
-                ruleName.Append(name);
+                ruleNames.Append(name);
             }
+            newRule.Msdyn_RuleNames = ruleNames.ToString();
             rules.Add(newRule);
         }
-        
-        var mapping = new Msdyn_ProductFootprintRuleMapping
-        {
-            Msdyn_ProductFootprintRuleMappingId = pf.Id,
-            Msdyn_Name = pf.Id.ToString() ?? string.Empty,
-        };
-        return (rules, mapping);
+        return rules;
     }
 
 
