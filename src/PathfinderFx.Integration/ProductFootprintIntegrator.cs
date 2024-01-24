@@ -1,5 +1,6 @@
 using System.Text;
 using Microsoft.Extensions.Logging;
+using Microsoft.Xrm.Sdk;
 using PathfinderFx.Integration.Clients;
 using PathfinderFx.Integration.Model;
 using PathfinderFx.Integration.Model.Entities;
@@ -194,7 +195,7 @@ public class ProductFootprintIntegrator
         var dataversePf = GetSustainabilityProductFootprint(pf);
         dataversePf.Msdyn_SustainabilityProductCarbonFootprint = GetDataversePcfEntity(pf);
 
-        dataversePf.Msdyn_SustainabilityProductCarbonFootprint.Msdyn_ProductCarbonFootprintAssurance = new Msdyn_ProdcutCarbonFootprintAssurance();
+        dataversePf.Msdyn_SustainabilityProductCarbonFootprint = new EntityReference(GetDataversePcfEntity(pf).ToEntityReference(),)
 
 
     }
