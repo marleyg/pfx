@@ -12,222 +12,241 @@ using PathfinderFx.Integration.Model.Entities;
 
 [assembly: Microsoft.Xrm.Sdk.Client.ProxyTypesAssemblyAttribute()]
 
-namespace PathfinderFx.Integration.Model
+namespace PathfinderFx.Integration.Model;
+
+/// <summary>
+/// Represents a source of entities bound to a Dataverse service. It tracks and manages changes made to the retrieved entities.
+/// </summary>
+public partial class DataverseContext : Microsoft.Xrm.Sdk.Client.OrganizationServiceContext
 {
-	
-	
+		
 	/// <summary>
-	/// Represents a source of entities bound to a Dataverse service. It tracks and manages changes made to the retrieved entities.
+	/// Constructor.
 	/// </summary>
-	public partial class DataverseContext : Microsoft.Xrm.Sdk.Client.OrganizationServiceContext
+	public DataverseContext(Microsoft.Xrm.Sdk.IOrganizationService service) : 
+		base(service)
 	{
+	}
 		
-		/// <summary>
-		/// Constructor.
-		/// </summary>
-		public DataverseContext(Microsoft.Xrm.Sdk.IOrganizationService service) : 
-				base(service)
+	/// <summary>
+	/// Gets a binding to the set of all <see cref="Msdyn_ProductCarbonFootprintAssurance"/> entities.
+	/// </summary>
+	public IQueryable<Msdyn_ProductCarbonFootprintAssurance> Msdyn_ProductCarbonFootprintAssuranceSet
+	{
+		get
 		{
+			return CreateQuery<Msdyn_ProductCarbonFootprintAssurance>();
 		}
+	}
 		
-		/// <summary>
-		/// Gets a binding to the set of all <see cref="Msdyn_ProductCarbonFootprintAssurance"/> entities.
-		/// </summary>
-		public IQueryable<Msdyn_ProductCarbonFootprintAssurance> Msdyn_ProductCarbonFootprintAssuranceSet
+	/// <summary>
+	/// Gets a binding to the set of all <see cref="Msdyn_ProductFootprintRuleMapping"/> entities.
+	/// </summary>
+	public IQueryable<Msdyn_ProductFootprintRuleMapping> Msdyn_ProductFootprintRuleMappingSet
+	{
+		get
 		{
-			get
+			return CreateQuery<Msdyn_ProductFootprintRuleMapping>();
+		}
+	}
+		
+	/// <summary>
+	/// Gets a binding to the set of all <see cref="Msdyn_ProductOrSectorSpecificRule"/> entities.
+	/// </summary>
+	public IQueryable<Msdyn_ProductOrSectorSpecificRule> Msdyn_ProductOrSectorSpecificRuleSet
+	{
+		get
+		{
+			return CreateQuery<Msdyn_ProductOrSectorSpecificRule>();
+		}
+	}
+		
+	/// <summary>
+	/// Gets a binding to the set of all <see cref="Msdyn_SustainabilityProduct"/> entities.
+	/// </summary>
+	public IQueryable<Msdyn_SustainabilityProduct> Msdyn_SustainabilityProductSet
+	{
+		get
+		{
+			return CreateQuery<Msdyn_SustainabilityProduct>();
+		}
+	}
+		
+	/// <summary>
+	/// Gets a binding to the set of all <see cref="Msdyn_SustainabilityProductCarbonFootprint"/> entities.
+	/// </summary>
+	public IQueryable<Msdyn_SustainabilityProductCarbonFootprint> Msdyn_SustainabilityProductCarbonFootprintSet
+	{
+		get
+		{
+			return CreateQuery<Msdyn_SustainabilityProductCarbonFootprint>();
+		}
+	}
+		
+	/// <summary>
+	/// Gets a binding to the set of all <see cref="Msdyn_SustainabilityProductFootprint"/> entities.
+	/// </summary>
+	public IQueryable<Msdyn_SustainabilityProductFootprint> Msdyn_SustainabilityProductFootprintSet
+	{
+		get
+		{
+			return CreateQuery<Msdyn_SustainabilityProductFootprint>();
+		}
+	}
+		
+	/// <summary>
+	/// Gets a binding to the set of all <see cref="Msdyn_SustainabilityProductIdentifier"/> entities.
+	/// </summary>
+	public IQueryable<Msdyn_SustainabilityProductIdentifier> Msdyn_SustainabilityProductIdentifierSet
+	{
+		get
+		{
+			return CreateQuery<Msdyn_SustainabilityProductIdentifier>();
+		}
+	}
+		
+	/// <summary>
+	/// Gets a binding to the set of all <see cref="Msdyn_Unit"/> entities.
+	/// </summary>
+	public IQueryable<Msdyn_Unit> Msdyn_UnitSet
+	{
+		get
+		{
+			return CreateQuery<Msdyn_Unit>();
+		}
+	}
+		
+	/// <summary>
+	/// Gets a binding to the set of all <see cref="Organization"/> entities.
+	/// </summary>
+	public IQueryable<Organization> OrganizationSet
+	{
+		get
+		{
+			return CreateQuery<Organization>();
+		}
+	}
+}
+	
+/// <summary>
+/// Attribute to handle storing the OptionSet's Metadata.
+/// </summary>
+[AttributeUsageAttribute(AttributeTargets.Field)]
+public sealed class OptionSetMetadataAttribute : Attribute
+{
+		
+	private object[] _nameObjects;
+		
+	private Dictionary<int, string> _names;
+		
+	/// <summary>
+	/// Color of the OptionSetValue.
+	/// </summary>
+	public string Color { get; set; }
+		
+	/// <summary>
+	/// Description of the OptionSetValue.
+	/// </summary>
+	public string Description { get; set; }
+		
+	/// <summary>
+	/// Display order index of the OptionSetValue.
+	/// </summary>
+	public int DisplayIndex { get; set; }
+		
+	/// <summary>
+	/// External value of the OptionSetValue.
+	/// </summary>
+	public string ExternalValue { get; set; }
+		
+	/// <summary>
+	/// Name of the OptionSetValue.
+	/// </summary>
+	public string Name { get; set; }
+		
+	/// <summary>
+	/// Names of the OptionSetValue.
+	/// </summary>
+	public Dictionary<int, string> Names
+	{
+		get
+		{
+			return _names ?? (_names = CreateNames());
+		} 
+		set
+		{
+			_names = value;
+			if (value == null)
 			{
-				return CreateQuery<Msdyn_ProductCarbonFootprintAssurance>();
+				_nameObjects = new object[0];
 			}
-		}
-		
-		/// <summary>
-		/// Gets a binding to the set of all <see cref="Msdyn_ProductFootprintRuleMapping"/> entities.
-		/// </summary>
-		public IQueryable<Msdyn_ProductFootprintRuleMapping> Msdyn_ProductFootprintRuleMappingSet
-		{
-			get
+			else
 			{
-				return CreateQuery<Msdyn_ProductFootprintRuleMapping>();
-			}
-		}
-		
-		/// <summary>
-		/// Gets a binding to the set of all <see cref="Msdyn_ProductOrSectorSpecificRule"/> entities.
-		/// </summary>
-		public IQueryable<Msdyn_ProductOrSectorSpecificRule> Msdyn_ProductOrSectorSpecificRuleSet
-		{
-			get
-			{
-				return CreateQuery<Msdyn_ProductOrSectorSpecificRule>();
-			}
-		}
-		
-		/// <summary>
-		/// Gets a binding to the set of all <see cref="Msdyn_SustainabilityProduct"/> entities.
-		/// </summary>
-		public IQueryable<Msdyn_SustainabilityProduct> Msdyn_SustainabilityProductSet
-		{
-			get
-			{
-				return CreateQuery<Msdyn_SustainabilityProduct>();
-			}
-		}
-		
-		/// <summary>
-		/// Gets a binding to the set of all <see cref="Msdyn_SustainabilityProductCarbonFootprint"/> entities.
-		/// </summary>
-		public IQueryable<Msdyn_SustainabilityProductCarbonFootprint> Msdyn_SustainabilityProductCarbonFootprintSet
-		{
-			get
-			{
-				return CreateQuery<Msdyn_SustainabilityProductCarbonFootprint>();
-			}
-		}
-		
-		/// <summary>
-		/// Gets a binding to the set of all <see cref="Msdyn_SustainabilityProductFootprint"/> entities.
-		/// </summary>
-		public IQueryable<Msdyn_SustainabilityProductFootprint> Msdyn_SustainabilityProductFootprintSet
-		{
-			get
-			{
-				return CreateQuery<Msdyn_SustainabilityProductFootprint>();
-			}
-		}
-		
-		/// <summary>
-		/// Gets a binding to the set of all <see cref="Msdyn_SustainabilityProductIdentifier"/> entities.
-		/// </summary>
-		public IQueryable<Msdyn_SustainabilityProductIdentifier> Msdyn_SustainabilityProductIdentifierSet
-		{
-			get
-			{
-				return CreateQuery<Msdyn_SustainabilityProductIdentifier>();
+				_nameObjects = null;
 			}
 		}
 	}
-	
+		
 	/// <summary>
-	/// Attribute to handle storing the OptionSet's Metadata.
+	/// Initializes a new instance of the <see cref="OptionSetMetadataAttribute"/> class.
 	/// </summary>
-	[AttributeUsage(AttributeTargets.Field)]
-	public sealed class OptionSetMetadataAttribute : Attribute
+	/// <param name="name">Name of the value.</param>
+	/// <param name="displayIndex">Display order index of the value.</param>
+	/// <param name="color">Color of the value.</param>
+	/// <param name="description">Description of the value.</param>
+	/// <param name="externalValue">External value of the value.</param>
+	/// <param name="names">Names of the value.</param>
+	public OptionSetMetadataAttribute(string name, int displayIndex, string color = null, string description = null, string externalValue = null, params object[] names)
 	{
-		
-		private object[] _nameObjects;
-		
-		private Dictionary<int, string> _names;
-		
-		/// <summary>
-		/// Color of the OptionSetValue.
-		/// </summary>
-		public string Color { get; set; }
-		
-		/// <summary>
-		/// Description of the OptionSetValue.
-		/// </summary>
-		public string Description { get; set; }
-		
-		/// <summary>
-		/// Display order index of the OptionSetValue.
-		/// </summary>
-		public int DisplayIndex { get; set; }
-		
-		/// <summary>
-		/// External value of the OptionSetValue.
-		/// </summary>
-		public string ExternalValue { get; set; }
-		
-		/// <summary>
-		/// Name of the OptionSetValue.
-		/// </summary>
-		public string Name { get; set; }
-		
-		/// <summary>
-		/// Names of the OptionSetValue.
-		/// </summary>
-		public Dictionary<int, string> Names
-		{
-			get
-			{
-				return _names ?? (_names = CreateNames());
-			} 
-			set
-			{
-				_names = value;
-				if (value == null)
-				{
-				    _nameObjects = new object[0];
-				}
-				else
-				{
-				    _nameObjects = null;
-				}
-			}
-		}
-		
-		/// <summary>
-		/// Initializes a new instance of the <see cref="OptionSetMetadataAttribute"/> class.
-		/// </summary>
-		/// <param name="name">Name of the value.</param>
-		/// <param name="displayIndex">Display order index of the value.</param>
-		/// <param name="color">Color of the value.</param>
-		/// <param name="description">Description of the value.</param>
-		/// <param name="externalValue">External value of the value.</param>
-		/// <param name="names">Names of the value.</param>
-		public OptionSetMetadataAttribute(string name, int displayIndex, string color = null, string description = null, string externalValue = null, params object[] names)
-		{
-			Color = color;
-			Description = description;
-			_nameObjects = names;
-			ExternalValue = externalValue;
-			DisplayIndex = displayIndex;
-			Name = name;
-		}
-		
-		private Dictionary<int, string> CreateNames()
-		{
-			Dictionary<int, string> names = new Dictionary<int, string>();
-			for (int i = 0; (i < _nameObjects.Length); i = (i + 2))
-			{
-				names.Add(((int)(_nameObjects[i])), ((string)(_nameObjects[(i + 1)])));
-			}
-			return names;
-		}
+		Color = color;
+		Description = description;
+		_nameObjects = names;
+		ExternalValue = externalValue;
+		DisplayIndex = displayIndex;
+		Name = name;
 	}
-	
-	/// <summary>
-	/// Extension class to handle retrieving of OptionSetMetadataAttribute.
-	/// </summary>
-	public static class OptionSetExtension
-	{
 		
-		/// <summary>
-		/// Returns the OptionSetMetadataAttribute for the given enum value
-		/// </summary>
-		/// <typeparam name="T">OptionSet Enum Type</typeparam>
-		/// <param name="value">Enum Value with OptionSetMetadataAttribute</param>
-		public static OptionSetMetadataAttribute GetMetadata<T>(this T value)
-			where T :  struct, IConvertible
+	private Dictionary<int, string> CreateNames()
+	{
+		Dictionary<int, string> names = new Dictionary<int, string>();
+		for (int i = 0; (i < _nameObjects.Length); i = (i + 2))
 		{
-			Type enumType = typeof(T);
-			if (!enumType.IsEnum)
-			{
-				throw new ArgumentException("T must be an enum!");
-			}
-			System.Reflection.MemberInfo[] members = enumType.GetMember(value.ToString());
-			for (int i = 0; (i < members.Length); i++
-			)
-			{
-				Attribute attribute = System.Reflection.CustomAttributeExtensions.GetCustomAttribute(members[i], typeof(OptionSetMetadataAttribute));
-				if (attribute != null)
-				{
-					return ((OptionSetMetadataAttribute)(attribute));
-				}
-			}
-			throw new ArgumentException("T must be an enum adorned with an OptionSetMetadataAttribute!");
+			names.Add(((int)(_nameObjects[i])), ((string)(_nameObjects[(i + 1)])));
 		}
+		return names;
+	}
+}
+	
+/// <summary>
+/// Extension class to handle retrieving of OptionSetMetadataAttribute.
+/// </summary>
+public static class OptionSetExtension
+{
+		
+	/// <summary>
+	/// Returns the OptionSetMetadataAttribute for the given enum value
+	/// </summary>
+	/// <typeparam name="T">OptionSet Enum Type</typeparam>
+	/// <param name="value">Enum Value with OptionSetMetadataAttribute</param>
+	public static OptionSetMetadataAttribute GetMetadata<T>(this T value)
+		where T :  struct, IConvertible
+	{
+		Type enumType = typeof(T);
+		if (!enumType.IsEnum)
+		{
+			throw new ArgumentException("T must be an enum!");
+		}
+		System.Reflection.MemberInfo[] members = enumType.GetMember(value.ToString());
+		for (int i = 0; (i < members.Length); i++
+		    )
+		{
+			Attribute attribute = System.Reflection.CustomAttributeExtensions.GetCustomAttribute(members[i], typeof(OptionSetMetadataAttribute));
+			if (attribute != null)
+			{
+				return ((OptionSetMetadataAttribute)(attribute));
+			}
+		}
+		throw new ArgumentException("T must be an enum adorned with an OptionSetMetadataAttribute!");
 	}
 }
 #pragma warning restore CS1591

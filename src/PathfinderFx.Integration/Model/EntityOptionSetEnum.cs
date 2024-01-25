@@ -10,55 +10,56 @@
 
 namespace PathfinderFx.Integration.Model;
 
+	
 internal sealed class EntityOptionSetEnum
 {
 		
-	/// <summary>
-	/// Returns the integer version of an OptionSetValue
-	/// </summary>
-	public static Nullable<int> GetEnum(Microsoft.Xrm.Sdk.Entity entity, string attributeLogicalName)
-	{
-		if (entity.Attributes.ContainsKey(attributeLogicalName))
-		{
-			Microsoft.Xrm.Sdk.OptionSetValue value = entity.GetAttributeValue<Microsoft.Xrm.Sdk.OptionSetValue>(attributeLogicalName);
-			if (value != null)
-			{
-				return value.Value;
-			}
-		}
-		return null;
-	}
+    /// <summary>
+    /// Returns the integer version of an OptionSetValue
+    /// </summary>
+    public static Nullable<int> GetEnum(Microsoft.Xrm.Sdk.Entity entity, string attributeLogicalName)
+    {
+        if (entity.Attributes.ContainsKey(attributeLogicalName))
+        {
+            Microsoft.Xrm.Sdk.OptionSetValue value = entity.GetAttributeValue<Microsoft.Xrm.Sdk.OptionSetValue>(attributeLogicalName);
+            if (value != null)
+            {
+                return value.Value;
+            }
+        }
+        return null;
+    }
 		
-	/// <summary>
-	/// Returns a collection of integer version's of an Multi-Select OptionSetValue for a given attribute on the passed entity
-	/// </summary>
-	public static IEnumerable<T> GetMultiEnum<T>(Microsoft.Xrm.Sdk.Entity entity, string attributeLogicalName)
+    /// <summary>
+    /// Returns a collection of integer version's of an Multi-Select OptionSetValue for a given attribute on the passed entity
+    /// </summary>
+    public static IEnumerable<T> GetMultiEnum<T>(Microsoft.Xrm.Sdk.Entity entity, string attributeLogicalName)
 		
-	{
-		Microsoft.Xrm.Sdk.OptionSetValueCollection value = entity.GetAttributeValue<Microsoft.Xrm.Sdk.OptionSetValueCollection>(attributeLogicalName);
-		List<T> list = new List<T>();
-		if (value == null)
-		{
-			return list;
-		}
-		list.AddRange(Enumerable.Select(value, v => (T)(object)v.Value));
-		return list;
-	}
+    {
+        Microsoft.Xrm.Sdk.OptionSetValueCollection value = entity.GetAttributeValue<Microsoft.Xrm.Sdk.OptionSetValueCollection>(attributeLogicalName);
+        List<T> list = new List<T>();
+        if (value == null)
+        {
+            return list;
+        }
+        list.AddRange(Enumerable.Select(value, v => (T)(object)v.Value));
+        return list;
+    }
 		
-	/// <summary>
-	/// Returns a OptionSetValueCollection based on a list of Multi-Select OptionSetValues
-	/// </summary>
-	public static Microsoft.Xrm.Sdk.OptionSetValueCollection GetMultiEnum<T>(Microsoft.Xrm.Sdk.Entity entity, string attributeLogicalName, IEnumerable<T> values)
+    /// <summary>
+    /// Returns a OptionSetValueCollection based on a list of Multi-Select OptionSetValues
+    /// </summary>
+    public static Microsoft.Xrm.Sdk.OptionSetValueCollection GetMultiEnum<T>(Microsoft.Xrm.Sdk.Entity entity, string attributeLogicalName, IEnumerable<T> values)
 		
-	{
-		if (values == null)
-		{
-			return null;
-		}
-		Microsoft.Xrm.Sdk.OptionSetValueCollection collection = new Microsoft.Xrm.Sdk.OptionSetValueCollection();
-		collection.AddRange(Enumerable.Select(values, v => new Microsoft.Xrm.Sdk.OptionSetValue((int)(object)v)));
-		return collection;
-	}
+    {
+        if (values == null)
+        {
+            return null;
+        }
+        Microsoft.Xrm.Sdk.OptionSetValueCollection collection = new Microsoft.Xrm.Sdk.OptionSetValueCollection();
+        collection.AddRange(Enumerable.Select(values, v => new Microsoft.Xrm.Sdk.OptionSetValue((int)(object)v)));
+        return collection;
+    }
 }
 
 #pragma warning restore CS1591

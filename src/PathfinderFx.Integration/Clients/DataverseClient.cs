@@ -504,6 +504,21 @@ public class DataverseClient
         }
     }
 
+    public List<Msdyn_Unit> GetUnits()
+    {
+        _logger.LogInformation("GetUnits called");
+        try
+        {
+            var query = from pf in _context.Msdyn_UnitSet
+                select pf;
+            return query.ToList();
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Error in GetUnits");
+            return [];
+        }
+    } 
     
 
     #endregion

@@ -15,6 +15,7 @@ public class ProductFootprintIntegrator
 
     private PathfinderClient? _pathfinderClient;
     private DataverseClient? _dataverseClient;
+    private List<Msdyn_Unit>? _units;
     
     #region constructors
     public ProductFootprintIntegrator()
@@ -126,6 +127,10 @@ public class ProductFootprintIntegrator
         }
         _logger.LogInformation("Got {Count} footprints from Pathfinder", pfs.Data.Count);
         
+        _logger.LogInformation("Getting units from Dataverse");
+        _units = _dataverseClient?.GetUnits();
+        
+        
         _logger.LogInformation("Processing footprints for Dataverse");
         _logger.LogInformation("Accessing Dataverse as {WhoAmI}", _dataverseClient!.WhoAmI());
         foreach (var footprint in pfs.Data)
@@ -200,7 +205,7 @@ public class ProductFootprintIntegrator
             Msdyn_Comments = assuranceData.Comments,
             Msdyn_StandardName = assuranceData.StandardName,
             Msdyn_CompletedDate = assuranceData.CompletedAt?.DateTime,
-            Msdyn_Name = pf.Id.ToString() ?? string.Empty,
+            Msdyn_Name = pf.Id.ToString(),
             Msdyn_ProductCarbonFootprintAssuranceId = pf.Id,
             Msdyn_Boundary = assuranceData.Boundary switch
             {
@@ -256,7 +261,7 @@ public class ProductFootprintIntegrator
     {
         var product = new Msdyn_SustainabilityProduct
         {
-            Msdyn_Name = pf.Id.ToString() ?? string.Empty,
+            Msdyn_Name = pf.Id.ToString(),
             Msdyn_ProductDescription = pf.ProductNameCompany + ": " + pf.ProductDescription,
             Msdyn_ProductCategoryCPc = Convert.ToString(pf.ProductCategoryCpc) ?? string.Empty,
             Msdyn_SustainabilityProductId = pf.Id
@@ -282,7 +287,7 @@ public class ProductFootprintIntegrator
         var dataversePf = new Msdyn_SustainabilityProductFootprint
         {
             Msdyn_SustainabilityProductFootprintId = pf.Id,
-            Msdyn_Name = pf.Id.ToString() ?? string.Empty,
+            Msdyn_Name = pf.Id.ToString(),
             Msdyn_Comment = pf.Comment,
             Msdyn_Version = (int?)pf.Version,
             Msdyn_SpecVersion = pf.SpecVersion,
@@ -343,7 +348,7 @@ public class ProductFootprintIntegrator
             Msdyn_FossilGHGemIsSiOns = Convert.ToDecimal(footprint.Pcf.FossilGhgEmissions),
             Msdyn_ILuCGHGEmissions = Convert.ToDecimal(footprint.Pcf.ILucGhgEmissions),
             Msdyn_PackAgInGgHGEmissions = Convert.ToDecimal(footprint.Pcf.PackagingGhgEmissions),
-            Msdyn_Name = footprint.Id.ToString() ?? string.Empty,
+            Msdyn_Name = footprint.Id.ToString(),
             Msdyn_SustainabilityProductCarbonFootprintId = footprint.Id,
             Msdyn_BiogenicAccountingMethodology = footprint.Pcf.BiogenicAccountingMethodology switch
             {
@@ -363,6 +368,18 @@ public class ProductFootprintIntegrator
             }
         };
 
+        if (!string.IsNullOrEmpty(footprint.Pcf.DeclaredUnit))
+        {
+            var searchUnit = footprint.Pcf.DeclaredUnit.ToLower();
+            if (searchUnit == "liter")
+                searchUnit = "Litres";
+            var unit = _units?.FirstOrDefault(u => string.Equals(u.Msdyn_Name, searchUnit, StringComparison.CurrentCultureIgnoreCase));
+            if (unit != null)
+            {
+                dataversePcf.Msdyn_DeclaredUnit = new EntityReference(Msdyn_Unit.EntityLogicalName, (Guid)unit.Msdyn_UnitId);
+            }
+        }
+        
         if (footprint.Pcf.Dqi != null)
         {
             dataversePcf.Msdyn_CoveragePercent = Convert.ToDecimal(footprint.Pcf.Dqi.CoveragePercent);
