@@ -16,56 +16,113 @@ public class ProductFootprintIntegrator
     private PathfinderClient? _pathfinderClient;
     private DataverseClient? _dataverseClient;
     private List<Msdyn_Unit>? _units;
+    private IPathfinderConfig.IPathfinderConfigEntry? _currentPathfinderConfigEntry;
     
     #region constructors
     public ProductFootprintIntegrator()
     {
         _logger.LogInformation("ProductFootprintIntegrator constructor called");
-        SetPathfinderConfiguration();
         SetDataverseConfiguration();
+        SetPathfinderConfiguration();
     }
 
-    public ProductFootprintIntegrator(IPathfinderConfig? pathfinderConfig = null, IDataverseConfig? dataverseConfig = null)
+    public ProductFootprintIntegrator(IPathfinderConfig? pathfinderConfig = null, IDataverseConfig? dataverseConfig = null, bool initialization = false)
     {
         _logger.LogInformation("ProductFootprintIntegrator constructor called");
-        SetPathfinderConfiguration(pathfinderConfig);
         SetDataverseConfiguration(dataverseConfig);
+        if(!initialization)
+            SetPathfinderConfiguration(pathfinderConfig);
     }
     
     #endregion
 
     #region configuration
+    
+    /// <summary>
+    /// Get a list of available Pathfinder hosts
+    /// </summary>
+    /// <returns></returns>
+    public List<string> GetPathfinderHosts()
+    {
+        _logger.LogInformation("GetPathfinderHosts called");
+        return PathfinderConfig.PathfinderConfigEntries!.Select(entry => entry.HostName!).ToList();
+    }
+    
+    /// <summary>
+    /// Set the Pathfinder host to use for the integration from the list of registered hosts
+    /// </summary>
+    /// <param name="hostName"></param>
+    /// <returns></returns>
+    /// <exception cref="Exception"></exception>
+    public string SetCurrentPathfinderHost(string hostName)
+    {
+        _logger.LogInformation("SetCurrentPathfinderHost called");
+        var host = PathfinderConfig.PathfinderConfigEntries!.FirstOrDefault(entry => entry.HostName == hostName);
+        if (host == null)
+        {
+            _logger.LogError("Host {HostName} not found", hostName);
+            throw new Exception("Host not found");
+        }
+        _currentPathfinderConfigEntry = host;
+        _pathfinderClient = new PathfinderClient(Utils.AppLogger.MyLoggerFactory, _currentPathfinderConfigEntry);
+        return "Current host set to: " + hostName;
+    }
+    
     private void SetPathfinderConfiguration(IPathfinderConfig? config = null)
     {
         _logger.LogInformation("SetPathfinderConfiguration called");
         if (config == null)
         {
-            PathfinderConfig.AuthUrl = Environment.GetEnvironmentVariable("AuthUrl");
-            PathfinderConfig.ClientId = Environment.GetEnvironmentVariable("ClientId");
-            PathfinderConfig.ClientSecret = Environment.GetEnvironmentVariable("ClientSecret");
-            PathfinderConfig.HostUrl = Environment.GetEnvironmentVariable("HostUrl");
+            try
+            {
+                var pathfinderConfigFromDataverse = _dataverseClient?.GetPathfinderFxConfiguration();
+                if (pathfinderConfigFromDataverse == null)
+                {
+                    _logger.LogError("Pathfinder configuration is required and not found in Dataverse");
+                    throw new Exception("Pathfinder configuration is required and not found in Dataverse");
+                }
+
+                if (pathfinderConfigFromDataverse.Count == 0)
+                {
+                    _logger.LogInformation("Pathfinder configuration is required for full operation and not found in Dataverse, initialization is available");
+                    return;
+                }
+
+                config = new PathfinderConfig();
+                foreach (var cfgData in pathfinderConfigFromDataverse)
+                {
+                    config.PathfinderConfigEntries?.Add(new PathfinderConfigEntry
+                    {
+                        HostAuthUrl = cfgData.Msdyn_HostAuthUrl,
+                        ClientId = cfgData.Msdyn_ClientId,
+                        ClientSecret = cfgData.Msdyn_ClientSecret,
+                        HostUrl = cfgData.Msdyn_HostBaseUrl,
+                        HostName = cfgData.Msdyn_HostName
+                    });
+                }
+
+                _currentPathfinderConfigEntry = config.PathfinderConfigEntries!.FirstOrDefault();
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error getting Pathfinder configuration from Dataverse");
+                throw new Exception("Error getting Pathfinder configuration from Dataverse");
+            }
         }
         else
         {
             try
             {
-                PathfinderConfig.AuthUrl = config.AuthUrl;
-                PathfinderConfig.ClientId = config.ClientId;
-                PathfinderConfig.ClientSecret = config.ClientSecret;
-                PathfinderConfig.HostUrl = config.HostUrl;
-
-                Environment.SetEnvironmentVariable("ClientId", config.ClientId);
-                Environment.SetEnvironmentVariable("ClientSecret", config.ClientSecret);
-                Environment.SetEnvironmentVariable("HostUrl", config.HostUrl);
-                Environment.SetEnvironmentVariable("AuthUrl", config.AuthUrl);
+                PathfinderConfig.PathfinderConfigEntries = config.PathfinderConfigEntries;
+                _currentPathfinderConfigEntry = config.PathfinderConfigEntries!.FirstOrDefault();
             }
             catch (Exception e)
             {
                 _logger.LogError(e, "Error deserializing configuration");
-                return;
+                throw new Exception("Error deserializing configuration");
             }
         }
-        _pathfinderClient = new PathfinderClient(Utils.AppLogger.MyLoggerFactory, PathfinderConfig);
+        _pathfinderClient = new PathfinderClient(Utils.AppLogger.MyLoggerFactory, _currentPathfinderConfigEntry);
     }
 
     private void SetDataverseConfiguration(IDataverseConfig? dataverseConfig = null)
@@ -73,31 +130,25 @@ public class ProductFootprintIntegrator
         _logger.LogInformation("SetDataverseConfiguration called");
         if (dataverseConfig == null)
         {
-            DataverseConfig.Password = "!HProtagoni$t";
-            DataverseConfig.Url = "https://org44b772fa.api.crm.dynamics.com/api/data/v9.2";
-            DataverseConfig.UserName = "Marley@HMDemoJune22.onmicrosoft.com";
-            Environment.SetEnvironmentVariable("Password", DataverseConfig.Password);
-            Environment.SetEnvironmentVariable("Url", DataverseConfig.Url);
-            Environment.SetEnvironmentVariable("UserName", DataverseConfig.UserName);
+            _logger.LogError("Dataverse configuration is required");
+            throw new Exception("Dataverse configuration is required");
         }
-        else
+
+        try
         {
-            try
-            {
-                DataverseConfig.Password = dataverseConfig.Password;
-                DataverseConfig.Url = dataverseConfig.Url;
-                DataverseConfig.UserName = dataverseConfig.UserName;
+            DataverseConfig.Password = dataverseConfig.Password;
+            DataverseConfig.Url = dataverseConfig.Url;
+            DataverseConfig.UserName = dataverseConfig.UserName;
                 
-                Environment.SetEnvironmentVariable("ConnectionString", dataverseConfig.ConnectionString);
-                Environment.SetEnvironmentVariable("Password", dataverseConfig.Password);
-                Environment.SetEnvironmentVariable("Url", dataverseConfig.Url);
-                Environment.SetEnvironmentVariable("UserName", dataverseConfig.UserName);
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, "Error deserializing configuration");
-                return;
-            }
+            Environment.SetEnvironmentVariable("ConnectionString", dataverseConfig.ConnectionString);
+            Environment.SetEnvironmentVariable("Password", dataverseConfig.Password);
+            Environment.SetEnvironmentVariable("Url", dataverseConfig.Url);
+            Environment.SetEnvironmentVariable("UserName", dataverseConfig.UserName);
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Error in Dataverse configuration");
+            throw new Exception("Error in Dataverse configuration");
         }
         _dataverseClient = new DataverseClient(Utils.AppLogger.MyLoggerFactory, DataverseConfig);
     }
@@ -405,5 +456,15 @@ public class ProductFootprintIntegrator
         return dataversePcf;
     }
     
+    #endregion
+    
+    #region Initialize Pathfinder Configuration
+
+    public string CreatePathfinderConfiguration()
+    {
+        _logger.LogInformation("CreatePathfinderConfiguration called");
+        var result =_dataverseClient.InitializePathfinderFxConfiguration();
+        return "Initialization: " + result;
+    }
     #endregion
 }

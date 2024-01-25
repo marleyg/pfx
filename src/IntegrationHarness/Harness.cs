@@ -16,16 +16,20 @@ public static class Harness
             .AddEnvironmentVariables()
             .Build();
         
-        var pathfinderConfig = new PathfinderConfig
+        var dataverseConfig = new DataverseConfig()
         {
-            HostUrl = config["HostUrl"],
-            AuthUrl = config["AuthUrl"],
-            ClientId = config["ClientId"],
-            ClientSecret = config["ClientSecret"]
+            Url = config["Url"],
+            UserName = config["UserName"],
+            Password = config["Password"]
         };
 
-        var pfIntegrator = new ProductFootprintIntegrator(pathfinderConfig);
-        var result = pfIntegrator.IntegrateProductFootprints(true).Result;
+
+        var pfIntegrator = new ProductFootprintIntegrator(null, dataverseConfig, false);
+        
+        //var result = pfIntegrator.CreatePathfinderConfiguration();
+        //Console.WriteLine(result);
+        
+        var result = pfIntegrator.IntegrateProductFootprints(false).Result;
         Console.WriteLine("Footprints processed: " + result.RecordsProcessed);
         Console.WriteLine("Successful: " + result.Success);
         Console.WriteLine("Details: " + result.Message);

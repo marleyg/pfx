@@ -11,14 +11,14 @@ namespace PathfinderFx.Integration.Clients
     public class PathfinderClientBase
     {
         private readonly ILogger _logger;
-        protected readonly IPathfinderConfig Config;
+        protected readonly IPathfinderConfig.IPathfinderConfigEntry Config;
         private BearerToken? _bearer;
         protected readonly HttpClient HttpClient;
 
         /// <summary>
         ///     Constructor for PathfinderClientBase, for use with type specific dependency injection in .NET Core
         /// </summary>
-        protected PathfinderClientBase(ILoggerFactory loggerFactory, IPathfinderConfig config)
+        protected PathfinderClientBase(ILoggerFactory loggerFactory, IPathfinderConfig.IPathfinderConfigEntry config)
         {
             _logger = loggerFactory.CreateLogger<PathfinderClientBase>();
             Config = config;
@@ -43,7 +43,7 @@ namespace PathfinderFx.Integration.Clients
         private async Task GetBearerToken()
         {
             _logger.LogInformation("GetBearerToken, checking bearer token from {Name}",
-                Config.AuthUrl);
+                Config.HostAuthUrl);
             try
             {
                 //if bearer is null or bearer is not from today, get a new bearer
@@ -86,7 +86,7 @@ namespace PathfinderFx.Integration.Clients
         {
             _logger.LogTrace("Getting Authorization Token from {Name}", Config.HostUrl);
             var options =
-                new RestClientOptions(Config.AuthUrl  ?? throw new InvalidOperationException())
+                new RestClientOptions(Config.HostAuthUrl  ?? throw new InvalidOperationException())
                 {
                     ThrowOnAnyError = true,
                     MaxTimeout = 600000

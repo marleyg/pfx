@@ -1,10 +1,10 @@
 using System.Text;
 using Microsoft.Crm.Sdk.Messages;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Primitives;
 using Microsoft.PowerPlatform.Dataverse.Client;
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Messages;
+using Microsoft.Xrm.Sdk.Metadata;
 using PathfinderFx.Integration.Model;
 using PathfinderFx.Integration.Model.Entities;
 
@@ -520,9 +520,23 @@ public class DataverseClient
         }
     } 
     
+    public List<Msdyn_PathfinderFxConfiguration> GetPathfinderFxConfiguration()
+    {
+        _logger.LogInformation("GetPathfinderFxConfiguration called");
+        try
+        {
+            var query = from pf in _context.Msdyn_PathfinderFxConfigurationSet
+                select pf;
+            return query.ToList();
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Error in GetPathfinderFxConfiguration");
+            return [];
+        }
+    }
 
     #endregion
-    
     
     #region clean dataverse tables
     
@@ -649,5 +663,152 @@ public class DataverseClient
         
         return retVal.ToString();
     }
+    #endregion
+    
+    #region Setup Pathfinder Tables
+
+    private const string ConfigurationEntityName = "msdyn_pathfinderfxconfiguration";
+
+    public bool InitializePathfinderFxConfiguration()
+    {
+        _logger.LogInformation("InitializePathfinderFxConfiguration called");
+        try
+        {
+            CleanOldConfigurationTable();
+            CreatePathfinderFxConfigurationTable();
+            CreateHostUrlAttribute();
+            CreateHostAuthUrlAttribute();
+            CreateClientIdAttribute();
+            CreateClientSecretAttribute();
+            return true;
+        }  
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Error in InitializePathfinderFxConfiguration");
+            return false;
+        }
+    }
+
+    private void CleanOldConfigurationTable()
+    {
+        //look for a table called Msdyn_PathfinderFxConfiguration and if found delete it
+        try{
+            var request = new DeleteEntityRequest
+            {
+                LogicalName = ConfigurationEntityName.ToLower()
+            };
+            _context.Execute(request);
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Error in CleanOldConfigurationTable, may not exist yet");
+        }
+    }
+    
+    private void CreatePathfinderFxConfigurationTable()
+    {
+        var createConfigTableRequest = new CreateEntityRequest
+        {
+            Entity = new EntityMetadata
+            {
+                SchemaName = ConfigurationEntityName,
+                DisplayName = new Label("Pathfinder Network Settings", 1033),
+                DisplayCollectionName = new Label("Pathfinder Settings", 1033),
+                Description = new Label("An entity to store network host addresses for exchange PCF data", 1033),
+                OwnershipType = OwnershipTypes.UserOwned,
+                IsActivity = false,
+            },
+
+            PrimaryAttribute = new StringAttributeMetadata
+            {
+                SchemaName = "msdyn_hostname",
+                RequiredLevel = new AttributeRequiredLevelManagedProperty(AttributeRequiredLevel.None),
+                MaxLength = 100,
+                FormatName = StringFormatName.Text,
+                DisplayName = new Label("Host's Organization Name", 1033),
+                Description = new Label("The primary attribute for the Pathfinder Host entity.", 1033)
+            }
+        };
+
+        _logger.LogInformation("CreatePathfinderFxConfigurationTable called");
+        _context.Execute(createConfigTableRequest);
+    }
+
+    private void CreateHostUrlAttribute()
+    {
+        var createHostUrlAttributeRequest = new CreateAttributeRequest
+        {
+            EntityName = ConfigurationEntityName,
+            Attribute = new StringAttributeMetadata
+            {
+                SchemaName = "msdyn_hostbaseurl",
+                RequiredLevel = new AttributeRequiredLevelManagedProperty(AttributeRequiredLevel.None),
+                MaxLength = 255,
+                FormatName = StringFormatName.Text,
+                DisplayName = new Label("Host URL", 1033),
+                Description = new Label("Pathfinder Base Host Url", 1033)
+            }
+        };
+        _logger.LogInformation("CreateHostUrlAttribute called");
+        _context.Execute(createHostUrlAttributeRequest);
+    }
+    
+    private void CreateHostAuthUrlAttribute()
+    {
+        var createHostAuthUrlAttributeRequest = new CreateAttributeRequest
+        {
+            EntityName = ConfigurationEntityName,
+            Attribute = new StringAttributeMetadata
+            {
+                SchemaName = "msdyn_hostauthurl",
+                RequiredLevel = new AttributeRequiredLevelManagedProperty(AttributeRequiredLevel.None),
+                MaxLength = 255,
+                FormatName = StringFormatName.Text,
+                DisplayName = new Label("Host Auth URL", 1033),
+                Description = new Label("Pathfinder Host Authorization Url", 1033)
+            }
+        };
+        _logger.LogInformation("CreateHostAuthUrlAttribute called");
+        _context.Execute(createHostAuthUrlAttributeRequest);
+    }
+    
+    private void CreateClientIdAttribute()
+    {
+        var createClientIdAttributeRequest = new CreateAttributeRequest
+        {
+            EntityName = ConfigurationEntityName,
+            Attribute = new StringAttributeMetadata
+            {
+                SchemaName = "msdyn_clientid",
+                RequiredLevel = new AttributeRequiredLevelManagedProperty(AttributeRequiredLevel.None),
+                MaxLength = 255,
+                FormatName = StringFormatName.Text,
+                DisplayName = new Label("Client Id", 1033),
+                Description = new Label("Pathfinder Client Id", 1033)
+            }
+        };
+        _logger.LogInformation("CreateClientIdAttribute called");
+        _context.Execute(createClientIdAttributeRequest);
+    }
+    
+    private void CreateClientSecretAttribute()
+    {
+        var createClientSecretAttributeRequest = new CreateAttributeRequest
+        {
+            EntityName = ConfigurationEntityName,
+            Attribute = new StringAttributeMetadata
+            {
+                SchemaName = "msdyn_clientsecret",
+                RequiredLevel = new AttributeRequiredLevelManagedProperty(AttributeRequiredLevel.None),
+                MaxLength = 255,
+                FormatName = StringFormatName.Text,
+                DisplayName = new Label("Client Secret", 1033),
+                Description = new Label("Pathfinder Client Secret", 1033)
+            }
+        };
+        _logger.LogInformation("CreateClientSecretAttribute called");
+        _context.Execute(createClientSecretAttributeRequest);
+    }
+
     #endregion
 }

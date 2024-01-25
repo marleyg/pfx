@@ -28,7 +28,7 @@ namespace PathfinderFx.Integration.Clients
     {
         private System.Lazy<Newtonsoft.Json.JsonSerializerSettings> _settings;
 
-        public PathfinderClient(ILoggerFactory loggerFactory, IPathfinderConfig config) : base(loggerFactory, config)
+        public PathfinderClient(ILoggerFactory loggerFactory, IPathfinderConfig.IPathfinderConfigEntry config) : base(loggerFactory, config)
         {
             _settings = new System.Lazy<Newtonsoft.Json.JsonSerializerSettings>(CreateSerializerSettings);
         }

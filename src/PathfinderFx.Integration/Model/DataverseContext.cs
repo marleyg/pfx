@@ -49,6 +49,17 @@ public partial class DataverseContext : Microsoft.Xrm.Sdk.Client.OrganizationSer
 			return CreateQuery<Msdyn_ProductFootprintRuleMapping>();
 		}
 	}
+	
+	/// <summary>
+	/// Gets a binding to the set of all <see cref="Msdyn_PathfinderFxConfiguration"/> entities.
+	/// </summary>
+	public System.Linq.IQueryable<Msdyn_PathfinderFxConfiguration> Msdyn_PathfinderFxConfigurationSet
+	{
+		get
+		{
+			return this.CreateQuery<Msdyn_PathfinderFxConfiguration>();
+		}
+	}
 		
 	/// <summary>
 	/// Gets a binding to the set of all <see cref="Msdyn_ProductOrSectorSpecificRule"/> entities.
