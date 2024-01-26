@@ -113,6 +113,23 @@ public class DataverseClient
                 retVal.Append(Environment.NewLine);
             }
         }
+
+        if (!string.IsNullOrEmpty(dataversePfCollection.HostName))
+        {
+            try
+            {
+                var result = CreateImportRecord(dataversePfCollection.HostName, dataversePfCollection.Msdyn_SustainabilityProduct!.Msdyn_SustainabilityProductId);
+                retVal.Append("Msdyn_PathfinderFxPcFImports:" +
+                              result + " created");
+                retVal.Append(Environment.NewLine);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error in Msdyn_PathfinderFxPcFImports");
+                retVal.Append("Error in Msdyn_PathfinderFxPcFImports:" + e);
+                retVal.Append(Environment.NewLine);
+            }
+        }
         
         Guid carbonFootprintId = default;
         if (dataversePfCollection.Msdyn_SustainabilityProductCarbonFootprint != null)
@@ -172,6 +189,41 @@ public class DataverseClient
         }
         
         return retVal.ToString();
+    }
+
+    private string CreateImportRecord(string hostName, Guid? sustainabilityProductId)
+    {
+        _logger.LogInformation("CreateImportRecord called with hostName: {HostName} and sustainabilityProductId: {SustainabilityProductId}", 
+            hostName, sustainabilityProductId);
+        try
+        {
+            var configEntry = from config in _context.Msdyn_PathfinderFxConfigurationSet
+                where config.Msdyn_HostName == hostName
+                select config;
+            var configuration = configEntry.FirstOrDefault();
+            if (configuration is { Msdyn_PathfinderFxConfigurationId: not null })
+            {
+                var import = new Msdyn_PathfinderFxPcFImports
+                {
+                    Msdyn_PFId = sustainabilityProductId.ToString() ?? throw new InvalidOperationException("sustainabilityProductId is null"),
+                    New_Parent_Host = new EntityReference(Msdyn_PathfinderFxConfiguration.EntityLogicalName, (Guid)configuration.Msdyn_PathfinderFxConfigurationId)
+                };
+                var request = new CreateRequest
+                {
+                    Target = import
+                };
+                var response = (CreateResponse) _context.Execute(request);
+                _logger.LogInformation("Import record created with id: {Id}", 
+                    response.id);
+                return response.id.ToString();
+            }
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Error in CreateImportRecord");
+            return string.Empty;
+        }
+        return "";
     }
 
     public Guid CreateProduct(Msdyn_SustainabilityProduct product)
@@ -554,10 +606,12 @@ public class DataverseClient
             }
             _context.SaveChanges();
             retVal.Append("Msdyn_SustainabilityProductIdentifierSet cleaned");
+            retVal.Append(Environment.NewLine);
         }
         catch (Exception e)
         {
             retVal.Append("Error in Msdyn_SustainabilityProductIdentifierSet:" + e);
+            retVal.Append(Environment.NewLine);
         }
         retVal.Append(Environment.NewLine);
         try
@@ -570,12 +624,33 @@ public class DataverseClient
             }
             _context.SaveChanges();
             retVal.Append("Msdyn_SustainabilityProductSet cleaned");
+            retVal.Append(Environment.NewLine);
         }
         catch (Exception e)
         {
             retVal.Append("Error in Msdyn_SustainabilityProductSet:" + e);
+            retVal.Append(Environment.NewLine);
         }
         retVal.Append(Environment.NewLine);
+
+        try
+        {
+            var query = from import in _context.Msdyn_PathfinderFxPcFImportsSet
+                select import;
+            foreach (var import in query)
+            {
+                _context.DeleteObject(import);
+            }
+            _context.SaveChanges();
+            retVal.Append("Msdyn_PathfinderFxPcFImportsSet cleaned");
+            retVal.Append(Environment.NewLine);
+        }
+        catch (Exception e)
+        {
+            retVal.Append("Error in Msdyn_PathfinderFxPcFImportsSet:" + e);
+            retVal.Append(Environment.NewLine);
+        }
+        
         try
         {
             var query = from pf in _context.Msdyn_SustainabilityProductFootprintSet
@@ -586,10 +661,12 @@ public class DataverseClient
             }
             _context.SaveChanges();
             retVal.Append("Msdyn_SustainabilityProductFootprintSet cleaned");
+            retVal.Append(Environment.NewLine);
         }
         catch (Exception e)
         {
             retVal.Append("Error in Msdyn_SustainabilityProductFootprintSet:" + e);
+            retVal.Append(Environment.NewLine);
         }
         retVal.Append(Environment.NewLine);
         
@@ -603,10 +680,12 @@ public class DataverseClient
             }
             _context.SaveChanges();
             retVal.Append("Msdyn_SustainabilityProductCarbonFootprintSet cleaned");
+            retVal.Append(Environment.NewLine);
         }
         catch (Exception e)
         {
             retVal.Append("Error in Msdyn_SustainabilityProductCarbonFootprintSet:" + e);
+            retVal.Append(Environment.NewLine);
         }
         retVal.Append(Environment.NewLine);
         
@@ -620,10 +699,12 @@ public class DataverseClient
             }
             _context.SaveChanges();
             retVal.Append("Msdyn_ProductCarbonFootprintAssuranceSet cleaned");
+            retVal.Append(Environment.NewLine);
         }
         catch (Exception e)
         {
             retVal.Append("Error in Msdyn_ProductCarbonFootprintAssuranceSet:" + e);
+            retVal.Append(Environment.NewLine);
         }
         retVal.Append(Environment.NewLine);
         
@@ -637,10 +718,12 @@ public class DataverseClient
             }
             _context.SaveChanges();
             retVal.Append("Msdyn_ProductOrSectorSpecificRuleSet cleaned");
+            retVal.Append(Environment.NewLine);
         }
         catch (Exception e)
         {
             retVal.Append("Error in Msdyn_ProductOrSectorSpecificRuleSet:" + e);
+            retVal.Append(Environment.NewLine);
         }
         retVal.Append(Environment.NewLine);
         
@@ -654,10 +737,12 @@ public class DataverseClient
             }
             _context.SaveChanges();
             retVal.Append("Msdyn_ProductFootprintRuleMappingSet cleaned");
+            retVal.Append(Environment.NewLine);
         }
         catch (Exception e)
         {
             retVal.Append("Error in Msdyn_ProductFootprintRuleMappingSet:" + e);
+            retVal.Append(Environment.NewLine);
         }
         retVal.Append(Environment.NewLine);
         
@@ -668,6 +753,7 @@ public class DataverseClient
     #region Setup Pathfinder Tables
 
     private const string ConfigurationEntityName = "msdyn_pathfinderfxconfiguration";
+    private const string PcfImportEntityName = "msdyn_pathfinderfxpcfimports";
 
     public bool InitializePathfinderFxConfiguration()
     {
@@ -675,11 +761,17 @@ public class DataverseClient
         try
         {
             CleanOldConfigurationTable();
+            CleanOldImportsTable();
             CreatePathfinderFxConfigurationTable();
             CreateHostUrlAttribute();
             CreateHostAuthUrlAttribute();
             CreateClientIdAttribute();
             CreateClientSecretAttribute();
+
+            _logger.LogInformation("Creating PathfinderFxPcfImports");
+            CreatePathfinderFxPcfImports();
+            CreateRelationshipBetweenPcfImportsAndConfiguration();
+            
             return true;
         }  
         catch (Exception e)
@@ -702,6 +794,22 @@ public class DataverseClient
         catch (Exception e)
         {
             _logger.LogError(e, "Error in CleanOldConfigurationTable, may not exist yet");
+        }
+    }
+    
+    private void CleanOldImportsTable()
+    {
+        //look for a table called Msdyn_PcfImportEntityName and if found delete it
+        try{
+            var request = new DeleteEntityRequest
+            {
+                LogicalName = PcfImportEntityName.ToLower()
+            };
+            _context.Execute(request);
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Error in CleanOldImportsTable, may not exist yet");
         }
     }
     
@@ -810,5 +918,136 @@ public class DataverseClient
         _context.Execute(createClientSecretAttributeRequest);
     }
 
+    private void CreatePathfinderFxPcfImports()
+    {
+        var createConfigTableRequest = new CreateEntityRequest
+        {
+            Entity = new EntityMetadata
+            {
+                SchemaName = PcfImportEntityName,
+                DisplayName = new Label("Pathfinder PCF Imports", 1033),
+                DisplayCollectionName = new Label("Pathfinder Imports", 1033),
+                Description = new Label("An entity to store a history of PCF imports from the Pathfinder Network", 1033),
+                OwnershipType = OwnershipTypes.UserOwned,
+                IsActivity = false,
+            },
+
+            PrimaryAttribute = new StringAttributeMetadata
+            {
+                SchemaName = "msdyn_pfId",
+                RequiredLevel = new AttributeRequiredLevelManagedProperty(AttributeRequiredLevel.None),
+                MaxLength = Guid.NewGuid().ToString().Length,
+                FormatName = StringFormatName.Text,
+                DisplayName = new Label("The Product Footprint Id", 1033),
+                Description = new Label("The primary attribute for the imported PCF.", 1033)
+            }
+        };
+
+        _logger.LogInformation("CreatePcfImports called");
+        _context.Execute(createConfigTableRequest);
+    }
+
+    private void CreateRelationshipBetweenPcfImportsAndConfiguration()
+    {
+        var eligibleCreateOneToManyRelationship =
+            EligibleCreateOneToManyRelationship(ConfigurationEntityName, PcfImportEntityName);
+
+        if (!eligibleCreateOneToManyRelationship) return;
+        var createOneToManyRelationshipRequest =
+            new CreateOneToManyRequest
+            {
+                OneToManyRelationship =
+                    new OneToManyRelationshipMetadata
+                    {
+                        ReferencedEntity = ConfigurationEntityName,
+                        ReferencingEntity = PcfImportEntityName,
+                        SchemaName = "new_host_pcf",
+                        AssociatedMenuConfiguration = new AssociatedMenuConfiguration
+                        {
+                            Behavior = AssociatedMenuBehavior.UseLabel,
+                            Group = AssociatedMenuGroup.Details,
+                            Label = new Label("PathfinderHost", 1033),
+                            Order = 10000
+                        },
+                        CascadeConfiguration = new CascadeConfiguration
+                        {
+                            Assign = CascadeType.NoCascade,
+                            Delete = CascadeType.RemoveLink,
+                            Merge = CascadeType.NoCascade,
+                            Reparent = CascadeType.NoCascade,
+                            Share = CascadeType.NoCascade,
+                            Unshare = CascadeType.NoCascade
+                        }
+                    },
+                Lookup = new LookupAttributeMetadata
+                {
+                    SchemaName = "new_parent_host",
+                    DisplayName = new Label("Host Lookup", 1033),
+                    RequiredLevel = new AttributeRequiredLevelManagedProperty(AttributeRequiredLevel.None),
+                    Description = new Label("Host Lookup", 1033)
+                }
+            };
+        
+        var createOneToManyRelationshipResponse =
+            (CreateOneToManyResponse)_context.Execute(
+                createOneToManyRelationshipRequest);
+
+        var oneToManyRelationshipId =
+            createOneToManyRelationshipResponse.RelationshipId;
+        var oneToManyRelationshipName =
+            createOneToManyRelationshipRequest.OneToManyRelationship.SchemaName;
+
+        _logger.LogInformation(
+            "The one-to-many relationship {Guid} with {SchemaName} has been created between {One} and {Two}",
+            oneToManyRelationshipId, oneToManyRelationshipName, ConfigurationEntityName, PcfImportEntityName);
+    }
+
+
+    /// <summary>
+    /// Determines whether two entities are eligible to participate in a relationship
+    /// </summary>
+    /// <param name="referencedEntity">Primary Entity</param>
+    /// <param name="referencingEntity">Referencing Entity</param>
+    /// <returns></returns>
+    private bool EligibleCreateOneToManyRelationship(string referencedEntity,
+        string referencingEntity)
+    {
+        //Checks whether the specified entity can be the primary entity in one-to-many
+        //relationship.
+        var canBeReferencedRequest = new CanBeReferencedRequest
+        {
+            EntityName = referencedEntity
+        };
+
+        var canBeReferencedResponse =
+            (CanBeReferencedResponse) _context.Execute(canBeReferencedRequest);
+
+        if (!canBeReferencedResponse.CanBeReferenced)
+        {
+            _logger.LogInformation(
+                "Entity {EName} can't be the primary entity in this one-to-many relationship",
+                referencedEntity);
+        }
+
+        //Checks whether the specified entity can be the referencing entity in one-to-many
+        //relationship.
+        var canBeReferencingRequest = new CanBeReferencingRequest
+        {
+            EntityName = referencingEntity
+        };
+
+        CanBeReferencingResponse canBeReferencingResponse =
+            (CanBeReferencingResponse)_context.Execute(canBeReferencingRequest);
+
+        if (!canBeReferencingResponse.CanBeReferencing)
+        {
+            _logger.LogInformation(
+                "Entity {EName} can't be the referencing entity in this one-to-many relationship",
+                referencingEntity);
+        }
+        
+        return canBeReferencedResponse.CanBeReferenced
+               && canBeReferencingResponse.CanBeReferencing;
+    }
     #endregion
 }

@@ -212,7 +212,10 @@ public class ProductFootprintIntegrator
             return null;
         }
 
-        var dataversePfEntityCollection = new ProductFootprintEntityCollection();
+        var dataversePfEntityCollection = new ProductFootprintEntityCollection
+        {
+            HostName = _currentPathfinderConfigEntry?.HostName
+        };
         
         //get the SustainabilityProductIdentifier entity from the ProductFootprint
         var identifier = new Msdyn_SustainabilityProductIdentifier
@@ -460,7 +463,7 @@ public class ProductFootprintIntegrator
     
     #region Initialize Pathfinder Configuration
 
-    public string CreatePathfinderConfiguration()
+    public string CreatePathfinderConfiguration(bool justImports = false)
     {
         _logger.LogInformation("CreatePathfinderConfiguration called");
         var result =_dataverseClient.InitializePathfinderFxConfiguration();

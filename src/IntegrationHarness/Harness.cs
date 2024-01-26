@@ -25,13 +25,15 @@ public static class Harness
 
 
         var pfIntegrator = new ProductFootprintIntegrator(null, dataverseConfig, false);
-        
-        //var result = pfIntegrator.CreatePathfinderConfiguration();
-        //Console.WriteLine(result);
-        
-        var result = pfIntegrator.IntegrateProductFootprints(false).Result;
+        /*
+        var result = pfIntegrator.CreatePathfinderConfiguration();
+        Console.WriteLine(result);
+        */
+
+        var result = pfIntegrator.IntegrateProductFootprints(true).Result;
         Console.WriteLine("Footprints processed: " + result.RecordsProcessed);
         Console.WriteLine("Successful: " + result.Success);
         Console.WriteLine("Details: " + result.Message);
+        
     }
 }

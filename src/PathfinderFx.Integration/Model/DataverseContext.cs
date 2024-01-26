@@ -51,6 +51,17 @@ public partial class DataverseContext : Microsoft.Xrm.Sdk.Client.OrganizationSer
 	}
 	
 	/// <summary>
+	/// Gets a binding to the set of all <see cref="DataverseModel.Msdyn_PathfinderFxPcFImports"/> entities.
+	/// </summary>
+	public System.Linq.IQueryable<Msdyn_PathfinderFxPcFImports> Msdyn_PathfinderFxPcFImportsSet
+	{
+		get
+		{
+			return this.CreateQuery<Msdyn_PathfinderFxPcFImports>();
+		}
+	}
+	
+	/// <summary>
 	/// Gets a binding to the set of all <see cref="Msdyn_PathfinderFxConfiguration"/> entities.
 	/// </summary>
 	public System.Linq.IQueryable<Msdyn_PathfinderFxConfiguration> Msdyn_PathfinderFxConfigurationSet

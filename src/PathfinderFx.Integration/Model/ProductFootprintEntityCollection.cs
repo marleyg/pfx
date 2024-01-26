@@ -4,6 +4,7 @@ namespace PathfinderFx.Integration.Model;
 
 public class ProductFootprintEntityCollection
 {
+    public string? HostName { get; set; } = "";
     public Msdyn_SustainabilityProduct? Msdyn_SustainabilityProduct { get; set; }
     public Msdyn_SustainabilityProductIdentifier? Msdyn_SustainabilityProductIdentifier { get; set; }
     public Msdyn_SustainabilityProductFootprint? Msdyn_SustainabilityProductFootprint { get; set; }
