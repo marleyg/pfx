@@ -745,6 +745,23 @@ public class DataverseClient
             retVal.Append(Environment.NewLine);
         }
         retVal.Append(Environment.NewLine);
+
+        try
+        {
+            var query = from pf in _context.Msdyn_PathfinderFxPcFImportsSet select pf;
+            foreach (var pf in query)
+            {
+                _context.DeleteObject(pf);
+            }
+            _context.SaveChanges();
+            retVal.Append("Msdyn_PathfinderFxPcFImportsSet cleaned");
+            retVal.Append(Environment.NewLine);
+        }
+        catch (Exception e)
+        {
+            retVal.Append("Error in Msdyn_PathfinderFxPcFImportsSet:" + e);
+            retVal.Append(Environment.NewLine);
+        }
         
         return retVal.ToString();
     }

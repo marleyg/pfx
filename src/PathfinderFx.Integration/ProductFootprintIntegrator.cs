@@ -197,6 +197,13 @@ public class ProductFootprintIntegrator
         }
         return result;
     }
+    
+    public Task<string> CleanDataverseTables()
+    {
+        _logger.LogInformation("CleanDataverseTables called");
+        var result = _dataverseClient?.CleanDataverseTables();
+        return Task.FromResult(result ?? "Error cleaning Dataverse tables");
+    }
 
     #region entity collections
     private ProductFootprintEntityCollection? GetDataversePfEntity(ProductFootprint pf)
