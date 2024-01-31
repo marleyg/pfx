@@ -437,7 +437,7 @@ public class ProductFootprintIntegrator
             var unit = _units?.FirstOrDefault(u => string.Equals(u.Msdyn_Name, searchUnit, StringComparison.CurrentCultureIgnoreCase));
             if (unit != null)
             {
-                dataversePcf.Msdyn_DeclaredUnit = new EntityReference(Msdyn_Unit.EntityLogicalName, (Guid)unit.Msdyn_UnitId);
+                dataversePcf.Msdyn_DeclaredUnit = new EntityReference(Msdyn_Unit.EntityLogicalName, (Guid)unit.Msdyn_UnitId!);
             }
         }
         
@@ -473,7 +473,7 @@ public class ProductFootprintIntegrator
     public string CreatePathfinderConfiguration(bool justImports = false)
     {
         _logger.LogInformation("CreatePathfinderConfiguration called");
-        var result =_dataverseClient.InitializePathfinderFxConfiguration();
+        var result =_dataverseClient!.InitializePathfinderFxConfiguration();
         return "Initialization: " + result;
     }
     #endregion

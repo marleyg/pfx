@@ -35,12 +35,11 @@ public static class Harness
         Console.WriteLine(cleanResult.Result);
         */
         
-        /*
         var result = pfIntegrator.IntegrateProductFootprints(true).Result;
         Console.WriteLine("Footprints processed: " + result.RecordsProcessed);
         Console.WriteLine("Successful: " + result.Success);
         Console.WriteLine("Details: " + result.Message);
-        */
+        
 
     }
 }
