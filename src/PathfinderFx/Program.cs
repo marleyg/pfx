@@ -118,11 +118,11 @@ namespace PathfinderFx
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen(options =>
             {
-                options.SwaggerDoc("v1", new OpenApiInfo
+                options.SwaggerDoc("v2", new OpenApiInfo
                 {
-                    Version = "v1-Conformance 1.0.0",
-                    Title = "Pathfinder 2.1.0 API - Conformance 1.0.0",
-                    Description = "A Request/Response API for WBCSD:PACT Pathfinder 2.1.0 (Version 2.1.0-20231207) technical specifications, this is the v2.0 Data Model. This API is not intended for production use.",
+                    Version = "v1-Conformance 2.2.0",
+                    Title = "Pathfinder 2.2.0 API - Conformance 2.2.0",
+                    Description = "A Request/Response API for WBCSD:PACT Pathfinder 2.2.0 (Version 2.2.0-20240123) technical specifications, this is the v2.0 Data Model. This API is not intended for production use.",
                     Contact = new OpenApiContact
                     {
                         Name = "Marley Gray",

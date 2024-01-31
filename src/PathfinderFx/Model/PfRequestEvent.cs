@@ -36,10 +36,18 @@ public class PfRequestData
     /// </summary>
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     [JsonPropertyName("pf")]
-    public string Pf { get; set; } = string.Empty;
+    public PfIds Pf { get; set; } = new();
     
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     [JsonPropertyName("comment")]
     public string? Comment { get; set; }
+}
+
+public class PfIds
+{
+    //example urn:gtin:4712345060507
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    [JsonPropertyName("productIds")]
+    public List<string> ProductIds { get; set; } = [];
 }
 

@@ -18,7 +18,7 @@ public class PfResponseEvent
     public string? Source { get; set; }
 
     [JsonPropertyName("data")]
-    public PfResponseData? Data { get; set; }
+    public PfResponseData? Data { get; set; } = new();
 }
 
 public class PfResponseData
