@@ -114,7 +114,7 @@ namespace PathfinderFx
 
             builder.Services.AddHostedService<Worker>();
 
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+            // https://sine-fdn.github.io/data-exchange-protocol/v2/#changelog-2.2.0-20240123
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen(options =>
             {
