@@ -12,9 +12,11 @@ public class ProductFootprintIntegrator
     private readonly ILogger _logger = Utils.AppLogger.MyLoggerFactory.CreateLogger<ProductFootprintIntegrator>();
     private static readonly IPathfinderConfig PathfinderConfig = new PathfinderConfig();
     private static readonly IDataverseConfig DataverseConfig = new DataverseConfig();
+    private static readonly IFabricConfig FabricConfig = new FabricConfig();
 
     private PathfinderClient? _pathfinderClient;
     private DataverseClient? _dataverseClient;
+    private FabricClient? _fabricClient;
     private List<Msdyn_Unit>? _units;
     private IPathfinderConfig.IPathfinderConfigEntry? _currentPathfinderConfigEntry;
     
@@ -23,17 +25,20 @@ public class ProductFootprintIntegrator
     {
         _logger.LogInformation("ProductFootprintIntegrator constructor called");
         SetDataverseConfiguration();
+        SetFabricConfiguration();
         SetPathfinderConfiguration();
     }
 
-    public ProductFootprintIntegrator(IPathfinderConfig? pathfinderConfig = null, IDataverseConfig? dataverseConfig = null, bool initialization = false)
+    public ProductFootprintIntegrator(IPathfinderConfig? pathfinderConfig = null, IDataverseConfig? dataverseConfig = null, IFabricConfig? fabricConfig = null, bool initialization = false)
     {
         _logger.LogInformation("ProductFootprintIntegrator constructor called");
         SetDataverseConfiguration(dataverseConfig);
-        if(!initialization)
-            SetPathfinderConfiguration(pathfinderConfig);
+        SetFabricConfiguration(fabricConfig);
+        
+        if (initialization) return;
+        SetPathfinderConfiguration(pathfinderConfig);
     }
-    
+
     #endregion
 
     #region configuration
@@ -102,6 +107,7 @@ public class ProductFootprintIntegrator
                 }
 
                 _currentPathfinderConfigEntry = config.PathfinderConfigEntries!.FirstOrDefault();
+                PathfinderConfig.PathfinderConfigEntries = config.PathfinderConfigEntries;
             }
             catch (Exception e)
             {
@@ -125,6 +131,20 @@ public class ProductFootprintIntegrator
         _pathfinderClient = new PathfinderClient(Utils.AppLogger.MyLoggerFactory, _currentPathfinderConfigEntry);
     }
 
+    
+    private void SetFabricConfiguration(IFabricConfig? fabricConfig = null)
+    {
+        if (fabricConfig == null)
+        {
+            _logger.LogError("Fabric configuration is required");
+            throw new Exception("Fabric configuration is required");
+        }
+        FabricConfig.DataLakeAccountName = fabricConfig.DataLakeAccountName;
+        FabricConfig.FileSystemName = fabricConfig.FileSystemName;
+        
+        _fabricClient = new FabricClient(Utils.AppLogger.MyLoggerFactory, FabricConfig);
+    }
+    
     private void SetDataverseConfiguration(IDataverseConfig? dataverseConfig = null)
     {
         _logger.LogInformation("SetDataverseConfiguration called");
@@ -155,10 +175,12 @@ public class ProductFootprintIntegrator
 
     #endregion
     
-    public async Task<IntegrationResult> IntegrateProductFootprints(bool cleanDataverse = false)
+    public async Task<IntegrationResult> IntegrateProductFootprints(bool cleanDataverse = false, string hostToUse = "", bool includeFabric = false)
     {
         _logger.LogInformation("IntegrateProductFootprints called");
 
+        if(!string.IsNullOrEmpty(hostToUse))
+            SetCurrentPathfinderHost(hostToUse);
         if (cleanDataverse)
         {
             _logger.LogInformation("Cleaning Dataverse of ProductFootprints");
@@ -188,22 +210,23 @@ public class ProductFootprintIntegrator
         {
             _logger.LogInformation("Processing footprint {FootprintId}", footprint.Id);
             
+            //dataverse processing
             var dataversePf = GetDataversePfEntity(footprint);
             if (dataversePf == null) continue;
             var resultMsg = _dataverseClient.AddProductFootprint(dataversePf);
             result.RecordsProcessed++;
             result.Success = true;
             result.Message = resultMsg;
+            
+            //fabric processing
+            if (includeFabric)
+            {
+                
+            }
         }
         return result;
     }
-    
-    public Task<string> CleanDataverseTables()
-    {
-        _logger.LogInformation("CleanDataverseTables called");
-        var result = _dataverseClient?.CleanDataverseTables();
-        return Task.FromResult(result ?? "Error cleaning Dataverse tables");
-    }
+
 
     #region entity collections
     private ProductFootprintEntityCollection? GetDataversePfEntity(ProductFootprint pf)
@@ -468,13 +491,29 @@ public class ProductFootprintIntegrator
     
     #endregion
     
-    #region Initialize Pathfinder Configuration
+    #region Initialize or clean Pathfinder Configuration
 
-    public string CreatePathfinderConfiguration(bool justImports = false)
+        
+    public Task<string> CleanDataverseTables()
+    {
+        _logger.LogInformation("CleanDataverseTables called");
+        var result = _dataverseClient?.CleanDataverseTables();
+        return Task.FromResult(result ?? "Error cleaning Dataverse tables");
+    }
+    
+    public string CreatePathfinderConfiguration()
     {
         _logger.LogInformation("CreatePathfinderConfiguration called");
-        var result =_dataverseClient!.InitializePathfinderFxConfiguration();
-        return "Initialization: " + result;
+
+        var result = new StringBuilder();
+        
+        //result.Append("Dataverse Initialized: " + _dataverseClient!.InitializePathfinderFxConfiguration());
+        
+        //get the Hostnames from the PathfinderConfig
+        var hostNames = PathfinderConfig.PathfinderConfigEntries!.Select(entry => entry.HostName!).ToList();
+        
+        result.AppendLine("Fabric Initialized: " + _fabricClient!.InitializeFabricConfiguration(hostNames).Result);
+        return result.ToString();
     }
     #endregion
 }

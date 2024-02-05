@@ -22,24 +22,30 @@ public static class Harness
             UserName = config["UserName"],
             Password = config["Password"]
         };
+        
+        var fabricConfig = new FabricConfig()
+        {
+            DataLakeAccountName = config["DataLakeAccountName"],
+            FileSystemName = config["FileSystemName"]
+        };
 
 
-        var pfIntegrator = new ProductFootprintIntegrator(null, dataverseConfig, false);
-        /*
+        var pfIntegrator = new ProductFootprintIntegrator(null, dataverseConfig, fabricConfig,false);
+        
         var result = pfIntegrator.CreatePathfinderConfiguration();
         Console.WriteLine(result);
-        */
+        
 
         /*
         var cleanResult = pfIntegrator.CleanDataverseTables();
         Console.WriteLine(cleanResult.Result);
         */
         
+        /*
         var result = pfIntegrator.IntegrateProductFootprints(true).Result;
         Console.WriteLine("Footprints processed: " + result.RecordsProcessed);
         Console.WriteLine("Successful: " + result.Success);
         Console.WriteLine("Details: " + result.Message);
-        
-
+        */
     }
 }
