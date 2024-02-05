@@ -173,7 +173,8 @@ namespace PathfinderFx.Integration.Clients
                 new IsoDateTimeConverter { DateTimeStyles = DateTimeStyles.AssumeUniversal }
             }
         };
-        
+        public static ProductFootprint? FromJson(string? json) => JsonConvert.DeserializeObject<ProductFootprint>(json!, TokenConverter.Settings);
         public static string ToJson(ProductFootprint self) => JsonConvert.SerializeObject(self, Settings);
     }
+    
 }

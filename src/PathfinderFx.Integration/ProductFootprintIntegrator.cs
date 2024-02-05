@@ -219,10 +219,13 @@ public class ProductFootprintIntegrator
             result.Message = resultMsg;
             
             //fabric processing
-            if (includeFabric)
-            {
-                
-            }
+            if (!includeFabric) continue;
+            _logger.LogInformation("Processing footprint {FootprintId} for Fabric", footprint.Id);
+            var hostName = _currentPathfinderConfigEntry!.HostName;
+            if (hostName == null) continue;
+            var fabricResult =
+                await _fabricClient?.AddFootprint(hostName, footprint)!;
+            result.FabricMessage = fabricResult;
         }
         return result;
     }
@@ -507,7 +510,7 @@ public class ProductFootprintIntegrator
 
         var result = new StringBuilder();
         
-        //result.Append("Dataverse Initialized: " + _dataverseClient!.InitializePathfinderFxConfiguration());
+        result.Append("Dataverse Initialized: " + _dataverseClient!.InitializePathfinderFxConfiguration());
         
         //get the Hostnames from the PathfinderConfig
         var hostNames = PathfinderConfig.PathfinderConfigEntries!.Select(entry => entry.HostName!).ToList();
