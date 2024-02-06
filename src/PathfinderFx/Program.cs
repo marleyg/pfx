@@ -3,8 +3,6 @@ using System.Security.Cryptography.X509Certificates;
 using System.Text.Json.Serialization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
-using OpenIddict.Server;
-using PathfinderFx.Handlers;
 using PathfinderFx.Model;
 using Quartz;
 
@@ -75,10 +73,13 @@ namespace PathfinderFx
                     // Enable the token endpoint.
                     options.SetTokenEndpointUris("2/auth/token");
 
+                    /*
+                     //not sure if we need these anymore
                     options.AddEventHandler<OpenIddictServerEvents.ApplyTokenResponseContext>(b =>
                         b.UseSingletonHandler<PfxCustomHandlers.PfxApplyTokenResponseHandler>());
                     options.AddEventHandler<OpenIddictServerEvents.ApplyVerificationResponseContext>(b =>
                         b.UseSingletonHandler<PfxCustomHandlers.PfxApplyVerificationResponseHandler>());
+                    */
 
                     // Enable the client credentials flow.
                     options.AllowClientCredentialsFlow();
@@ -156,37 +157,7 @@ namespace PathfinderFx
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
-
-            /*
-            //block of customized text responses to errors needed for conformance to the WBCSD:PACT Pathfinder 2.1.0 (Version 2.0.1-20230522) technical specifications, only works after OpenIddict validation is passed
-            app.Use(async (context, next) =>
-            {
-                await next.Invoke();
-                switch (context.Response.StatusCode)
-                {
-                    case StatusCodes.Status403Forbidden:
-                        await context.Response.WriteAsync(new SimpleErrorMessage("Access Denied", "AccessDenied").ToJson());
-                        break;
-                    case StatusCodes.Status400BadRequest:
-                        //await context.Response.WriteAsync(new SimpleErrorMessage("Bad request", "BadRequest").ToJson());
-                        break;
-                    case StatusCodes.Status404NotFound:
-                        context.Response.ContentType = "application/json";
-                        await context.Response.WriteAsync(new SimpleErrorMessage("The specified footprint does not exist", "NoSuchFootprint").ToJson());
-                        break;
-                    case StatusCodes.Status501NotImplemented:
-                        await context.Response.WriteAsync(new SimpleErrorMessage("The specified Action or header you provided implies functionality that is not implemented", "NotImplemented").ToJson());
-                        break;
-                    case StatusCodes.Status401Unauthorized:
-                        await context.Response.WriteAsync(new SimpleErrorMessage("The specified access token is invalid or has expired", "TokenInvalid").ToJson());
-                        break;
-                    case StatusCodes.Status500InternalServerError:
-                        await context.Response.WriteAsync(new SimpleErrorMessage("The specified Action or header you provided implies functionality that is not implemented", "InternalError").ToJson());
-                        break;
-                }
-            });
-            */
-
+            
             app.MapControllers();
             app.MapDefaultControllerRoute();
 

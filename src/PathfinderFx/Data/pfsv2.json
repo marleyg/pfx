@@ -88,66 +88,64 @@
       "updated": "2022-11-21T21:47:32Z",
       "status": "Active",
       "statusComment": "Updated PCF to reflect new data",
-      "validityPeriodStart": "2022-11-21T14:47:32+00:00",
-      "validityPeriodEnd": "2023-12-08T14:47:32+00:00",
+      "validityPeriodStart": "2023-11-21T14:47:32+00:00",
+      "validityPeriodEnd": "2024-1-08T14:47:32+00:00",
       "companyName": "My Corp",
       "companyIds": [
-        "urn:uuid:51131FB5-42A2-4267-A402-0ECFEFAD1619",
-        "urn:epc:id:sgln:4063973.00000.8"
+        "urn:uuid:f5257737-db27-4495-b99a-55bbc5130f96"
       ],
-      "productDescription": "Cote'd Or Ethanol",
+      "productDescription": "Solar Inverter",
       "productIds": [
-        "urn:gtin:4712345060507"
+        "urn:rnpwr:s:us:1234567890"
       ],
-      "productCategoryCpc": "3342",
-      "productNameCompany": "Green Ethanol",
+      "productCategoryCpc": "31424",
+      "productNameCompany": "P94x Solar Inverter",
       "comment": "This PCF was calculated using a new model that reflects updates to the data.",
       "pcf": {
-        "declaredUnit": "liter",
-        "unitaryProductAmount": "10.0",
-        "pCfExcludingBiogenic": "8.0",
-        "pCfIncludingBiogenic": "10.0",
-        "fossilGhgEmissions": "0.123",
-        "fossilCarbonContent": "0.10",
-        "biogenicCarbonContent": "2.12",
-        "dLucGhgEmissions": "2.5",
-        "landManagementGhgEmissions": "0.01",
-        "otherBiogenicGhgEmissions": "0.4",
-        "iLucGhgEmissions": "0.5",
-        "biogenicCarbonWithdrawal": "0.6",
-        "aircraftGhgEmissions": "0.7",
+        "declaredUnit": "kilogram",
+        "unitaryProductAmount": "3.12",
+        "pCfExcludingBiogenic": "0.0",
+        "pCfIncludingBiogenic": "0.2",
+        "fossilGhgEmissions": "0.023",
+        "fossilCarbonContent": "1.2",
+        "biogenicCarbonContent": "0.12",
+        "dLucGhgEmissions": ".51",
+        "landManagementGhgEmissions": "0.11",
+        "otherBiogenicGhgEmissions": "0.0",
+        "iLucGhgEmissions": "0.0",
+        "biogenicCarbonWithdrawal": "1.6",
+        "aircraftGhgEmissions": "0.0",
         "characterizationFactors": "AR6",
         "crossSectoralStandardsUsed": [
           "GHG Protocol Product standard"
         ],
         "productOrSectorSpecificRules": [
           {
-            "operator": "EPD International",
+            "operator": "I-REC-Standard",
             "ruleNames": [
-              "ABC 2021"
+              "IREC 2022"
             ]
           }
         ],
         "biogenicAccountingMethodology": "ISO",
         "boundaryProcessesDescription": "End-of-life included",
-        "referencePeriodStart": "2021-01-01T00:00:00+00:00",
-        "referencePeriodEnd": "2022-01-01T00:00:00+00:00",
-        "geographyCountrySubdivision": "US-NY",
-        "geographyCountry": "US",
+        "referencePeriodStart": "2023-01-01T00:00:00+00:00",
+        "referencePeriodEnd": "2024-01-01T00:00:00+00:00",
+        "geographyCountry": "CN",
         "secondaryEmissionFactorSources": [
           {
             "name": "Ecoinvent",
-            "version": "1.2.3"
+            "version": "2.2.3"
           }
         ],
-        "exemptedEmissionsPercent": 3.1,
+        "exemptedEmissionsPercent": 0.1,
         "exemptedEmissionsDescription": "Excluded PCF emissions due to overestimation of emissions.",
         "packagingEmissionsIncluded": true,
         "packagingGhgEmissions": "0.1",
         "allocationRulesDescription": "Allocation rules were applied to account for the use of multiple feedstocks.",
         "uncertaintyAssessmentDescription": "Uncertainty was assessed using a Monte Carlo simulation.",
         "dqi": {
-          "coveragePercent": 100,
+          "coveragePercent": 90,
           "technologicalDQR": 1.13,
           "temporalDQR": 2.57,
           "geographicalDQR": 1,
@@ -171,39 +169,38 @@
       "validityPeriodEnd": "2023-12-08T14:47:32+00:00",
       "companyName": "Acme Corp",
       "companyIds": [
-        "urn:uuid:51131FB5-42A2-4267-A402-0ECFEFAD1619",
         "urn:epc:id:sgln:4063973.00000.8"
       ],
-      "productDescription": "Cote'd Or Ethanol",
+      "productDescription": "Canvas Sheet",
       "productIds": [
-        "urn:gtin:4712345060507"
+        "urn:gtin:687139912"
       ],
       "productCategoryCpc": "3342",
-      "productNameCompany": "Green Ethanol",
+      "productNameCompany": "Green Canvas",
       "comment": "Should have information and instructions related to the calculation of the footprint, or other information which informs the ability to interpret, to audit or to verify the Product Footprint.",
       "pcf": {
-        "declaredUnit": "liter",
-        "unitaryProductAmount": "12.0",
-        "pCfExcludingBiogenic": "0.0",
-        "pCfIncludingBiogenic": "0.0",
-        "fossilGhgEmissions": "0.123",
-        "fossilCarbonContent": "1.721",
-        "biogenicCarbonContent": "0.0",
-        "dLucGhgEmissions": "0.011",
-        "landManagementGhgEmissions": "0.01",
-        "otherBiogenicGhgEmissions": "0.0",
+        "declaredUnit": "tonne",
+        "unitaryProductAmount": "1.0",
+        "pCfExcludingBiogenic": "0.6",
+        "pCfIncludingBiogenic": "1.2",
+        "fossilGhgEmissions": "0.423",
+        "fossilCarbonContent": "0.621",
+        "biogenicCarbonContent": "0.01",
+        "dLucGhgEmissions": "0.21",
+        "landManagementGhgEmissions": "2.20",
+        "otherBiogenicGhgEmissions": "0.4",
         "iLucGhgEmissions": "0.021",
         "biogenicCarbonWithdrawal": "0.0",
         "aircraftGhgEmissions": "0.0",
-        "characterizationFactors": "AR6",
+        "characterizationFactors": "AR5",
         "crossSectoralStandardsUsed": [
           "GHG Protocol Product standard"
         ],
         "productOrSectorSpecificRules": [
           {
-            "operator": "EPD International",
+            "operator": "UDSD International",
             "ruleNames": [
-              "ABC 2021"
+              "ABC 2022"
             ]
           }
         ],
@@ -211,16 +208,16 @@
         "boundaryProcessesDescription": "End-of-life included",
         "referencePeriodStart": "2021-01-01T00:00:00+00:00",
         "referencePeriodEnd": "2022-01-01T00:00:00+00:00",
-        "geographyCountrySubdivision": "US-NY",
+        "geographyCountrySubdivision": "US-GA",
         "geography_country": "US",
         "geographyRegionOrSubregion": "North America",
         "secondaryEmissionFactorSources": [
           {
-            "name": "Ecoinvent",
-            "version": "1.2.3"
+            "name": "Carbon Trust",
+            "version": "2.3"
           }
         ],
-        "exemptedEmissionsPercent": 0.0,
+        "exemptedEmissionsPercent": 0.1,
         "exemptedEmissionsDescription": "",
         "packagingEmissionsIncluded": true,
         "packagingGhgEmissions": "2.123",
@@ -255,7 +252,7 @@
             "consignmentId": "Cabc.def-ghi",
             "shipmentType": "PICKUP",
             "weight": 10,
-            "transportChainElementId": "ABCDEFGHI"
+            "transportChainElementId": "1-2212-dd-43123"
           }
         }
       ]
@@ -268,33 +265,32 @@
       "status": "Active",
       "companyName": "ABC Corp",
       "companyIds": [
-        "urn:uuid:51131FB5-42A2-4267-A402-DBCFEFAD1619",
-        "urn:epc:id:sgln:4063973.00000.8"
+        "urn:uuid:2321dd:d21:2"
       ],
-      "productDescription": "Cote'd Or Ethanol",
+      "productDescription": "Glass Sheet",
       "productIds": [
-        "urn:gtin:1212345060507"
+        "urn:gtin:442134123"
       ],
       "productCategoryCpc": "3342",
-      "productNameCompany": "Blue Ethanol",
+      "productNameCompany": "Sheet glass .5cm du-ply",
       "comment": "",
       "pcf": {
-        "declaredUnit": "liter",
-        "unitaryProductAmount": "12.0",
-        "pCfExcludingBiogenic": "0.0",
-        "fossilGhgEmissions": "0.123",
-        "fossilCarbonContent": "0.0",
+        "declaredUnit": "tonne",
+        "unitaryProductAmount": "2.0",
+        "pCfExcludingBiogenic": "0.3",
+        "fossilGhgEmissions": "1.21",
+        "fossilCarbonContent": "0.4",
         "biogenicCarbonContent": "0.0",
         "landManagementGhgEmissions": "0.01",
-        "characterizationFactors": "AR5",
+        "characterizationFactors": "AR6",
         "crossSectoralStandardsUsed": [
           "GHG Protocol Product standard"
         ],
         "productOrSectorSpecificRules": [
           {
-            "operator": "EPD International",
+            "operator": "Glass door association",
             "ruleNames": [
-              "ABC 2021"
+              "Glass 99-4a"
             ]
           }
         ],
@@ -304,11 +300,11 @@
         "geographyCountry": "FR",
         "secondaryEmissionFactorSources": [
           {
-            "name": "Ecoinvent",
-            "version": "1.2.3"
+            "name": "EU ETS",
+            "version": "3.7"
           }
         ],
-        "exemptedEmissionsPercent": 3.1,
+        "exemptedEmissionsPercent": 0.1,
         "exemptedEmissionsDescription": "",
         "packagingEmissionsIncluded": false,
         "primaryDataShare": 56.12,
@@ -323,19 +319,7 @@
           "comments": "This is a comment"
         }
       },
-      "extensions": [
-        {
-          "specVersion": "2.1.0",
-          "dataSchema": "https://catalog.carbon-transparency.com/shipment/1.0.0/data-model.json",
-          "data": {
-            "shipmentId": "S1234567890",
-            "consignmentId": "Cabc.def-ghi",
-            "shipmentType": "PICKUP",
-            "weight": 10,
-            "transportChainElementId": "ABCDEFGHI"
-          }
-        }
-      ]
+      "extensions": []
     },
     {
       "id": "ae59f69c-9b72-4657-a96f-e22cd9d74840",
@@ -343,46 +327,45 @@
       "version": 1,
       "created": "2022-05-22T21:47:32+00:00",
       "status": "Active",
-      "companyName": "ABC Corp",
+      "companyName": "Contoso Corp",
       "companyIds": [
-        "urn:uuid:51131FB5-42A2-4267-A402-DBCFEFAD1619",
-        "urn:epc:id:sgln:4063973.00000.8"
+        "urn:ars:id:sglo:4899s.223"
       ],
-      "productDescription": "Cote'd Or Ethanol",
+      "productDescription": "Planck Wood",
       "productIds": [
-        "urn:gtin:1212345060507"
+        "urn:pw:441a2345060507"
       ],
-      "productCategoryCpc": "3342",
-      "productNameCompany": "Green Ethanol",
+      "productCategoryCpc": "31230",
+      "productNameCompany": "Planck Wood ev. 1.5cm",
       "comment": "",
       "pcf": {
-        "declaredUnit": "liter",
-        "unitaryProductAmount": "12.0",
-        "pCfExcludingBiogenic": "0.0",
-        "fossilGhgEmissions": "0.123",
-        "fossilCarbonContent": "0.0",
-        "biogenicCarbonContent": "0.0",
-        "landManagementGhgEmissions": "0.01",
+        "declaredUnit": "kilogram",
+        "unitaryProductAmount": "1.1",
+        "pCfExcludingBiogenic": "0.04",
+        "fossilGhgEmissions": "0.023",
+        "fossilCarbonContent": "0.2",
+        "biogenicCarbonContent": "0.87",
+        "landManagementGhgEmissions": "0.61",
         "characterizationFactors": "AR5",
         "crossSectoralStandardsUsed": [
           "GHG Protocol Product standard"
         ],
         "productOrSectorSpecificRules": [
           {
-            "operator": "EPD International",
+            "operator": "Woody wood association",
             "ruleNames": [
-              "ABC 2021"
+              "Wood from trees 2020"
             ]
           }
         ],
         "boundaryProcessesDescription": "End-of-life included",
         "referencePeriodStart": "2021-01-01T00:00:00+00:00",
         "referencePeriodEnd": "2022-01-01T00:00:00+00:00",
-        "geographyCountry": "FR",
+        "geographyCountry": "UK",
         "secondaryEmissionFactorSources": [
           {
-            "name": "Ecoinvent",
-            "version": "1.2.3"
+            "name": "UK GGP",
+            "version": "2.312"
           }
         ],
         "exemptedEmissionsPercent": 3.1,
@@ -403,13 +386,13 @@
       "extensions": [
         {
           "specVersion": "2.1.0",
-          "dataSchema": "https://catalog.carbon-transparency.com/shipment/1.0.0/data-model.json",
+          "dataSchema": "https://catalog.carbon-transparency.com/wood/1.0.0/data-model.json",
           "data": {
-            "shipmentId": "S1234567890",
-            "consignmentId": "Cabc.def-ghi",
+            "palletId": "44-1213123",
+            "consignmentId": "ww:1234-1234-1234",
             "shipmentType": "PICKUP",
-            "weight": 10,
-            "transportChainElementId": "ABCDEFGHI"
+            "weight": 100,
+            "transportChainElementId": "downstream-transport-chain-element-id"
           }
         }
       ]

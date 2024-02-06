@@ -10,7 +10,7 @@ public interface IPfxConfig
 
 public class PfxConfig : IPfxConfig
 {
-    public List<ConformanceAccount> ConformanceAccounts { get; set; } = new();
+    public List<ConformanceAccount> ConformanceAccounts { get; set; } = [];
     public string EncryptionCertificateThumbprint { get; set; } = "";
     public string SigningCertificateThumbprint { get; set; } = "";
 }
