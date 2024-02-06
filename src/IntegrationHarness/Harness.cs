@@ -23,14 +23,21 @@ public static class Harness
             Password = config["Password"]
         };
         
-        var fabricConfig = new FabricConfig()
+        var fabricConfig = new DataLakeConfig()
         {
             DataLakeAccountName = config["DataLakeAccountName"],
             FileSystemName = config["FileSystemName"]
         };
+        
+        var cosmosConfig = new CosmosConfig()
+        {
+            AccountEndpoint = config["AccountEndpoint"],
+            CosmosDbName = config["CosmosDbName"],
+            AuthKey = config["AuthKey"]
+        };
 
 
-        var pfIntegrator = new ProductFootprintIntegrator(null, dataverseConfig, fabricConfig,false);
+        var pfIntegrator = new ProductFootprintIntegrator(null, dataverseConfig, fabricConfig, cosmosConfig, false);
         
         /*
         var result = pfIntegrator.CreatePathfinderConfiguration();
@@ -42,9 +49,10 @@ public static class Harness
         Console.WriteLine(cleanResult.Result);
         */
         
-        var result = pfIntegrator.IntegrateProductFootprints(true, "", true).Result;
+        var result = pfIntegrator.IntegrateProductFootprints(true, "").Result;
         Console.WriteLine("Footprints processed: " + result.RecordsProcessed);
         Console.WriteLine("Successful: " + result.Success);
         Console.WriteLine("Details: " + result.Message);
+        
     }
 }

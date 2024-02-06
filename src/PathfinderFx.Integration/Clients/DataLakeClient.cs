@@ -8,15 +8,15 @@ using PathfinderFx.Integration.Model;
 
 namespace PathfinderFx.Integration.Clients;
 
-public class FabricClient
+public class DataLakeClient
 {
     private readonly ILogger _logger;
-    private readonly IFabricConfig _config;
+    private readonly IDataLakeConfig _config;
     private readonly DataLakeServiceClient _serviceClient;
 
-    public FabricClient(ILoggerFactory loggerFactory, IFabricConfig config)
+    public DataLakeClient(ILoggerFactory loggerFactory, IDataLakeConfig config)
     {
-        _logger = loggerFactory.CreateLogger<FabricClient>();
+        _logger = loggerFactory.CreateLogger<DataLakeClient>();
         _config = config;
         _serviceClient = CreateServiceClient().Result;
     }

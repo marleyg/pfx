@@ -7,4 +7,6 @@ public class IntegrationResult
     public bool Success { get; set; }
     
     public string FabricMessage { get; set; } = string.Empty;
+    
+    public string CosmosMessage { get; set; } = string.Empty;
 }

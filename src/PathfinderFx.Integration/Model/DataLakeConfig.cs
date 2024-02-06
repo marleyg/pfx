@@ -1,8 +1,7 @@
 namespace PathfinderFx.Integration.Model;
 
-public interface IFabricConfig
+public class DataLakeConfig : IDataLakeConfig
 {
     public string? DataLakeAccountName { get; set; }
     public string? FileSystemName { get; set; }
-    
 }

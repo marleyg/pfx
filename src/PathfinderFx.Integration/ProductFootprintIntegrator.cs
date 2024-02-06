@@ -12,11 +12,13 @@ public class ProductFootprintIntegrator
     private readonly ILogger _logger = Utils.AppLogger.MyLoggerFactory.CreateLogger<ProductFootprintIntegrator>();
     private static readonly IPathfinderConfig PathfinderConfig = new PathfinderConfig();
     private static readonly IDataverseConfig DataverseConfig = new DataverseConfig();
-    private static readonly IFabricConfig FabricConfig = new FabricConfig();
+    private static IDataLakeConfig? _dataLakeConfig;
+    private static ICosmosConfig? _cosmosConfig;
 
     private PathfinderClient? _pathfinderClient;
     private DataverseClient? _dataverseClient;
-    private FabricClient? _fabricClient;
+    private DataLakeClient? _fabricClient;
+    private CosmosDbClient? _cosmosClient;
     private List<Msdyn_Unit>? _units;
     private IPathfinderConfig.IPathfinderConfigEntry? _currentPathfinderConfigEntry;
     
@@ -25,18 +27,20 @@ public class ProductFootprintIntegrator
     {
         _logger.LogInformation("ProductFootprintIntegrator constructor called");
         SetDataverseConfiguration();
-        SetFabricConfiguration();
+        SetDataLakeConfiguration();
         SetPathfinderConfiguration();
     }
 
-    public ProductFootprintIntegrator(IPathfinderConfig? pathfinderConfig = null, IDataverseConfig? dataverseConfig = null, IFabricConfig? fabricConfig = null, bool initialization = false)
+    public ProductFootprintIntegrator(IPathfinderConfig? pathfinderConfig = null, IDataverseConfig? dataverseConfig = null, IDataLakeConfig? fabricConfig = null,
+        ICosmosConfig? cosmosConfig = null, bool initialization = false)
     {
         _logger.LogInformation("ProductFootprintIntegrator constructor called");
         SetDataverseConfiguration(dataverseConfig);
-        SetFabricConfiguration(fabricConfig);
+        SetDataLakeConfiguration(fabricConfig);
         
         if (initialization) return;
         SetPathfinderConfiguration(pathfinderConfig);
+        SetCosmosConfiguration(cosmosConfig);
     }
 
     #endregion
@@ -132,17 +136,32 @@ public class ProductFootprintIntegrator
     }
 
     
-    private void SetFabricConfiguration(IFabricConfig? fabricConfig = null)
+    private void SetDataLakeConfiguration(IDataLakeConfig? dataLakeConfig = null)
     {
-        if (fabricConfig == null)
+        if (dataLakeConfig == null)
         {
-            _logger.LogError("Fabric configuration is required");
-            throw new Exception("Fabric configuration is required");
+            _logger.LogError("Fabric configuration was not provided and will not be a part of the integration");
+            return;
         }
-        FabricConfig.DataLakeAccountName = fabricConfig.DataLakeAccountName;
-        FabricConfig.FileSystemName = fabricConfig.FileSystemName;
+        _dataLakeConfig = new DataLakeConfig();
+        _dataLakeConfig.DataLakeAccountName = dataLakeConfig.DataLakeAccountName;
+        _dataLakeConfig.FileSystemName = dataLakeConfig.FileSystemName;
+        _fabricClient = new DataLakeClient(Utils.AppLogger.MyLoggerFactory, _dataLakeConfig);
+    }
+    
+    private void SetCosmosConfiguration(ICosmosConfig? cosmosConfig = null)
+    {
+        if (cosmosConfig == null)
+        {
+            _logger.LogError("Cosmos configuration was not provided and will not be a part of the integration");
+            return;
+        }
+        _cosmosConfig = new CosmosConfig();
+        _cosmosConfig.AccountEndpoint = cosmosConfig.AccountEndpoint;
+        _cosmosConfig.CosmosDbName = cosmosConfig.CosmosDbName;
+        _cosmosConfig.AuthKey = cosmosConfig.AuthKey;
         
-        _fabricClient = new FabricClient(Utils.AppLogger.MyLoggerFactory, FabricConfig);
+        _cosmosClient = new CosmosDbClient(Utils.AppLogger.MyLoggerFactory, _cosmosConfig);
     }
     
     private void SetDataverseConfiguration(IDataverseConfig? dataverseConfig = null)
@@ -175,7 +194,7 @@ public class ProductFootprintIntegrator
 
     #endregion
     
-    public async Task<IntegrationResult> IntegrateProductFootprints(bool cleanDataverse = false, string hostToUse = "", bool includeFabric = false)
+    public async Task<IntegrationResult> IntegrateProductFootprints(bool cleanDataverse = false, string hostToUse = "")
     {
         _logger.LogInformation("IntegrateProductFootprints called");
 
@@ -219,13 +238,24 @@ public class ProductFootprintIntegrator
             result.Message = resultMsg;
             
             //fabric processing
-            if (!includeFabric) continue;
-            _logger.LogInformation("Processing footprint {FootprintId} for Fabric", footprint.Id);
-            var hostName = _currentPathfinderConfigEntry!.HostName;
-            if (hostName == null) continue;
-            var fabricResult =
-                await _fabricClient?.AddFootprint(hostName, footprint)!;
-            result.FabricMessage = fabricResult;
+            if (_dataLakeConfig != null)
+            {
+                _logger.LogInformation("Processing footprint {FootprintId} for Fabric", footprint.Id);
+                var hostName = _currentPathfinderConfigEntry!.HostName;
+                if (hostName == null) continue;
+                var fabricResult =
+                    await _fabricClient?.AddFootprint(hostName, footprint)!;
+                result.FabricMessage = fabricResult;
+            }
+
+            //cosmos processing
+            if (_cosmosConfig == null) continue;
+            _logger.LogInformation("Processing footprint {FootprintId} for CosmosDb", footprint.Id);
+            var currentHost = _currentPathfinderConfigEntry!.HostName;
+            if (currentHost == null) continue;
+            var cosmosResult =
+                await _cosmosClient?.AddFootprint(currentHost, footprint)!;
+            result.CosmosMessage = cosmosResult;
         }
         return result;
     }
@@ -515,7 +545,11 @@ public class ProductFootprintIntegrator
         //get the Hostnames from the PathfinderConfig
         var hostNames = PathfinderConfig.PathfinderConfigEntries!.Select(entry => entry.HostName!).ToList();
         
-        result.AppendLine("Fabric Initialized: " + _fabricClient!.InitializeFabricConfiguration(hostNames).Result);
+        if(_dataLakeConfig != null)
+            result.AppendLine("Fabric Initialized: " + _fabricClient!.InitializeFabricConfiguration(hostNames).Result);
+        
+        if(_cosmosConfig != null)
+            result.AppendLine("Cosmos Initialized: " + _cosmosClient!.InitializeDatabase(hostNames).Result);
         return result.ToString();
     }
     #endregion
