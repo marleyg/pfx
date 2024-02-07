@@ -6,3 +6,4 @@ The Pathfinder Client is a dotnet core 8 console application that can be run on 
 - Connects to one or more of the configured Pathfinder hosts and requests Product Footprints and can store them in:
   - Sustainability Manager's Data Model tables to be used in the Sustainability Manager's reporting and analytics.
   - Sustainability data solutions for Microsoft Fabric to be used in reporting, analytics and AI/ML models, via DataLake or CosmosDB and notebooks in Fabric.
+

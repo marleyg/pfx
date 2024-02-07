@@ -70,7 +70,7 @@ public class ProductFootprintIntegrator
         if (host == null)
         {
             _logger.LogError("Host {HostName} not found", hostName);
-            throw new Exception("Host not found");
+            return "Host not found";
         }
         _currentPathfinderConfigEntry = host;
         _pathfinderClient = new PathfinderClient(Utils.AppLogger.MyLoggerFactory, _currentPathfinderConfigEntry);
@@ -213,15 +213,17 @@ public class ProductFootprintIntegrator
         var pfs = await _pathfinderClient?.FootprintsAsync(null, null, null)!;
         if (pfs == null)
         {
-            result.Success = false;
-            result.Message = "Error getting footprints from Pathfinder";
+            
+            result.PathfinderHostConnected = false;
+            result.PathfinderHostMessage = "Error getting footprints from Pathfinder";
             return result;
         }
         _logger.LogInformation("Got {Count} footprints from Pathfinder", pfs.Data.Count);
+        result.PathfinderHostConnected = true;
+        result.PathfinderHostMessage = "Footprints retrieved from Pathfinder";
         
         _logger.LogInformation("Getting units from Dataverse");
         _units = _dataverseClient?.GetUnits();
-        
         
         _logger.LogInformation("Processing footprints for Dataverse");
         _logger.LogInformation("Accessing Dataverse as {WhoAmI}", _dataverseClient!.WhoAmI());
@@ -229,13 +231,15 @@ public class ProductFootprintIntegrator
         {
             _logger.LogInformation("Processing footprint {FootprintId}", footprint.Id);
             
+            var footprintResult = new FootprintRecordResult();
+            
             //dataverse processing
             var dataversePf = GetDataversePfEntity(footprint);
             if (dataversePf == null) continue;
             var resultMsg = _dataverseClient.AddProductFootprint(dataversePf);
             result.RecordsProcessed++;
-            result.Success = true;
-            result.Message = resultMsg;
+            footprintResult.Success = true;
+            footprintResult.DataverseMessage = resultMsg;
             
             //fabric processing
             if (_dataLakeConfig != null)
@@ -245,7 +249,7 @@ public class ProductFootprintIntegrator
                 if (hostName == null) continue;
                 var fabricResult =
                     await _fabricClient?.AddFootprint(hostName, footprint)!;
-                result.FabricMessage = fabricResult;
+                footprintResult.DataLakeMessage = fabricResult;
             }
 
             //cosmos processing
@@ -255,7 +259,9 @@ public class ProductFootprintIntegrator
             if (currentHost == null) continue;
             var cosmosResult =
                 await _cosmosClient?.AddFootprint(currentHost, footprint)!;
-            result.CosmosMessage = cosmosResult;
+            footprintResult.CosmosMessage = cosmosResult;
+            
+            result.FootprintRecordResults.Add(footprintResult);
         }
         return result;
     }

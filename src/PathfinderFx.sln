@@ -8,7 +8,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PathfinderClient", "Pathfin
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CertGenerator", "CertGenerator\CertGenerator.csproj", "{14FCC0DA-5C51-4B14-BCB8-3E37E274E1E3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntegrationHarness", "IntegrationHarness\IntegrationHarness.csproj", "{BCFE6456-7A79-4431-BDD0-9C771D1255F0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SustainabilityCloudClient", "SustainabilityCloudClient\SustainabilityCloudClient.csproj", "{BCFE6456-7A79-4431-BDD0-9C771D1255F0}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PathfinderFx.Integration", "PathfinderFx.Integration\PathfinderFx.Integration.csproj", "{E76EB493-EB99-4A63-852B-4EB90E4EDC67}"
 EndProject
