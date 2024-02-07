@@ -27,19 +27,28 @@ The host can be run locally or deployed to any cloud platform that supports dotn
 2. Clone the PathfinderFx repository
 3. Open a command prompt and navigate to the PathfinderFx\src\PathfinderFx folder
 4. Run the following command to start the host: `dotnet build; dotnet run`
-5. Open tool like [Postman](https://www.postman.com/) and test the API using the following URL: https://localhost:5001
-6. You will 1st need to obtain an access token from the host. To do this, send a POST request to the following URL: https://localhost:5001/2/auth/token. The request should include the following form data:
- - grant_type: client_credentials
- - client_id: "see the appsettings.json file for the value for an account to use"
- - client_secret: "see the appsettings.json file for the value for an secret to use for the account"
-7. The response will include an access_token that can be used to call the API. Copy the access_token value and use it in the Authorization header of subsequent requests to the API. For example, the following request will return a list of all the Product Footprints in the host: https://localhost:5001/2/footprints. The request should include the following header:
- - Authorization: Bearer "access_token value from step 6" 
+5. Open tool like [Postman](https://www.postman.com/) and test the API using the [Pathfinder Api collection](./src//postman/Pathfinder%20APIs.postman_collection.json)using ehjter the localhost URL: <https://localhost:5001> or the Azure URL: <https://pathfinderfx.azurewebsites.net>.
+6. You will 1st need to obtain an access token from the host. To do this, send a POST request to the following URL: <https://localhost:5001/2/auth/token>. The request should include the following form data:
+
+- grant_type: client_credentials
+- client_id: "see the appsettings.json file for the value for an account to use"
+- client_secret: "see the appsettings.json file for the value for an secret to use for the account"
+
+7.The response will include an access_token that can be used to call the API. Copy the access_token value and use it in the Authorization header of subsequent requests to the API. For example, the following request will return a list of all the Product Footprints in the host: <https://localhost:5001/2/footprints>. The request should include the following header:
+
+- Authorization: Bearer "access_token value from step 6"
 
 To set this API up in an Azure Tenant, see the [Azure Setup](./docs/azure-setup.md) documentation.
 
-## Solution Samples
+## Client Solution Samples
 
-The PathfinderFx sample can be used to build a Pathfinder API implementation and also be used in integrated Solution Samples. The following Solution Samples are available:
+The PathfinderFx [Cloud for Sustainability](https://www.microsoft.com/en-us/sustainability/cloud) sample also provides an example Pathfinder Client that integrates with the Cloud for Sustainability [Data Model](https://docs.microsoft.com/en-us/sustainability/data-model/overview) for both [Sustainability Manager](https://www.microsoft.com/en-us/sustainability/microsoft-sustainability-manager) and [Sustainability data solutions ]. The client is a dotnet core 8 console application that can be run on any platform that supports dotnet core 8.
 
-- [Custom API Connector]() - A custom API connector to import data from a Pathfinder Host into Microsoft Power Platform and Dataverse applications like [Sustainability Manager](https://appsource.microsoft.com/en-us/product/dynamics-365/mscrm.6b0b9b9e-2b1e-4e9f-9d9c-2b9e8c4d8c6a?tab=Overview) and [Sustainability Reporting](https://appsource.microsoft.com/en-us/product/dynamics-365/mscrm.6b0b9b9e-2b1e-4e9f-9d9c-2b9e8c4d8c6a?tab=Overview).
-- [Dataverse Custom API](https://learn.microsoft.com/en-us/power-apps/developer/data-platform/custom-api) - a solution that can request Product Footprint data from many different Pathfinder Hosts and store the data in Dataverse.
+The client performs the following operations:
+
+- Connects to Sustainability Manager and creates configuration tables for defining Pathfinder hosts to request Product Footprints from.
+- Connects to one or more of the configured Pathfinder hosts and requests Product Footprints and can store them in:
+- Sustainability Manager's Data Model tables to be used in the Sustainability Manager's reporting and analytics.
+- Sustainability data solutions for Microsoft Fabric to be used in reporting, analytics and AI/ML models, via DataLake or CosmosDB and notebooks in Fabric.
+
+Details for setting up and running the client can be found in the [Client Setup](./docs/client-setup.md) documentation.
