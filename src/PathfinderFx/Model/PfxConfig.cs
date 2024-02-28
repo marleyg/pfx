@@ -4,15 +4,11 @@ namespace PathfinderFx.Model;
 public interface IPfxConfig
 {
     List<ConformanceAccount> ConformanceAccounts { get; set; }
-    public string EncryptionCertificateThumbprint { get; set; }
-    public string SigningCertificateThumbprint { get; set; }
 }
 
 public class PfxConfig : IPfxConfig
 {
     public List<ConformanceAccount> ConformanceAccounts { get; set; } = new();
-    public string EncryptionCertificateThumbprint { get; set; } = "";
-    public string SigningCertificateThumbprint { get; set; } = "";
 }
 
 public class ConformanceAccount

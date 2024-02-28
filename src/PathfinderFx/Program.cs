@@ -1,36 +1,25 @@
 using System.Reflection;
-using System.Security.Cryptography.X509Certificates;
 using System.Text.Json.Serialization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using OpenIddict.Server;
 using PathfinderFx.Handlers;
 using PathfinderFx.Model;
+using PathfinderFx.Providers;
 using Quartz;
 
 namespace PathfinderFx
 {
     public static class Program
     {
+        internal static readonly IPfxConfig PfxConfig = AksConfigurationProvider.PfxConfig
+            ?? throw new InvalidOperationException("PfxConfig is null");
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
-            
-            var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
-
-
-            var configuration = builder.Configuration
-                .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile($"appsettings.json", optional: false)
-                .AddJsonFile($"appsettings.{env}.json", optional: true)
-                .AddEnvironmentVariables()
-                .Build();
-            
-            builder.Services.Configure<PfxConfig>(
-                configuration.GetSection("PfxConfig"));
             
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
             {
@@ -85,12 +74,9 @@ namespace PathfinderFx
 
                     // Register the signing and encryption credentials.
                     if (builder.Environment.IsProduction()){
-                        var pfxCertConfig = builder.Configuration.GetSection("PfxConfig").Get<PfxConfig>() ?? 
-                                            throw new ArgumentNullException(nameof(args) , "PfxConfig is missing from appsettings.json");
-                        options.AddEncryptionCertificate(LoadCertificate(
-                            pfxCertConfig.EncryptionCertificateThumbprint));
-                        options.AddSigningCertificate(LoadCertificate(
-                            pfxCertConfig.SigningCertificateThumbprint));
+                        
+                        options.AddEncryptionCertificate(AksConfigurationProvider.GetEncryptionCertFromAks());
+                        options.AddSigningCertificate(AksConfigurationProvider.GetSigningCertFromAks());
                     }
                     else
                     {
@@ -191,20 +177,6 @@ namespace PathfinderFx
             app.MapDefaultControllerRoute();
 
             app.Run();
-        }
-        
-        private static X509Certificate2 LoadCertificate(string thumbprint)
-        {
-            try
-            {
-                var bytes = File.ReadAllBytes($"/var/ssl/private/{thumbprint}.p12");
-                return new X509Certificate2(bytes);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                throw;
-            }
         }
     }
 }
