@@ -1,6 +1,7 @@
 using System.Security.Claims;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using OpenIddict.Abstractions;
@@ -20,7 +21,7 @@ public class AuthorizationController(
     /// </summary>
     /// <returns></returns>
     /// <exception cref="NotImplementedException"></exception>
-    /// <exception cref="InvalidOperationException"></exception>
+    /// <exception cref="ForbidResult"></exception>
     [HttpPost("~/2/auth/token"), IgnoreAntiforgeryToken, Produces("application/json")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
@@ -72,6 +73,7 @@ public class AuthorizationController(
         return SignIn(new ClaimsPrincipal(identity), OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
 
     }
+    
 
     private static IEnumerable<string> GetDestinations(Claim claim)
     {

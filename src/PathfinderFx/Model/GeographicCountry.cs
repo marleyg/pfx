@@ -1,10 +1,13 @@
 using System.ComponentModel;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace PathfinderFx.Model;
 
 /// <summary>
 /// Country codes
 /// </summary>
+[JsonConverter(typeof(StringEnumConverter))]
 public enum GeographyCountry
 {
     [Description("Afghanistan")] AF = 1,

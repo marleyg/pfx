@@ -8,7 +8,10 @@
         {
             "ClientId": "ctest2",
             "ClientSecret": "1f1e907e-5cc4-43ae-a7a0-67abb0fdf7ce",
-            "DisplayName": "Conformance test application 2"
+            "DisplayName": "Conformance test application 2",
+            "Permissions": [
+                "api"
+            ]
         }
     ]
 }

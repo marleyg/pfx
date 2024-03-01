@@ -16,7 +16,7 @@
       "launchUrl": "swagger",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "AKS_URI": "https://",
+        "AKS_URI": "https://pathfinerfx-kv.vault.azure.net/",
         "PFX_CONFIG_SECRET_NAME": "pfx-config",
         "ENCRYPTION_CERTIFICATE_NAME": "pfx-encryption-cert",
         "SIGNING_CERTIFICATE_NAME": "pfx-signing-cert"

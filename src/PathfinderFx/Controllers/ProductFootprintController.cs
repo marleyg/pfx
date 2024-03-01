@@ -1,26 +1,54 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OpenIddict.Abstractions;
+using OpenIddict.EntityFrameworkCore.Models;
 using OpenIddict.Validation.AspNetCore;
+using PathfinderFx.Helper;
 using PathfinderFx.Model;
 
 namespace PathfinderFx.Controllers;
-
 //[Authorize]
+/// <summary>
+/// WBCSD Product Footprint API v2
+/// </summary>
 [ApiController]
 [Route("/2/")]
 [Produces("application/json")]
-public class ProductFootprintController(
-    IOpenIddictApplicationManager applicationManager,
-    ILogger<ProductFootprintController> logger)
-    : Controller
+public class ProductFootprintController : Controller
 {
-    
+
     private static readonly ProductFootprints ProductFootprints = LoadFootprints();
+    private readonly IOpenIddictApplicationManager _applicationManager;
+    private readonly ILogger<ProductFootprintController> _logger;
+
+    /// <summary>
+    /// WBCSD Product Footprint API v2
+    /// </summary>
+    /// <param name="applicationManager"></param>
+    /// <param name="logger"></param>
+    public ProductFootprintController(IOpenIddictApplicationManager applicationManager,
+        ILogger<ProductFootprintController> logger)
+    {
+        _applicationManager = applicationManager;
+        _logger = logger;
+    }
 
     private static ProductFootprints LoadFootprints()
     {
-        return ProductFootprints.FromJson(System.IO.File.ReadAllText("Data/pfsv2.json"));
+        //get a random number that is greater than 5 but less than 15
+        var numFootprints = new Random().Next(5, 15);
+        var footprints = new List<ProductFootprint>();
+        var companyName = DataGenHelper.GenerateRandomCompanyName();
+        var companyId = DataGenHelper.GenerateRandomCompanyId();
+        for (var i = 0; i < numFootprints; i++)
+        {
+            footprints.Add(SampleDataCreator.GetProductFootprint(companyName, companyId));
+        }
+
+        return new ProductFootprints
+        {
+            Data = footprints
+        };
     }
 
     /// <summary>
@@ -43,33 +71,54 @@ public class ProductFootprintController(
     /// Get footprints for a specific product:
     ///     $filter=productIds/any(productId:(productId eq 'urn:...'))
     /// </remarks>
-    [HttpGet ("footprints")]
+    [HttpGet("footprints")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ProductFootprints))]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [Authorize(AuthenticationSchemes = OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme)]
-    public Task<IActionResult> ListFootprints(int limit = 0, string filter = "", int offset = 0)
+    public async Task<IActionResult> ListFootprints(int limit = 0, string filter = "", int offset = 0)
     {
         var authUser = User.FindFirst(OpenIddictConstants.Claims.Subject)?.Value;
-        var application = applicationManager.FindByClientIdAsync(authUser ?? string.Empty);
-            
-        logger.LogInformation("Getting footprints for user: {User} from application: {Application}", authUser, application);
+        var application = await _applicationManager.FindByClientIdAsync(authUser ?? string.Empty);
+        /*
+        if (application == null)
+        {
+            return Forbid("Access denied");
+        }
         
+        var appDisplayName = (OpenIddictEntityFrameworkCoreApplication) application;
+        
+        //check to make sure that the appDisplayName == _config.HostOrganizationName, all other requests are forbidden
+        if (appDisplayName.Permissions == null)
+        {
+            return Forbid("Access denied");
+        }
+
+        if (!appDisplayName.Permissions.Contains("api"))
+        {
+            return Forbid("Access denied");
+        }
+        */
+        _logger.LogInformation("Getting footprints for user: {User} from application: {Application}", authUser,
+            application);
+
         if (!string.IsNullOrEmpty(filter))
-            logger.LogInformation("Filtering footprints is not implemented");
-        
+            _logger.LogInformation("Filtering footprints is not implemented");
+
         //if the offset is greater than the number of footprints in _productFootprints, return a 400
         if (offset > ProductFootprints.Data.Count)
         {
-            logger.LogInformation("Offset is greater than the number of footprints, offset: {Offset}, number of footprints: {NumberOfFootprints}", offset, ProductFootprints.Data.Count);
-            return Task.FromResult<IActionResult>(BadRequest(new SimpleErrorMessage("Bad request", "BadRequest")));
+            _logger.LogInformation(
+                "Offset is greater than the number of footprints, offset: {Offset}, number of footprints: {NumberOfFootprints}",
+                offset, ProductFootprints.Data.Count);
+            return BadRequest(new SimpleErrorMessage("Bad request", "BadRequest"));
         }
 
         //if the rel next header is not empty, the limit is the value of the limit query parameter
         if (offset > 0 && limit > 0)
         {
-            logger.LogInformation("Paging is enabled, continuing from offset: {Offset}", offset);
+            _logger.LogInformation("Paging is enabled, continuing from offset: {Offset}", offset);
 
             var retVal = new ProductFootprints();
             //check to make sure that the nextItemUp is not greater than the number of footprints in _productFootprints
@@ -77,17 +126,20 @@ public class ProductFootprintController(
             {
                 //if the nextItemUp is less than the number of footprints in _productFootprints, return the footprints starting with the next item up to the limit
                 retVal.Data = ProductFootprints.Data.Skip(offset).Take(limit).ToList();
-                
+
                 //if there are more footprints remaining update the NextItem header
                 if (offset + limit < ProductFootprints.Data.Count)
                 {
-                    logger.LogInformation("More footprints remaining, updating paging, offset: {Offset}, limit: {Limit}", offset + limit, limit);
+                    _logger.LogInformation(
+                        "More footprints remaining, updating paging, offset: {Offset}, limit: {Limit}", offset + limit,
+                        limit);
                     var host = HttpContext.Request.Host;
-                    HttpContext.Response.Headers.Append("Link", $"<https://{host}/2/footprints?limit={limit}&offset={offset + limit}>; rel=\"next\"");
+                    HttpContext.Response.Headers.Append("Link",
+                        $"<https://{host}/2/footprints?limit={limit}&offset={offset + limit}>; rel=\"next\"");
                 }
                 else
                 {
-                    logger.LogInformation("No more footprints remaining, ending paging");
+                    _logger.LogInformation("No more footprints remaining, ending paging");
                     //if there are no more footprints remaining, remove the Link header
                     HttpContext.Response.Headers.Remove("Link");
                 }
@@ -97,35 +149,37 @@ public class ProductFootprintController(
                 //if the nextItemUp is greater than the number of footprints in _productFootprints, return the footprints starting with the next item up to the limit
                 retVal.Data = ProductFootprints.Data.Skip(offset).Take(limit).ToList();
             }
-            return Task.FromResult<IActionResult>(Ok(retVal));
-            
+
+            return Ok(retVal);
+
         }
 
         //if the limit is > 0 and there is no offset and the number of footprints is greater than the limit, enable paging
         if (limit > 0 && offset == 0 && ProductFootprints.Data.Count > limit)
         {
-            logger.LogInformation("Paging is enabled");
+            _logger.LogInformation("Paging is enabled");
 
             //get the host from the HttpContext.Request object
             var host = HttpContext.Request.Host;
-            
+
             //set nextItemUp to the count of footprints - the limit + 1
             var nextOffset = limit.ToString();
-            
-            logger.LogInformation("Paging offset: {NextOffset}", nextOffset);
+
+            _logger.LogInformation("Paging offset: {NextOffset}", nextOffset);
             //need to add a Link header to the response
-            HttpContext.Response.Headers.Append("Link", $"<https://{host}/2/footprints?limit={limit}&offset={nextOffset}>; rel=\"next\"");
-            
+            HttpContext.Response.Headers.Append("Link",
+                $"<https://{host}/2/footprints?limit={limit}&offset={nextOffset}>; rel=\"next\"");
+
             var retVal = new ProductFootprints
             {
                 Data = ProductFootprints.Data.Take(limit).ToList()
             };
-            return Task.FromResult<IActionResult>(Ok(retVal));
+            return Ok(retVal);
         }
 
-        logger.LogInformation("Paging is disabled");
-        
-        return Task.FromResult<IActionResult>(Ok(ProductFootprints));
+        _logger.LogInformation("Paging is disabled");
+
+        return Ok(ProductFootprints);
     }
 
     /// <summary>
@@ -138,31 +192,53 @@ public class ProductFootprintController(
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [Authorize(AuthenticationSchemes = OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme)]
-    public Task<IActionResult> GetFootprint(string id)
+    public async Task<IActionResult> GetFootprint(string id)
     {
         var authUser = User.FindFirst(OpenIddictConstants.Claims.Subject)?.Value;
-        var application = applicationManager.FindByClientIdAsync(authUser ?? string.Empty);
+        var application = await _applicationManager.FindByClientIdAsync(authUser ?? string.Empty);
+        /*
+        if (application == null)
+        {
+            return Forbid("Access denied");
+        }
+        
+        var appDisplayName = (OpenIddictEntityFrameworkCoreApplication) application;
+        
+        //check to make sure that the appDisplayName == _config.HostOrganizationName, all other requests are forbidden
+        if (appDisplayName.Permissions == null)
+        {
+            return Forbid("Access denied");
+        }
+
+        if (!appDisplayName.Permissions.Contains("api"))
+        {
+            return Forbid("Access denied");
+        }
+        */
         
         //test to see if the id is a valid Guid
         if (!Guid.TryParse(id, out _))
         {
-            logger.LogInformation("Invalid id: {Id}", id);
-            return Task.FromResult<IActionResult>(BadRequest(new SimpleErrorMessage("Bad request", "BadRequest")));
+            _logger.LogInformation("Invalid id: {Id}", id);
+            return BadRequest(new SimpleErrorMessage("Bad request", "BadRequest"));
         }
-            
-        logger.LogInformation("Getting footprint, id: {Id} for user: {User} from application: {Application}", id, authUser, application);
-        
+
+        _logger.LogInformation("Getting footprint, id: {Id} for user: {User} from application: {Application}", id,
+            authUser, application);
+
         var matchFp = ProductFootprints.Data.FirstOrDefault(x => x.Id == new Guid(id));
-        
+
         if (matchFp != null)
         {
-            return Task.FromResult<IActionResult>(Ok(matchFp));
+            return Ok(matchFp);
         }
-        logger.LogInformation("Footprint not found, id: {Id}", id);
-        return Task.FromResult<IActionResult>(NotFound(new SimpleErrorMessage("The specified footprint does not exist", "NoSuchFootprint")));
+
+        _logger.LogInformation("Footprint not found, id: {Id}", id);
+        return NotFound(new SimpleErrorMessage("The specified footprint does not exist", "NoSuchFootprint"));
     }
-        
+
     /// <summary>
     /// Establish an event one time subscription for the authenticated user to receive notifications when a footprint is created, updated, or deleted.
     /// </summary>
@@ -178,10 +254,13 @@ public class ProductFootprintController(
     public Task<IActionResult> ActionEvent(PfRequestEvent actionEvent)
     {
         var authUser = User.FindFirst(OpenIddictConstants.Claims.Subject)?.Value;
-        var application = applicationManager.FindByClientIdAsync(authUser ?? string.Empty);
+        var application = _applicationManager.FindByClientIdAsync(authUser ?? string.Empty);
 
-        logger.LogInformation("Action Event: {EventBody} for user: {User} from application: {Application}", "actionEvent passed in", authUser, application);
+        _logger.LogInformation("Action Event: {EventBody} for user: {User} from application: {Application}",
+            "actionEvent passed in", authUser, application);
         return Task.FromResult<IActionResult>(new NotImplementedResult(
-            new SimpleErrorMessage("The specified Action or header you provided implies functionality that is not implemented", "NotImplemented").ToJson()));
+            new SimpleErrorMessage(
+                "The specified Action or header you provided implies functionality that is not implemented",
+                "NotImplemented").ToJson()));
     }
 }

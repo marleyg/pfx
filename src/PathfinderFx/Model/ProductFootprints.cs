@@ -322,10 +322,14 @@ namespace PathfinderFx.Model
     public partial class ProductOrSectorSpecificRule
     {
         [JsonPropertyName("operator")]
-        public string Operator { get; set; }
+        public ProductOrSectorSpecificRuleOperator Operator { get; set; }
 
         [JsonPropertyName("ruleNames")]
         public List<string> RuleNames { get; set; }
+        
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonPropertyName("otherOperatorName")]
+        public string OtherOperatorName { get; set; }
     }
 
     public partial class SecondaryEmissionFactorSource

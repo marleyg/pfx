@@ -1,10 +1,13 @@
 using System.ComponentModel;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace PathfinderFx.Model;
 
 /// <summary>
 /// Regions or subregions
 /// </summary>
+[JsonConverter(typeof(StringEnumConverter))]
 public enum RegionOrSubregion
 {
     [Description("Africa")] Africa = 1,
