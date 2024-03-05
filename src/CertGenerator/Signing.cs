@@ -17,7 +17,7 @@ public class Signing
 
         var certificate = request.CreateSelfSigned(DateTimeOffset.UtcNow, DateTimeOffset.UtcNow.AddYears(2));
 
-        File.WriteAllBytes("signing-certificate.pfx",
+        File.WriteAllBytes("pfx-signing-certificate.pfx",
             certificate.Export(X509ContentType.Pfx, password));
     }
 }

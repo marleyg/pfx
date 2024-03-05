@@ -1,17 +1,16 @@
-using System.Text.Json.Serialization;
-using System.Text.Json;
+using Newtonsoft.Json;
 
 namespace PathfinderFx.Model;
 
 public class SimpleErrorMessage(string message, string code)
 {
-    [JsonPropertyName("message")]
+    [JsonProperty("message")]
     public string Message { get; set; } = message;
 
-    [JsonPropertyName("code")]
+    [JsonProperty("code")]
     public string Code { get; set; } = code;
 }
 public static partial class Serialize
 {
-    public static string ToJson(this SimpleErrorMessage self) => JsonSerializer.Serialize(self, Converter.Settings);
+    public static string ToJson(this SimpleErrorMessage self) => JsonConvert.SerializeObject(self, Converter.Settings);
 }

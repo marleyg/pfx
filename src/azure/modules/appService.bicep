@@ -39,20 +39,20 @@ resource appServiceApp 'Microsoft.Web/sites@2023-01-01' = {
           value: 'Production'
         }
         {
-            name: 'ENCRYPTION_CERTIFICATE_THUMBPRINT'
-            value: 'massiv-encryption-certificate'
+            name: 'ENCRYPTION_CERTIFICATE_NAME'
+            value: 'pfx-encryption-certificate'
         }
         {
-            name: 'SIGNING_CERTIFICATE_THUMBPRINT'
-            value: 'massiv-signing-certificate'
+            name: 'SIGNING_CERTIFICATE_NAME'
+            value: 'pfx-signing-certificate'
         }
         {
             name: 'AKS_URI'
             value: keyVaultUrl
         }
         {
-            name: 'MPF_CONFIG_SECRET_NAME'
-            value: 'MpfConfig'
+            name: 'PFX_CONFIG_SECRET_NAME'
+            value: 'pfx-config'
         }
       ]
     }

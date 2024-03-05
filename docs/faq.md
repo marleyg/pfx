@@ -1,4 +1,4 @@
-# Cloud for Sustainability WBCSD PACT Conformance F.A.Q.
+# Cloud for Sustainability WBCSD PACT Conformance FAQ
 
 - *What is WBCSD PACT Conformance?*
 
@@ -8,7 +8,7 @@
 
 - *What is the Pathfinder Network?*
 
-  The Pathfinder network is not currently an established network, but rather a “North Star” for PACT where organizations connect and exchange carbon data with each other using open standards. Solutions that are conformant with the specifications are a step in that direction. 
+  The Pathfinder network is not currently an established network, but rather a “North Star” for PACT where organizations connect and exchange carbon data with each other using open standards. Solutions that are conformant with the specifications are a step in that direction.
 
   [Pathfinder Overview](https://www.carbon-transparency.com/media/srhhloun/pathfinder-framework.pdf)
 
@@ -58,4 +58,3 @@
 - *What are the plans for making Sustainability Manager a conformant PACT client?*
 
   The plans for releasing a conformant PACT client connector are not complete yet, but anyone can use the sample client provided to create their own conformant PACT client to import PCF data from their suppliers that provide a Pathfinder host.
-

@@ -3,10 +3,10 @@ az login
 
 # variables for the subscription and resource group
 subscriptionId='32886bdb-91b8-4941-96c9-a662977d4455'
-resourceGroupName='Massiv-Volvo'
+resourceGroupName='PathfinderFx'
 location='westus2'
-keyVaultName='MassivVolvo-kv'
-hostOrgName='Volvo'
+keyVaultName='PathfinderFx-kv'
+hostOrgName='MyOrg'
 environmentType='nonprod'
 
 az account set --subscription $subscriptionId
@@ -24,4 +24,4 @@ az deployment group create \
 --parameters environmentType=$environmentType location=$location hostOrgName=$hostOrgName keyVaultUrl=$keyVaultUrl \
 --resource-group $resourceGroupName \
 
-az webapp deploy --resource-group $resourceGroupName --name ${hostOrgName}'-Beacon' --src-path ../package/MpfApi.zip
+az webapp deploy --resource-group $resourceGroupName --name ${hostOrgName}'-PathfinderFx' --src-path ../package/PathfinderFx.zip

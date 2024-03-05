@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
+using OpenIddict.Validation.AspNetCore;
 using PathfinderFx.Model;
 using PathfinderFx.Providers;
 using Quartz;
@@ -22,6 +23,13 @@ namespace PathfinderFx
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+            builder.Services.AddControllers().AddNewtonsoftJson(options =>
+            {
+                options.SerializerSettings.Converters.Add(new StringEnumConverter
+                {
+                    NamingStrategy = new CamelCaseNamingStrategy()
+                });
+            });
             
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
             {
@@ -45,7 +53,6 @@ namespace PathfinderFx
 
             // Register the Quartz.NET service and configure it to block shutdown until jobs are complete.
             builder.Services.AddQuartzHostedService(options => options.WaitForJobsToComplete = true);
-
             builder.Services.AddOpenIddict()
 
                 // Register the OpenIddict core components.
@@ -66,7 +73,6 @@ namespace PathfinderFx
                     // Enable the token endpoint.
                     options.SetTokenEndpointUris("2/auth/token");
                     
-                    
                     // Enable the client credentials flow.
                     options.AllowClientCredentialsFlow();
 
@@ -86,6 +92,7 @@ namespace PathfinderFx
                     options.UseAspNetCore()
                         .EnableTokenEndpointPassthrough();
                 })
+                
                 // Register the OpenIddict validation components.
                 .AddValidation(options =>
                 {
@@ -95,7 +102,10 @@ namespace PathfinderFx
                     // Register the ASP.NET Core host.
                     options.UseAspNetCore();
                 });
-
+            builder.Services.AddAuthentication(options =>
+            {
+                options.DefaultScheme = OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme;
+            });
             builder.Services.AddHostedService<Worker>();
 
             // https://sine-fdn.github.io/data-exchange-protocol/v2/#changelog-2.2.0-20240123
@@ -122,14 +132,7 @@ namespace PathfinderFx
                 var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
             });
-
-            builder.Services.AddControllers().AddNewtonsoftJson(options =>
-            {
-                options.SerializerSettings.Converters.Add(new StringEnumConverter
-                {
-                    NamingStrategy = new CamelCaseNamingStrategy()
-                });
-            });
+            
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

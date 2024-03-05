@@ -81,10 +81,10 @@ public class ProductFootprintController : Controller
     {
         var authUser = User.FindFirst(OpenIddictConstants.Claims.Subject)?.Value;
         var application = await _applicationManager.FindByClientIdAsync(authUser ?? string.Empty);
-        /*
+        
         if (application == null)
         {
-            return Forbid("Access denied");
+            return Forbid();
         }
         
         var appDisplayName = (OpenIddictEntityFrameworkCoreApplication) application;
@@ -92,14 +92,14 @@ public class ProductFootprintController : Controller
         //check to make sure that the appDisplayName == _config.HostOrganizationName, all other requests are forbidden
         if (appDisplayName.Permissions == null)
         {
-            return Forbid("Access denied");
+            return Forbid();
         }
 
         if (!appDisplayName.Permissions.Contains("api"))
         {
-            return Forbid("Access denied");
+            return Forbid();
         }
-        */
+        
         _logger.LogInformation("Getting footprints for user: {User} from application: {Application}", authUser,
             application);
 
@@ -198,10 +198,10 @@ public class ProductFootprintController : Controller
     {
         var authUser = User.FindFirst(OpenIddictConstants.Claims.Subject)?.Value;
         var application = await _applicationManager.FindByClientIdAsync(authUser ?? string.Empty);
-        /*
+        
         if (application == null)
         {
-            return Forbid("Access denied");
+            return Forbid();
         }
         
         var appDisplayName = (OpenIddictEntityFrameworkCoreApplication) application;
@@ -209,14 +209,13 @@ public class ProductFootprintController : Controller
         //check to make sure that the appDisplayName == _config.HostOrganizationName, all other requests are forbidden
         if (appDisplayName.Permissions == null)
         {
-            return Forbid("Access denied");
+            return Forbid();
         }
 
         if (!appDisplayName.Permissions.Contains("api"))
         {
-            return Forbid("Access denied");
+            return Forbid();
         }
-        */
         
         //test to see if the id is a valid Guid
         if (!Guid.TryParse(id, out _))

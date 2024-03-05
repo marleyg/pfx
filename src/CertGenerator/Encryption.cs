@@ -17,7 +17,7 @@ public class Encryption
 
         var certificate = request.CreateSelfSigned(DateTimeOffset.UtcNow, DateTimeOffset.UtcNow.AddYears(2));
 
-        File.WriteAllBytes("encryption-certificate.pfx",
+        File.WriteAllBytes("pfx-encryption-certificate.pfx",
             certificate.Export(X509ContentType.Pfx,  password));
     }
 }
