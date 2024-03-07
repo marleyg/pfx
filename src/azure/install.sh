@@ -20,8 +20,8 @@ az keyvault create --name $keyVaultName --location $location --enable-rbac-autho
 keyVaultUrl=$(az keyvault show --name $keyVaultName --query properties.vaultUri -o tsv)
 
 az deployment group create \
---template-file ../main.bicep \
+--template-file ./main.bicep \
 --parameters environmentType=$environmentType location=$location hostOrgName=$hostOrgName keyVaultUrl=$keyVaultUrl \
 --resource-group $resourceGroupName \
 
-az webapp deploy --resource-group $resourceGroupName --name ${hostOrgName}'-PathfinderFx' --src-path ../package/PathfinderFx.zip
+az webapp deploy --resource-group $resourceGroupName --name ${hostOrgName}'-PathfinderFx' --src-path ../PathfinderFx/bin/release/net8.0/PathfinderFx.zip
