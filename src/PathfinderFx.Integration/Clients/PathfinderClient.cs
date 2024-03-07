@@ -158,7 +158,7 @@ namespace PathfinderFx.Integration.Clients
         /// <param name="offset">optional if a paginated call</param>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<ProductFootprints> FootprintsAsync(int? limit, int? offset, string filter = null)
+        public virtual System.Threading.Tasks.Task<ProductFootprintCatchers> FootprintsAsync(int? limit, int? offset, string filter = null)
         {
             return FootprintsAsync(limit, offset, filter, System.Threading.CancellationToken.None);
         }
@@ -185,7 +185,7 @@ namespace PathfinderFx.Integration.Clients
         /// </remarks>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<ProductFootprints> FootprintsAsync(int? limit, int? offset, string filter = null, System.Threading.CancellationToken cancellationToken = default)
+        public virtual async System.Threading.Tasks.Task<ProductFootprintCatchers> FootprintsAsync(int? limit, int? offset, string filter = null, System.Threading.CancellationToken cancellationToken = default)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/2/footprints?");
@@ -235,7 +235,7 @@ namespace PathfinderFx.Integration.Clients
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProductFootprints>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<ProductFootprintCatchers>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -298,7 +298,7 @@ namespace PathfinderFx.Integration.Clients
         /// <param name="id">UUID/GUID</param>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<ProductFootprint> FootprintAsync(string id)
+        public virtual System.Threading.Tasks.Task<ProductFootprintCatchers> FootprintAsync(string id)
         {
             return FootprintAsync(id, System.Threading.CancellationToken.None);
         }
@@ -310,7 +310,7 @@ namespace PathfinderFx.Integration.Clients
         /// <param name="id">UUID/GUID</param>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<ProductFootprint> FootprintAsync(string id, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<ProductFootprintCatchers> FootprintAsync(string id, System.Threading.CancellationToken cancellationToken)
         {
             if (id == null)
                 throw new System.ArgumentNullException("id");
@@ -351,7 +351,7 @@ namespace PathfinderFx.Integration.Clients
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProductFootprint>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<ProductFootprintCatchers>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
