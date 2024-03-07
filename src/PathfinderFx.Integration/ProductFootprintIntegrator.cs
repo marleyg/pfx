@@ -4,13 +4,15 @@ using Microsoft.Xrm.Sdk;
 using PathfinderFx.Integration.Clients;
 using PathfinderFx.Integration.Model;
 using PathfinderFx.Integration.Model.Entities;
+using PathfinderFx.Model;
+using PathfinderFx.Model.Helpers;
 
 namespace PathfinderFx.Integration;
 
 public class ProductFootprintIntegrator
 {
     private readonly ILogger _logger = Utils.AppLogger.MyLoggerFactory.CreateLogger<ProductFootprintIntegrator>();
-    private static readonly IPathfinderConfig PathfinderConfig = new PathfinderConfig();
+    private static IPathfinderConfig _pathfinderConfig = new PathfinderConfig();
     private static readonly IDataverseConfig DataverseConfig = new DataverseConfig();
 
     private PathfinderClient? _pathfinderClient;
@@ -45,7 +47,7 @@ public class ProductFootprintIntegrator
     public List<string> GetPathfinderHosts()
     {
         _logger.LogInformation("GetPathfinderHosts called");
-        return PathfinderConfig.PathfinderConfigEntries!.Select(entry => entry.HostName!).ToList();
+        return _pathfinderConfig.PathfinderConfigEntries!.Select(entry => entry.HostName!).ToList();
     }
     
     /// <summary>
@@ -57,7 +59,7 @@ public class ProductFootprintIntegrator
     public string SetCurrentPathfinderHost(string hostName)
     {
         _logger.LogInformation("SetCurrentPathfinderHost called");
-        var host = PathfinderConfig.PathfinderConfigEntries!.FirstOrDefault(entry => entry.HostName == hostName);
+        var host = _pathfinderConfig.PathfinderConfigEntries!.FirstOrDefault(entry => entry.HostName == hostName);
         if (host == null)
         {
             _logger.LogError("Host {HostName} not found", hostName);
@@ -88,10 +90,10 @@ public class ProductFootprintIntegrator
                     return;
                 }
 
-                config = new PathfinderConfig();
+                _pathfinderConfig = new PathfinderConfig();
                 foreach (var cfgData in pathfinderConfigFromDataverse)
                 {
-                    config.PathfinderConfigEntries?.Add(new PathfinderConfigEntry
+                    _pathfinderConfig.PathfinderConfigEntries?.Add(new PathfinderConfigEntry
                     {
                         HostAuthUrl = cfgData.Msdyn_HostAuthUrl,
                         ClientId = cfgData.Msdyn_ClientId,
@@ -101,7 +103,7 @@ public class ProductFootprintIntegrator
                     });
                 }
 
-                _currentPathfinderConfigEntry = config.PathfinderConfigEntries!.FirstOrDefault();
+                _currentPathfinderConfigEntry = _pathfinderConfig.PathfinderConfigEntries!.FirstOrDefault();
             }
             catch (Exception e)
             {
@@ -113,7 +115,7 @@ public class ProductFootprintIntegrator
         {
             try
             {
-                PathfinderConfig.PathfinderConfigEntries = config.PathfinderConfigEntries;
+                _pathfinderConfig.PathfinderConfigEntries = config.PathfinderConfigEntries;
                 _currentPathfinderConfigEntry = config.PathfinderConfigEntries!.FirstOrDefault();
             }
             catch (Exception e)
@@ -300,7 +302,7 @@ public class ProductFootprintIntegrator
         {
             var newRule = new Msdyn_ProductOrSectorSpecificRule
             {
-                Msdyn_OtherOperatorName = rule.Operator,
+                Msdyn_OtherOperatorName = rule.OtherOperatorName,
             };
             var ruleNames = new StringBuilder();
             foreach(var name in rule.RuleNames)
@@ -355,10 +357,10 @@ public class ProductFootprintIntegrator
             Msdyn_StatusComment = pf.StatusComment,
             Msdyn_ValidityPeriodStart = pf.ValidityPeriodStart?.DateTime,
             Msdyn_ValidityPeriodEnd = pf.ValidityPeriodEnd?.DateTime,
-            Msdyn_FootprintStatus = pf.Status switch
+            Msdyn_FootprintStatus = EnumHelper.GetEnumText(pf.Status) switch
             {
-                "Draft" => Msdyn_SustainabilityProductFootprint_Msdyn_FootprintStatus.Active,
-                "Published" => Msdyn_SustainabilityProductFootprint_Msdyn_FootprintStatus.Inactive,
+                "Active" => Msdyn_SustainabilityProductFootprint_Msdyn_FootprintStatus.Active,
+                "Depreciated" => Msdyn_SustainabilityProductFootprint_Msdyn_FootprintStatus.Inactive,
                 _ => Msdyn_SustainabilityProductFootprint_Msdyn_FootprintStatus.Active
             }
         };
@@ -399,7 +401,7 @@ public class ProductFootprintIntegrator
             Msdyn_ReferencePeriodEnd = footprint.Pcf.ReferencePeriodEnd?.DateTime,
             Msdyn_UncertaintyAssessmentDescription = footprint.Pcf.UncertaintyAssessmentDescription,
             Msdyn_UnitaryProductAmount = Convert.ToDecimal(footprint.Pcf.UnitaryProductAmount),
-            Msdyn_GeographyRegionOrSubregion = footprint.Pcf.GeographyRegionOrSubregion,
+            Msdyn_GeographyRegionOrSubregion = EnumHelper.GetEnumText(footprint.Pcf.GeographyRegionOrSubregion),
             Msdyn_PcFExcludingBiogenic = Convert.ToDecimal(footprint.Pcf.PCfExcludingBiogenic),
             Msdyn_PcFIncludingBiogenic = Convert.ToDecimal(footprint.Pcf.PCfIncludingBiogenic),
             Msdyn_AircraftGHGEmissions = Convert.ToDecimal(footprint.Pcf.AircraftGhgEmissions),
@@ -411,27 +413,27 @@ public class ProductFootprintIntegrator
             Msdyn_PackAgInGgHGEmissions = Convert.ToDecimal(footprint.Pcf.PackagingGhgEmissions),
             Msdyn_Name = footprint.Id.ToString(),
             Msdyn_SustainabilityProductCarbonFootprintId = footprint.Id,
-            Msdyn_BiogenicAccountingMethodology = footprint.Pcf.BiogenicAccountingMethodology switch
+            Msdyn_BiogenicAccountingMethodology = EnumHelper.GetEnumText(footprint.Pcf.BiogenicAccountingMethodology) switch
             {
-                "ISO" => Msdyn_SustainabilityProductCarbonFootprint_Msdyn_BiogenicAccountingMethodology.Iso,
-                "GHGP" => Msdyn_SustainabilityProductCarbonFootprint_Msdyn_BiogenicAccountingMethodology.Ghgp,
+                "Iso" => Msdyn_SustainabilityProductCarbonFootprint_Msdyn_BiogenicAccountingMethodology.Iso,
+                "Ghgp" => Msdyn_SustainabilityProductCarbonFootprint_Msdyn_BiogenicAccountingMethodology.Ghgp,
                 "GGP" => Msdyn_SustainabilityProductCarbonFootprint_Msdyn_BiogenicAccountingMethodology.Ghgp,
-                "PEF" => Msdyn_SustainabilityProductCarbonFootprint_Msdyn_BiogenicAccountingMethodology.Pef,
+                "Pef" => Msdyn_SustainabilityProductCarbonFootprint_Msdyn_BiogenicAccountingMethodology.Pef,
                 "Quantis" => Msdyn_SustainabilityProductCarbonFootprint_Msdyn_BiogenicAccountingMethodology.Quantis,
                 _ => Msdyn_SustainabilityProductCarbonFootprint_Msdyn_BiogenicAccountingMethodology.Ghgp
             },
             //foreach on footprint.Pcf.CharacterizationFactors
-            Msdyn_CharacterizationFactors = footprint.Pcf.CharacterizationFactors switch
+            Msdyn_CharacterizationFactors = EnumHelper.GetEnumText(footprint.Pcf.CharacterizationFactors) switch
             {
-                "AR5" => Msdyn_SustainabilityProductCarbonFootprint_Msdyn_CharacterizationFactors.Ar5,
-                "AR6" => Msdyn_SustainabilityProductCarbonFootprint_Msdyn_CharacterizationFactors.Ar6,
+                "Ar5" => Msdyn_SustainabilityProductCarbonFootprint_Msdyn_CharacterizationFactors.Ar5,
+                "Ar6" => Msdyn_SustainabilityProductCarbonFootprint_Msdyn_CharacterizationFactors.Ar6,
                 _ => Msdyn_SustainabilityProductCarbonFootprint_Msdyn_CharacterizationFactors.Ar6
             }
         };
 
-        if (!string.IsNullOrEmpty(footprint.Pcf.DeclaredUnit))
+        if (!string.IsNullOrEmpty(EnumHelper.GetEnumText(footprint.Pcf.DeclaredUnit)))
         {
-            var searchUnit = footprint.Pcf.DeclaredUnit.ToLower();
+            var searchUnit = EnumHelper.GetEnumText(footprint.Pcf.DeclaredUnit).ToLower();
             if (searchUnit == "liter")
                 searchUnit = "Litres";
             var unit = _units?.FirstOrDefault(u => string.Equals(u.Msdyn_Name, searchUnit, StringComparison.CurrentCultureIgnoreCase));
@@ -439,16 +441,27 @@ public class ProductFootprintIntegrator
             {
                 dataversePcf.Msdyn_DeclaredUnit = new EntityReference(Msdyn_Unit.EntityLogicalName, (Guid)unit.Msdyn_UnitId);
             }
+            //find a unit that contains the first two letters of the searchUnit
+            else
+            {
+                //get the first two letters of the searchUnit
+                searchUnit = searchUnit[..2];
+                unit = _units?.FirstOrDefault(u => u.Msdyn_Name.ToLower().Contains(searchUnit));
+                if (unit != null)
+                {
+                    dataversePcf.Msdyn_DeclaredUnit = new EntityReference(Msdyn_Unit.EntityLogicalName, (Guid)unit.Msdyn_UnitId);
+                }
+            }
         }
         
         if (footprint.Pcf.Dqi != null)
         {
             dataversePcf.Msdyn_CoveragePercent = Convert.ToDecimal(footprint.Pcf.Dqi.CoveragePercent);
-            dataversePcf.Msdyn_CompletenessDQR = Convert.ToDecimal(footprint.Pcf.Dqi.CompletenessDQR);
-            dataversePcf.Msdyn_GeographicalDQR = Convert.ToDecimal(footprint.Pcf.Dqi.GeographicalDQR);
-            dataversePcf.Msdyn_ReliabilityDQR = Convert.ToDecimal(footprint.Pcf.Dqi.ReliabilityDQR);
-            dataversePcf.Msdyn_TemporalDQR = Convert.ToDecimal(footprint.Pcf.Dqi.TemporalDQR);
-            dataversePcf.Msdyn_TechnologicalDQR = Convert.ToDecimal(footprint.Pcf.Dqi.TechnologicalDQR);
+            dataversePcf.Msdyn_CompletenessDQR = Convert.ToDecimal(footprint.Pcf.Dqi.CompletenessDqr);
+            dataversePcf.Msdyn_GeographicalDQR = Convert.ToDecimal(footprint.Pcf.Dqi.GeographicalDqr);
+            dataversePcf.Msdyn_ReliabilityDQR = Convert.ToDecimal(footprint.Pcf.Dqi.ReliabilityDqr);
+            dataversePcf.Msdyn_TemporalDQR = Convert.ToDecimal(footprint.Pcf.Dqi.TemporalDqr);
+            dataversePcf.Msdyn_TechnologicalDQR = Convert.ToDecimal(footprint.Pcf.Dqi.TechnologicalDqr);
         }
 
         //list of secondary emission factor sources from the collection

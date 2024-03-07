@@ -31,6 +31,23 @@ The install script will automate most of the installation process, including the
 
 ## Installation Steps
 
+**Pre-Installation Steps:** Before you begin the installation process, you will need to do the following:
+
+1. Clone the repository to your local machine.
+2. Install the [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest) on your local machine.
+3. Build the PathfinderFx solution using the `dotnet build -c Release` command from the [PathfinderFx](../src/PathfinderFx/) folder.
+4. Zip the files from the `PathfinderFx/bin/release/net8.0` folder a single zip file. This zip file will be used to deploy the PathfinderFx to Azure.
+
+   ```bash
+   zip -r PathfinderFx.zip .
+   ```
+
+5. If using Linux or MacOs, you will need to make sure the script is executable by running the following command from the [azure](../src/azure/) folder:
+
+   ```bash
+   chmod +x install.sh
+   ```
+
 The installation process is as follows:
 
 1. Update the `install.sh` with the `subscriptionId`, `hostOrgName` and `location` (currently set to `westus2`, but choose a location that makes sense for your organization) for the Azure subscription, your organization name and location that the PathfinderFx will be installed in. This can be found in the Azure portal by navigating to the subscription and copying the Subscription ID.

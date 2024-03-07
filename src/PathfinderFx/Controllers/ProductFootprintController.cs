@@ -42,7 +42,10 @@ public class ProductFootprintController : Controller
         var companyId = DataGenHelper.GenerateRandomCompanyId();
         for (var i = 0; i < numFootprints; i++)
         {
-            footprints.Add(SampleDataCreator.GetProductFootprint(companyName, companyId));
+            //if i is the last iteration, add a footprint with all optional fields
+            footprints.Add(i == numFootprints - 1
+                ? SampleDataCreator.GetProductFootprint(companyName, companyId, true)
+                : SampleDataCreator.GetProductFootprint(companyName, companyId));
         }
 
         return new ProductFootprints

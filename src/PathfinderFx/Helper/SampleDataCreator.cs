@@ -5,7 +5,7 @@ namespace PathfinderFx.Helper;
 public static class SampleDataCreator
 {
     internal static ProductFootprint GetProductFootprint(string organizationName,
-        string organizationId)
+        string organizationId, bool getAllOptionalFields = false)
     {
         var retVal = new ProductFootprint
         {
@@ -20,30 +20,32 @@ public static class SampleDataCreator
             Created = DateTime.UtcNow,
             Status = DataGenHelper.GetRandomEnumValue<Status>(),
             ProductIds = [DataGenHelper.GenerateRandomProductId()],
-            Pcf = GetPcf(DataGenHelper.GetRandomBool())
+            Pcf = GetPcf(DataGenHelper.GetRandomBool(), getAllOptionalFields)
         };
         retVal.ProductDescription = retVal.ProductNameCompany + " is a sample product";
 
-        if (DataGenHelper.GetRandomBool())
+        //get optional fields if GetRandomBool() returns true or getAllOptionalFields is true
+        if (DataGenHelper.GetRandomBool() || getAllOptionalFields)
         {
             retVal.PrecedingPfIds = [Guid.NewGuid().ToString()];
             retVal.Updated = DateTime.UtcNow.Subtract(TimeSpan.FromDays(90));
-            retVal.StatusComment = "This is a sample status comment";
+            retVal.StatusComment = getAllOptionalFields ? "This sample has all optional fields" : "This is a sample status comment";
         }
 
-        if (DataGenHelper.GetRandomBool())
+
+        if (DataGenHelper.GetRandomBool() || getAllOptionalFields)
         {
             retVal.ValidityPeriodStart = DateTime.UtcNow.Subtract(TimeSpan.FromDays(365));
             retVal.ValidityPeriodEnd = DateTime.UtcNow.Add(TimeSpan.FromDays(365));
         }
         
-        if(DataGenHelper.GetRandomBool())
+        if(DataGenHelper.GetRandomBool() || getAllOptionalFields)
             retVal.Extensions = DataGenHelper.GetRandomListOfExtensions();
 
         return retVal;
     }
 
-    private static Pcf GetPcf(bool optionals)
+    private static Pcf GetPcf(bool optionals, bool getAllOptionalFields = false)
     {
         var pcf = new Pcf
         {
@@ -62,37 +64,39 @@ public static class SampleDataCreator
             LandManagementGhgEmissions = DataGenHelper.GenerateRandomDecimalString(),
             CharacterizationFactors = DataGenHelper.GetRandomEnumValue<CharacterizationFactor>(),
             CrossSectoralStandardsUsed = DataGenHelper.GetRandomListOfCrossSectoralStandards(),
+            PackagingEmissionsIncluded = DataGenHelper.GetRandomBool(),
             ExemptedEmissionsDescription = "None",
             ExemptedEmissionsPercent = 13,
             PrimaryDataShare = 56.12,
         };
 
-        if (!optionals) return pcf;
+        //if optionals is false and getAllOptionalFields is false, return pcf
+        if (!optionals && !getAllOptionalFields) return pcf;
         pcf.BiogenicAccountingMethodology = DataGenHelper.GetRandomEnumValue<BiogenicAccountingMethodology>();
 
-        if (DataGenHelper.GetRandomBool())
+        if (DataGenHelper.GetRandomBool() || getAllOptionalFields)
         {
             pcf.ProductOrSectorSpecificRules = DataGenHelper.GetRandomProductOrSectorSpecificRules();
         }
-            
+        
+        pcf.ILucGhgEmissions = DataGenHelper.GenerateRandomDecimalString();
         pcf.AircraftGhgEmissions = DataGenHelper.GenerateRandomDecimalString();
         pcf.DLucGhgEmissions = DataGenHelper.GenerateRandomDecimalString();
         pcf.LandManagementGhgEmissions = DataGenHelper.GenerateRandomDecimalString();
         pcf.OtherBiogenicGhgEmissions = DataGenHelper.GenerateRandomDecimalString();
         pcf.PCfIncludingBiogenic = DataGenHelper.GenerateRandomDecimalString();
         pcf.BiogenicCarbonWithdrawal = DataGenHelper.GenerateRandomDecimalString();
-            
-        if(DataGenHelper.GetRandomBool())
-            pcf.SecondaryEmissionFactorSources = DataGenHelper.GetRandomListOfSecondaryEmissionFactorSources();
-            
-        pcf.PackagingEmissionsIncluded = DataGenHelper.GetRandomBool();
         pcf.AllocationRulesDescription = "This is a sample allocation rules description";
-
+        pcf.GeographyCountrySubdivision = "Sample country subdivision";
         pcf.PrimaryDataShare = (double?)DataGenHelper.GenerateRandomDecimal();
-
-        if (!DataGenHelper.GetRandomBool()) return pcf;
+            
+        if(DataGenHelper.GetRandomBool() || getAllOptionalFields)
+            pcf.SecondaryEmissionFactorSources = DataGenHelper.GetRandomListOfSecondaryEmissionFactorSources();
+        
+        if (!DataGenHelper.GetRandomBool() && !getAllOptionalFields) return pcf;
         pcf.Assurance = DataGenHelper.GenerateRandomAssurance();
         pcf.UncertaintyAssessmentDescription = "This is a sample uncertainty assessment description";
+        
         return pcf;
     }
 

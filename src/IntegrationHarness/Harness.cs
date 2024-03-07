@@ -34,13 +34,22 @@ public static class Harness
         var cleanResult = pfIntegrator.CleanDataverseTables();
         Console.WriteLine(cleanResult.Result);
         */
+
+        var s = pfIntegrator.GetPathfinderHosts();
+        Console.WriteLine(s.Count);
+        foreach (var host in s)
+        {
+            Console.WriteLine(host);
+        }
+
+        var t = pfIntegrator.SetCurrentPathfinderHost("Microsoft");
+        Console.WriteLine(t);
         
-        /*
-        var result = pfIntegrator.IntegrateProductFootprints(true).Result;
+        var result = pfIntegrator.IntegrateProductFootprints(false).Result;
         Console.WriteLine("Footprints processed: " + result.RecordsProcessed);
         Console.WriteLine("Successful: " + result.Success);
         Console.WriteLine("Details: " + result.Message);
-        */
+        
 
     }
 }
