@@ -22,14 +22,18 @@ public static class FootprintPreProcessor
             ProductDescription = catcher.ProductDescription
         };
         
+        //if the catcher.CompanyIds is not null or accessing it doesn't throw, convert it to a list of strings and assign it to the footprint.CompanyIds
         if(catcher.CompanyIds != null)
             footprint.CompanyIds = ConvertCatcherCompanyIds(catcher.CompanyIds);
+
 
         //read the catcher.Status string and find a match in the Status enum
         if (EnumHelper.TryParseStatusEnum(catcher.Status, out var status))
             footprint.Status = status;
 
-        footprint.PrecedingPfIds = catcher.PrecedingPfIds;
+        if(catcher.PrecedingPfIds != null)
+            footprint.PrecedingPfIds = catcher.PrecedingPfIds;
+       
         footprint.Updated = catcher.Updated;
         footprint.StatusComment = catcher.StatusComment;
 
@@ -40,8 +44,8 @@ public static class FootprintPreProcessor
         }
         
         footprint.Pcf = ConvertCatcherPcfToFootprintPcf(catcher.Pcf);
-        
-        footprint.Extensions = ConvertCatcherExtensionToExtensions(catcher.Extensions);
+        if(catcher.Extensions != null)
+            footprint.Extensions = ConvertCatcherExtensionToExtensions(catcher.Extensions);
 
         return footprint;
     }
@@ -107,7 +111,7 @@ public static class FootprintPreProcessor
         if(catcherPcf.CrossSectoralStandardsUsed != null)
             pcf.CrossSectoralStandardsUsed = ConvertCatcherCrossSectoralStandardToCrossSectoralStandard(catcherPcf.CrossSectoralStandardsUsed);
         
-        if(EnumHelper.TryParseDeclaredUnit(catcherPcf.DeclaredUnit, out var unit));
+        if(EnumHelper.TryParseDeclaredUnit(catcherPcf.DeclaredUnit, out var unit))
             pcf.DeclaredUnit = unit;
             
         if (EnumHelper.TryParseGeographicCountry(catcherPcf.GeographyCountry, out var country))

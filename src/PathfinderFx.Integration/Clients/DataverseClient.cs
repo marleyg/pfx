@@ -7,6 +7,8 @@ using Microsoft.Xrm.Sdk.Messages;
 using Microsoft.Xrm.Sdk.Metadata;
 using PathfinderFx.Integration.Model;
 using PathfinderFx.Integration.Model.Entities;
+using PathfinderFx.Model;
+using PathfinderFx.Model.Helpers;
 
 namespace PathfinderFx.Integration.Clients;
 
@@ -161,15 +163,14 @@ public class DataverseClient
                 retVal.Append(Environment.NewLine);
             }
         }
-        
-        if (dataversePfCollection.Msdyn_ProductOrSectorSpecificRule != null)
+
+        if (dataversePfCollection.Msdyn_ProductOrSectorSpecificRule == null) return retVal.ToString();
         {
             try
             {
-                foreach (var rule in dataversePfCollection.Msdyn_ProductOrSectorSpecificRule)
+                foreach (var ruleId in dataversePfCollection.Msdyn_ProductOrSectorSpecificRule.Select(rule => 
+                             CreateProductOrSectorSpecificRule(rule)))
                 {
-                    var ruleId =
-                        CreateProductOrSectorSpecificRule(rule);
                     retVal.Append("Msdyn_ProductOrSectorSpecificRule:" +
                                   ruleId + " created");
                     retVal.Append(Environment.NewLine);
@@ -187,7 +188,7 @@ public class DataverseClient
                 retVal.Append(Environment.NewLine);
             }
         }
-        
+
         return retVal.ToString();
     }
 
@@ -225,8 +226,133 @@ public class DataverseClient
         }
         return "";
     }
+    
+    public Guid? AddUnit(DeclaredUnit newUnitValue)
+    {
+        var newUnitName = EnumHelper.GetEnumText(newUnitValue);
+        _logger.LogInformation("AddUnit called with newUnitName: {NewUnitName}", 
+            newUnitName);
+        try
+        {
+            var query = from pf in _context.Msdyn_UnitSet
+                where pf.Msdyn_Name == newUnitName
+                select pf;
+            var existingUnit = query.FirstOrDefault();
+            if (existingUnit != null)
+            {
+                _logger.LogInformation("Unit already exists, returning existing id: {Id}", 
+                    existingUnit.Msdyn_UnitId);
+                return existingUnit.Msdyn_UnitId;
+            }
 
-    public Guid CreateProduct(Msdyn_SustainabilityProduct product)
+            _logger.LogInformation("Unit does not exist, creating new unit");
+            
+            var newUnit = GetNewUnit(newUnitValue);
+            
+            var request = new CreateRequest
+            {
+                Target = newUnit
+            };
+            var response = (CreateResponse) _context.Execute(request);
+            _logger.LogInformation("Unit created with id: {Id}", 
+                response.id);
+            return response.id;
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Error in AddUnit");
+            return Guid.Empty;
+        }
+    }
+
+    private Msdyn_Unit GetNewUnit(DeclaredUnit newUnitValue)
+    {
+        _logger.LogInformation("Getting Unit Groups");
+        var unitGroups = GetUnitGroups();
+        var unitName = EnumHelper.GetEnumText(newUnitValue);
+        switch (newUnitValue)
+        {
+            case DeclaredUnit.CubicMeter:
+
+                var cubicMeterUnitGroup = unitGroups.FirstOrDefault(ug => ug.Msdyn_Name == "Length/distance");
+
+                return new Msdyn_Unit
+                {
+                    Msdyn_Name = unitName,
+                    Msdyn_UnitGroup = new EntityReference(Msdyn_UnitGroup.EntityLogicalName,
+                        (Guid)cubicMeterUnitGroup.Msdyn_UnitGroupId),
+                };
+            case DeclaredUnit.Kilogram:
+
+                var kilogramUnitGroup = unitGroups.FirstOrDefault(ug => ug.Msdyn_Name == "Weight/mass");
+                return new Msdyn_Unit
+                {
+                    Msdyn_Name = unitName,
+                    Msdyn_UnitGroup = new EntityReference(Msdyn_UnitGroup.EntityLogicalName,
+                        (Guid)kilogramUnitGroup.Msdyn_UnitGroupId),
+                };
+            case DeclaredUnit.Liter:
+
+                var literUnitGroup = unitGroups.FirstOrDefault(ug => ug.Msdyn_Name == "Volume");
+                return new Msdyn_Unit
+                {
+                    Msdyn_Name = unitName,
+                    Msdyn_UnitGroup = new EntityReference(Msdyn_UnitGroup.EntityLogicalName,
+                        (Guid)literUnitGroup.Msdyn_UnitGroupId),
+                };
+
+            case DeclaredUnit.KilowattHour:
+
+                var kilowattHourUnitGroup =
+                    unitGroups.FirstOrDefault(ug => ug.Msdyn_Name == "Energy consumed intensity");
+                return new Msdyn_Unit
+                {
+                    Msdyn_Name = unitName,
+                    Msdyn_UnitGroup = new EntityReference(Msdyn_UnitGroup.EntityLogicalName,
+                        (Guid)kilowattHourUnitGroup.Msdyn_UnitGroupId),
+                };
+
+            case DeclaredUnit.Megajoule:
+
+                var megajouleUnitGroup = unitGroups.FirstOrDefault(ug => ug.Msdyn_Name == "Energy");
+                return new Msdyn_Unit
+                {
+                    Msdyn_Name = unitName,
+                    Msdyn_UnitGroup = new EntityReference(Msdyn_UnitGroup.EntityLogicalName,
+                        (Guid)megajouleUnitGroup.Msdyn_UnitGroupId),
+                };
+
+            case DeclaredUnit.TonKilometer:
+
+                var tonKilometerUnitGroup = unitGroups.FirstOrDefault(ug => ug.Msdyn_Name == "Transport intensity");
+                return new Msdyn_Unit
+                {
+                    Msdyn_Name = unitName,
+                    Msdyn_UnitGroup = new EntityReference(Msdyn_UnitGroup.EntityLogicalName,
+                        (Guid)tonKilometerUnitGroup.Msdyn_UnitGroupId),
+                };
+
+            case DeclaredUnit.SquareMeter:
+
+                var squareMeterUnitGroup = unitGroups.FirstOrDefault(ug => ug.Msdyn_Name == "Area");
+                return new Msdyn_Unit
+                {
+                    Msdyn_Name = unitName,
+                    Msdyn_UnitGroup = new EntityReference(Msdyn_UnitGroup.EntityLogicalName,
+                        (Guid)squareMeterUnitGroup.Msdyn_UnitGroupId),
+                };
+            default:
+                var defaultUnitGroup = unitGroups.FirstOrDefault(ug => ug.Msdyn_Name == "Other");
+                return new Msdyn_Unit
+                {
+                    Msdyn_Name = unitName,
+                    Msdyn_UnitGroup = new EntityReference(Msdyn_UnitGroup.EntityLogicalName,
+                        (Guid)defaultUnitGroup.Msdyn_UnitGroupId),
+                };
+        }
+    }
+
+    private Guid CreateProduct(Msdyn_SustainabilityProduct product)
     {
         _logger.LogInformation("CreateProduct called with product: {Product}", 
             product.Msdyn_Name);
@@ -265,8 +391,8 @@ public class DataverseClient
             return Guid.Empty;
         }
     }
-    
-    public Guid? CreateProductIdentifier(Msdyn_SustainabilityProductIdentifier identifier, Guid productId)
+
+    private Guid? CreateProductIdentifier(Msdyn_SustainabilityProductIdentifier identifier, Guid productId)
     {
         _logger.LogInformation("CreateProductIdentifier called with productCarbonFootprint: {Identifier}", 
             identifier.Msdyn_Name);
@@ -309,8 +435,8 @@ public class DataverseClient
             return Guid.Empty;
         }
     }
-    
-    public Guid CreateProductFootprint(Msdyn_SustainabilityProductFootprint productFootprint, Guid productId)
+
+    private Guid CreateProductFootprint(Msdyn_SustainabilityProductFootprint productFootprint, Guid productId)
     {
         _logger.LogInformation("CreateProductFootprint called with ProductId: {Identifier}", 
             productId);
@@ -383,8 +509,8 @@ public class DataverseClient
             return false;
         }
     }
-    
-    public Guid CreateProductCarbonFootprint(Msdyn_SustainabilityProductCarbonFootprint productCarbonFootprint)
+
+    private Guid CreateProductCarbonFootprint(Msdyn_SustainabilityProductCarbonFootprint productCarbonFootprint)
     {
         _logger.LogInformation("CreateProductCarbonFootprint called with ProductId: {Identifier}", 
             productCarbonFootprint.Msdyn_Name);
@@ -572,6 +698,22 @@ public class DataverseClient
         }
     } 
     
+    public List<Msdyn_UnitGroup> GetUnitGroups()
+    {
+        _logger.LogInformation("GetUnitGroups called");
+        try
+        {
+            var query = from pf in _context.Msdyn_UnitGroupSet
+                select pf;
+            return query.ToList();
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Error in GetUnitGroups");
+            return [];
+        }
+    }
+    
     public List<Msdyn_PathfinderFxConfiguration> GetPathfinderFxConfiguration()
     {
         _logger.LogInformation("GetPathfinderFxConfiguration called");
@@ -592,7 +734,7 @@ public class DataverseClient
     
     #region clean dataverse tables
     
-        public string CleanDataverseTables()
+    public string CleanDataverseTables()
     {
         _logger.LogInformation("CleanDataverseTables called");
         var retVal = new StringBuilder();
@@ -1067,4 +1209,5 @@ public class DataverseClient
                && canBeReferencingResponse.CanBeReferencing;
     }
     #endregion
+    
 }

@@ -37,6 +37,16 @@ public static class EnumHelper
         }
         catch
         {
+            //if the parsing fails, get all the text values of the DeclaredUnit in a list, then look for a match in the list using the first two letters of the catcherPcfDeclaredUnit
+            var declaredUnits = Enum.GetNames(typeof(DeclaredUnit));
+            foreach (var declaredUnit in declaredUnits)
+            {
+                if (!declaredUnit.StartsWith(catcherPcfDeclaredUnit.Substring(0, 2),
+                        StringComparison.OrdinalIgnoreCase)) continue;
+                unit = GetEnumFromText<DeclaredUnit>(declaredUnit);
+                return true;
+            }
+            
             unit = DeclaredUnit.Kilogram;
             return false;
         }
