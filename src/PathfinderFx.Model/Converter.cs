@@ -20,55 +20,28 @@ public static class Converter
 }
 
 
-internal class ParseStringConverter : JsonConverter
+public class DateOnlyConverter(string? serializationFormat) : JsonConverter<DateOnly>
 {
-    public override bool CanConvert(Type t) => t == typeof(long) || t == typeof(long?);
+    private readonly string _serializationFormat = serializationFormat ?? "yyyy-MM-dd";
 
-    public override object ReadJson(JsonReader reader, Type t, object existingValue, JsonSerializer serializer)
+    public DateOnlyConverter() : this(null)
     {
-        if (reader.TokenType == JsonToken.Null) return null;
-        var value = serializer.Deserialize<string>(reader);
-        long l;
-        if (Int64.TryParse(value, out l))
-        {
-            return l;
-        }
-        throw new Exception("Cannot unmarshal type long");
     }
 
-    public override void WriteJson(JsonWriter writer, object untypedValue, JsonSerializer serializer)
+    public override void WriteJson(JsonWriter writer, DateOnly value, JsonSerializer serializer)
     {
-        if (untypedValue == null)
-        {
-            serializer.Serialize(writer, null);
-            return;
-        }
-        var value = (long)untypedValue;
-        serializer.Serialize(writer, value.ToString());
+        writer.WriteValue(value.ToString(_serializationFormat));
     }
 
-    public static readonly ParseStringConverter Singleton = new ParseStringConverter();
+    public override DateOnly ReadJson(JsonReader reader, Type objectType, DateOnly existingValue, bool hasExistingValue,
+        JsonSerializer serializer)
+    {
+        var value = reader.Value.ToString();
+        return DateOnly.Parse(value);
+    }
 }
-    
-    public class DateOnlyConverter(string? serializationFormat) : JsonConverter<DateOnly>
-    {
-        private readonly string _serializationFormat = serializationFormat ?? "yyyy-MM-dd";
-        public DateOnlyConverter() : this(null) { }
 
-        public override void WriteJson(JsonWriter writer, DateOnly value, JsonSerializer serializer)
-        {
-            writer.WriteValue(value.ToString(_serializationFormat));
-        }
-
-        public override DateOnly ReadJson(JsonReader reader, Type objectType, DateOnly existingValue, bool hasExistingValue,
-            JsonSerializer serializer)
-        {
-            var value = reader.Value.ToString();
-            return DateOnly.Parse(value);
-        }
-    }
-
-    public class TimeOnlyConverter : JsonConverter<TimeOnly>
+public class TimeOnlyConverter : JsonConverter<TimeOnly>
     {
         private readonly string serializationFormat;
 

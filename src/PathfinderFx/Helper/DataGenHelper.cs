@@ -593,4 +593,10 @@ public static class DataGenHelper
         var randomVersion = $"{random.Next(1, 10)}.{random.Next(1, 10)}";
         return randomVersion;
     }
+
+    public static int GenRandomInt(int i, int i1)
+    {
+        var random = new Random();
+        return random.Next(i, i1);
+    }
 }

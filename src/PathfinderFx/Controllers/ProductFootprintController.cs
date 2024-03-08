@@ -191,7 +191,7 @@ public class ProductFootprintController : Controller
     /// <param name="id">UUID/GUID</param>
     /// <returns>ProductFootprint</returns>
     [HttpGet("footprints/{id}")]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ProductFootprint))]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ProductFootprints))]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -230,7 +230,7 @@ public class ProductFootprintController : Controller
         _logger.LogInformation("Getting footprint, id: {Id} for user: {User} from application: {Application}", id,
             authUser, application);
 
-        var matchFp = ProductFootprints.Data.FirstOrDefault(x => x.Id == new Guid(id));
+        var matchFp = ProductFootprints.Data.FirstOrDefault(x => x.Id == id);
 
         if (matchFp != null)
         {

@@ -38,7 +38,6 @@ public class Pcf
     [JsonProperty("iLucGhgEmissions", NullValueHandling = NullValueHandling.Ignore)]
     public string ILucGhgEmissions { get; set; }
 
-    //TODO: this should be a decimal serialized as a json string
     [JsonProperty("biogenicCarbonWithdrawal", NullValueHandling = NullValueHandling.Ignore)]
     public string BiogenicCarbonWithdrawal { get; set; }
     
@@ -70,7 +69,7 @@ public class Pcf
     public string GeographyCountrySubdivision { get; set; }
     
     [JsonProperty("geographyCountry", NullValueHandling = NullValueHandling.Ignore)]
-    public string GeographyCountry { get; set; }
+    public GeographyCountry GeographyCountry { get; set; }
 
     [JsonProperty("geographyRegionOrSubregion", NullValueHandling = NullValueHandling.Ignore)]
     public RegionOrSubregion GeographyRegionOrSubregion { get; set; }
@@ -85,7 +84,7 @@ public class Pcf
     public string ExemptedEmissionsDescription { get; set; }
 
     [JsonProperty("packagingEmissionsIncluded")]
-    public bool? PackagingEmissionsIncluded { get; set; }
+    public bool PackagingEmissionsIncluded { get; set; }
 
     [JsonProperty("packagingGhgEmissions", NullValueHandling = NullValueHandling.Ignore)]
     public string PackagingGhgEmissions { get; set; }

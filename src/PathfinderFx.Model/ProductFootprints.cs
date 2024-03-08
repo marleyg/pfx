@@ -23,12 +23,11 @@ namespace PathfinderFx.Model
     public partial class ProductFootprint
     {
         [JsonProperty("id")]
-        public Guid Id { get; set; }
+        public string Id { get; set; }
 
         [JsonProperty("specVersion")]
         public string SpecVersion { get; set; }
-
-    
+        
         [JsonProperty("precedingPfIds", NullValueHandling = NullValueHandling.Ignore)]
         public List<string> PrecedingPfIds { get; set; }
 
@@ -66,8 +65,7 @@ namespace PathfinderFx.Model
         public List<string> ProductIds { get; set; }
         
         [JsonProperty("productCategoryCpc", NullValueHandling = NullValueHandling.Ignore)]
-        [JsonConverter(typeof(ParseStringConverter))]
-        public long? ProductCategoryCpc { get; set; }
+        public string ProductCategoryCpc { get; set; }
 
         [JsonProperty("productNameCompany")]
         public string ProductNameCompany { get; set; }

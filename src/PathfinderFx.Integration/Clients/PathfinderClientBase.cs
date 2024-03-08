@@ -62,6 +62,7 @@ public class PathfinderClientBase
 
             async Task NewBearer()
             {
+                //this will try using the client credentials flow, if it fails, it will try using the basic auth flow
                 _bearer = BearerToken.FromJson(await GetAuthToken());
                 if (_bearer != null)
                 {
@@ -107,11 +108,48 @@ public class PathfinderClientBase
         {
             _logger.LogError("GetAuthToken failed to {Service}, exception message {Message}",
                 Config.HostUrl, e.Message);
+            _logger.LogInformation("Attempting to get Basic Auth Token");
+            return await GetBasicAuthToken();
+        }
+
+        return response.Content;
+    }
+    
+    private async Task<string?> GetBasicAuthToken()
+    {
+        _logger.LogTrace("Getting Basic Authorization Token from {Name}", Config.HostUrl);
+        var options =
+            new RestClientOptions(Config.HostAuthUrl  ?? throw new InvalidOperationException())
+            {
+                ThrowOnAnyError = true,
+                MaxTimeout = 600000
+            };
+        var client = new RestClient(options);
+        var request = new RestRequest();
+        request.AddHeader("Content-Type", "application/x-www-form-urlencoded");
+        request.AddParameter("grant_type", "client_credentials");
+        
+       //base64 encode the client id and client secret
+        var plainTextBytes = System.Text.Encoding.UTF8.GetBytes($"{Config.ClientId}:{Config.ClientSecret}");
+        var base64String = Convert.ToBase64String(plainTextBytes);
+        request.AddHeader("Authorization", "Basic " + base64String);
+        
+        RestResponse? response;
+        try
+        {
+            response = await client.PostAsync(request);
+        }
+        catch (Exception e)
+        {
+            _logger.LogError("GetBasicAuthToken failed to {Service}, exception message {Message}",
+                Config.HostUrl, e.Message);
             throw;
         }
 
         return response.Content;
     }
+    
+    
 
     #endregion
     

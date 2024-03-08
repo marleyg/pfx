@@ -9,12 +9,12 @@ public static class SampleDataCreator
     {
         var retVal = new ProductFootprint
         {
-            Id = Guid.NewGuid(),
+            Id = Guid.NewGuid().ToString(),
             CompanyName = organizationName,
             CompanyIds = [organizationId],
             ProductNameCompany = DataGenHelper.GenerateRandomName(),
             Comment = "This is a sample Product Footprint",
-            ProductCategoryCpc = 3342,
+            ProductCategoryCpc = DataGenHelper.GenRandomInt(10000, 99999).ToString(),
             SpecVersion = "2.1",
             Version = 1,
             Created = DateTime.UtcNow,
@@ -51,7 +51,7 @@ public static class SampleDataCreator
         {
             DeclaredUnit = DataGenHelper.GetRandomUnit(),
             UnitaryProductAmount = DataGenHelper.GenerateRandomDecimalString(),
-            GeographyCountry = GeographyCountry.SE.AsText(),
+            GeographyCountry = DataGenHelper.GetRandomEnumValue<GeographyCountry>(),
             BiogenicCarbonContent = DataGenHelper.GenerateRandomDecimalString(),
             FossilGhgEmissions = DataGenHelper.GenerateRandomDecimalString(),
             FossilCarbonContent = DataGenHelper.GenerateRandomDecimalString(),
