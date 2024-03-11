@@ -3,11 +3,12 @@ using Microsoft.AspNetCore.Mvc;
 using OpenIddict.Abstractions;
 using OpenIddict.EntityFrameworkCore.Models;
 using OpenIddict.Validation.AspNetCore;
+using PathfinderFx.Config;
 using PathfinderFx.Helper;
 using PathfinderFx.Model;
 
 namespace PathfinderFx.Controllers;
-//[Authorize]
+
 /// <summary>
 /// WBCSD Product Footprint API v2
 /// </summary>
@@ -189,7 +190,7 @@ public class ProductFootprintController : Controller
     /// Retrieves a specific footprint by id.
     /// </summary>
     /// <param name="id">UUID/GUID</param>
-    /// <returns>ProductFootprint</returns>
+    /// <returns>ProductFootprints with a matching Product Footprint if found</returns>
     [HttpGet("footprints/{id}")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ProductFootprints))]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -234,7 +235,11 @@ public class ProductFootprintController : Controller
 
         if (matchFp != null)
         {
-            return Ok(matchFp);
+            var footprints = new ProductFootprints
+            {
+                Data = [matchFp]
+            };
+            return Ok(footprints);
         }
 
         _logger.LogInformation("Footprint not found, id: {Id}", id);

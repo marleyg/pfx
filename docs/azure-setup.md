@@ -73,11 +73,11 @@ The installation process is as follows:
       ```
 
    - This will generate the `pfx-encryption-certificate.pfx` and `pfx-signing-certificate.pfx` files in the `certGenerator` folder. These certificates will need to be uploaded to the Key Vault
-   - From the same console or terminal in the [certGenerator folder](./certGenerator/) run the following command to upload the certificates to the Key Vault, replacing `<keyVaultName>` and `<password>` with your key vault name and the password you used to generate the certificates:
+   - From the same console or terminal in the [certGenerator folder](./certGenerator/bin/debug/net8.0) run the following command to upload the certificates to the Key Vault, replacing `<keyVaultName>` and `<password>` with your key vault name and the password you used to generate the certificates:
 
     ```bash
-        az keyvault certificate import --vault-name <keyVaultName> --name pfx-encryption-certificate --file pfx-encryption-certificate.pfx --password <password>
-        az keyvault certificate import --vault-name <keyVaultName> --name pfx-signing-certificate --file pfx-signing-certificate.pfx --password <password>
+        az keyvault certificate import --vault-name <keyVaultName> --name pfx-encryption-certificate --file encryption-certificate.pfx --password <password>
+        az keyvault certificate import --vault-name <keyVaultName> --name pfx-signing-certificate --file signing-certificate.pfx --password <password>
     ```
 
 ## Configuration
@@ -89,6 +89,6 @@ The PathfinderFx will need permissions to access to the Key Vault. PathfinderFx 
 
 ## Testing
 
-You will want to restart the PathfinderFx to pick up the new configuration. This can be done by navigating to the Beacon's App Service in the Azure portal and selecting `Restart` from the top menu.
+You will want to restart the PathfinderFx to pick up the new configuration. This can be done by navigating to the Pathfinder App Service in the Azure portal and selecting `Restart` from the top menu. It can take a few minutes for the restart to complete.
 
-Once the host has restarted, you can test the connectivity to the other member organizations' Beacons using the [Testing Instructions](../../docs/testing-instructions.md)
+Once the host has restarted, you can test the connectivity to your Pathfinder host using the [Testing Instructions](./testing-instructions.md)

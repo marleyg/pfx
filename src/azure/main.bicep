@@ -9,7 +9,7 @@ param keyVaultUrl string
 ])
 param environmentType string = 'nonprod'
 
-var appServicePlanName = '${hostOrgName}-pathfinderplan'
+var appServicePlanName = '${hostOrgName}-pathfinder-plan'
 
 module appService 'modules/appService.bicep' = {
   name: 'appService'

@@ -3,15 +3,15 @@ namespace PathfinderFx.Model;
 
 public interface IPfxConfig
 {
-    List<ConformanceAccount> ConformanceAccounts { get; set; }
+    List<PathfinderAccount> PathfinderAccounts { get; set; }
 }
 
 public class PfxConfig : IPfxConfig
 {
-    public List<ConformanceAccount> ConformanceAccounts { get; set; } = new();
+    public List<PathfinderAccount> PathfinderAccounts { get; set; } = new();
 }
 
-public class ConformanceAccount
+public class PathfinderAccount
 {
     public string ClientId { get; set; } = "";
     public string ClientSecret { get; set; } = "";

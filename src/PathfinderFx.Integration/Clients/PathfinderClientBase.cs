@@ -106,7 +106,7 @@ public class PathfinderClientBase
         }
         catch (Exception e)
         {
-            _logger.LogError("GetAuthToken failed to {Service}, exception message {Message}",
+            _logger.LogInformation("GetAuthToken failed to {Service}, exception message {Message}",
                 Config.HostUrl, e.Message);
             _logger.LogInformation("Attempting to get Basic Auth Token");
             return await GetBasicAuthToken();
@@ -141,7 +141,7 @@ public class PathfinderClientBase
         }
         catch (Exception e)
         {
-            _logger.LogError("GetBasicAuthToken failed to {Service}, exception message {Message}",
+            _logger.LogError("GetAuthToken and GetBasicAuthToken failed to {Service}, exception message {Message}",
                 Config.HostUrl, e.Message);
             throw;
         }
@@ -149,8 +149,6 @@ public class PathfinderClientBase
         return response.Content;
     }
     
-    
-
     #endregion
     
 }
@@ -189,7 +187,7 @@ public partial class BearerToken
 }
 internal static class TokenConverter
 {
-    public static readonly JsonSerializerSettings? Settings = new JsonSerializerSettings
+    public static readonly JsonSerializerSettings? Settings = new()
     {
         MetadataPropertyHandling = MetadataPropertyHandling.Ignore,
         DateParseHandling = DateParseHandling.None,

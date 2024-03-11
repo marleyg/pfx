@@ -3,6 +3,7 @@ using Azure.Identity;
 using Azure.Security.KeyVault.Certificates;
 using Azure.Security.KeyVault.Secrets;
 using Newtonsoft.Json;
+using PathfinderFx.Config;
 using PathfinderFx.Model;
 
 namespace PathfinderFx.Providers;
@@ -35,7 +36,7 @@ public static class AksConfigurationProvider
     }
     
     /// <summary>
-    /// Massiv Plus Framework configuration from Azure Key Vault.
+    /// PathfinderFx configuration from Azure Key Vault.
     /// </summary>
     public static IPfxConfig? PfxConfig { get; private set; }
     

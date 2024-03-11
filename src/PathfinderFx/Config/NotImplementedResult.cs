@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 
-namespace PathfinderFx.Model;
+namespace PathfinderFx.Config;
 
 public class NotImplementedResult(string grantType) : ActionResult
 {

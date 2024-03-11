@@ -1,6 +1,7 @@
 param location string
 param appServiceAppName string
 param keyVaultUrl string
+param appServicePlanName string
 
 @allowed([
   'nonprod'
@@ -8,7 +9,7 @@ param keyVaultUrl string
 ])
 param environmentType string
 
-param appServicePlanName string
+
 var appServicePlanSkuName = (environmentType == 'prod') ? 'P2v3' : 'F1'
 
 

@@ -1,4 +1,5 @@
 using OpenIddict.Abstractions;
+using PathfinderFx.Config;
 using PathfinderFx.Model;
 
 namespace PathfinderFx;
@@ -16,7 +17,7 @@ public class Worker(IServiceProvider serviceProvider)
         var manager = scope.ServiceProvider.GetRequiredService<IOpenIddictApplicationManager>();
         
         //looping through the accounts in the config and creating them if they don't exist
-        foreach (var account in config!.ConformanceAccounts)
+        foreach (var account in config!.PathfinderAccounts)
         {
             if (await manager.FindByClientIdAsync(account.ClientId, cancellationToken) != null) continue;
             var descriptor = new OpenIddictApplicationDescriptor

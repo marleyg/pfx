@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 
-namespace PathfinderFx.Model;
+namespace PathfinderFx.Config;
 
 public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : DbContext(options)
 {

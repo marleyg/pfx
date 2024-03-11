@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using OpenIddict.Abstractions;
 using OpenIddict.Server.AspNetCore;
+using PathfinderFx.Config;
 using PathfinderFx.Helper;
 using PathfinderFx.Model;
 
