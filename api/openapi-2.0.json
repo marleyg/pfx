@@ -121,7 +121,7 @@
             "200": {
               "description": "Success",
               "schema": {
-                "$ref": "#/definitions/ProductFootprint"
+                "$ref": "#/definitions/ProductFootprints"
               }
             },
             "400": {
