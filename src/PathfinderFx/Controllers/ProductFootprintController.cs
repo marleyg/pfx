@@ -192,7 +192,7 @@ public class ProductFootprintController : Controller
     /// <param name="id">UUID/GUID</param>
     /// <returns>ProductFootprints with a matching Product Footprint if found</returns>
     [HttpGet("footprints/{id}")]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ProductFootprints))]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Footprint))]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -235,9 +235,9 @@ public class ProductFootprintController : Controller
 
         if (matchFp != null)
         {
-            var footprints = new ProductFootprints
+            var footprints = new Footprint
             {
-                Data = [matchFp]
+                Data = matchFp
             };
             return Ok(footprints);
         }

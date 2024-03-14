@@ -20,6 +20,12 @@ namespace PathfinderFx.Model
         public List<ProductFootprint> Data { get; set; }
     }
 
+    public partial class Footprint
+    {
+        [JsonProperty("data")]
+        public ProductFootprint Data { get; set; }
+    }
+
     public partial class ProductFootprint
     {
         [JsonProperty("id")]
@@ -88,6 +94,16 @@ namespace PathfinderFx.Model
     public static partial class Serialize
     {
         public static string ToJson(this ProductFootprints self) => JsonConvert.SerializeObject(self, Converter.Settings);
+    }
+    
+    public partial class Footprint
+    {
+        public static Footprint FromJson(string json) => JsonConvert.DeserializeObject<Footprint>(json, Converter.Settings);
+    }
+    
+    public static partial class Serialize
+    {
+        public static string ToJson(this Footprint self) => JsonConvert.SerializeObject(self, Converter.Settings);
     }
 
 }

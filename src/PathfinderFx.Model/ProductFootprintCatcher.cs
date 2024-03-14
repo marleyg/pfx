@@ -17,6 +17,12 @@ public partial class ProductFootprintCatchers
     [JsonProperty("data")]
     public List<ProductFootprintCatcher> Data { get; set; }
 }
+
+public partial class FootprintCatcher
+{
+    [JsonProperty("data")]
+    public ProductFootprintCatcher Data { get; set; }
+}
     
 public partial class ProductFootprintCatcher
 {

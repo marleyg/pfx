@@ -298,7 +298,7 @@ namespace PathfinderFx.Integration.Clients
         /// <param name="id">UUID/GUID</param>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<ProductFootprintCatchers> FootprintAsync(string id)
+        public virtual System.Threading.Tasks.Task<FootprintCatcher> FootprintAsync(string id)
         {
             return FootprintAsync(id, System.Threading.CancellationToken.None);
         }
@@ -310,7 +310,7 @@ namespace PathfinderFx.Integration.Clients
         /// <param name="id">UUID/GUID</param>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<ProductFootprintCatchers> FootprintAsync(string id, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<FootprintCatcher> FootprintAsync(string id, System.Threading.CancellationToken cancellationToken)
         {
             if (id == null)
                 throw new System.ArgumentNullException("id");
@@ -351,7 +351,7 @@ namespace PathfinderFx.Integration.Clients
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProductFootprintCatchers>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<FootprintCatcher>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
