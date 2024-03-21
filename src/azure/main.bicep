@@ -2,6 +2,9 @@ param location string
 param hostOrgName string 
 param appServiceAppName string = '${hostOrgName}-PathfinderFx'
 param keyVaultName string = '${hostOrgName}-pathfinder-kv'
+param tenantId string = subscription().tenantId
+@description('Specifies the object ID of a user, service principal or security group in the Azure Active Directory tenant for the vault. The object ID must be unique for the list of access policies. Get it by using Get-AzADUser or Get-AzADServicePrincipal cmdlets.')
+param scripterId string
 
 @allowed([
   'nonprod'
@@ -26,7 +29,8 @@ module keyVault 'modules/keyVault.bicep' = {
   params: {
     location: location
     keyVaultName: keyVaultName
-    tenantId: appService.outputs.tenantId
+    tenantId: tenantId
+    scripterId: scripterId
   }
 }
 
@@ -36,7 +40,9 @@ module policy 'modules/policy.bicep' = {
     webappPrincipleId: appService.outputs.appServicePrincipalId
     keyVaultName: keyVaultName
     keyVaultUri: keyVault.outputs.keyVaultUri
-    tenantId: appService.outputs.tenantId
+    tenantId: tenantId
     webAppName: appServiceAppName
+    scripterId: scripterId
+    webappPrincipleTenantId: appService.outputs.appServicePrincipleTenantId
   }
 }

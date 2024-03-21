@@ -9,7 +9,7 @@ param appServicePlanName string
 param environmentType string
 
 
-var appServicePlanSkuName = (environmentType == 'prod') ? 'P2v3' : 'F1'
+var appServicePlanSkuName = (environmentType == 'prod') ? 'P2v3' : 'B1'
 
 
 resource appServicePlan 'Microsoft.Web/serverfarms@2023-01-01' = {
@@ -62,4 +62,3 @@ resource appServiceApp 'Microsoft.Web/sites@2023-01-01' = {
 output appServiceAppHostName string = appServiceApp.properties.defaultHostName
 output appServiceAppId string = appServiceApp.id
 output appServicePrincipalId string = appServiceApp.identity.principalId
-output tenantId string = appServiceApp.identity.tenantId
