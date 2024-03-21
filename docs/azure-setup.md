@@ -61,6 +61,19 @@ The installation process is as follows:
     ./install.sh
     ```
 
+4. Once the installation is complete, you will need to upload the encryption and signing certificates as well as the `PfxConfigTemplate.json` file to the Key Vault. This can be done using the Azure CLI from a console or terminal.
+
+Replace the `${keyVaultName}` and `${certPassword}` with the values you used in the `install.sh` script.
+
+```bash
+#upload the certificates to the key vault
+az keyvault certificate import --vault-name ${keyVaultName} --name pfx-encryption-certificate --file '../CertGenerator/bin/debug/net8.0/encryption-certificate.pfx' --password ${certPassword}
+az keyvault certificate import --vault-name ${keyVaultName} --name pfx-signing-certificate --file '../CertGenerator/bin/debug/net8.0/signing-certificate.pfx' --password ${certPassword}
+
+#updload the PfxConfigTemplate.json file to the key vault as a secret
+az keyvault secret set --vault-name ${keyVaultName} --name pfx-config --file PfxConfigTemplate.json
+```
+
 ## Testing
 
 You will want to restart the PathfinderFx to pick up the new configuration. This can be done by navigating to the Pathfinder App Service in the Azure portal and selecting `Restart` from the top menu. It can take a few minutes for the restart to complete.

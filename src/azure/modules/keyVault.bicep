@@ -2,12 +2,25 @@ param keyVaultName string
 param location string
 param tenantId string
 param scripterId string
+param webappPrincipleId string
 
 param rbacPermissions array = [
       {
         roleDefinitionResourceId: '/providers/Microsoft.Authorization/roleDefinitions/00482a5a-887f-4fb3-b363-3b7fe8e74483' // Key Vault Administrator
         principalId: scripterId 
         principalType: 'User'
+        enabled: true
+      }
+      {
+        roleDefinitionResourceId: '/providers/Microsoft.Authorization/roleDefinitions/4633458b-17de-408a-b874-0445c86b69e6' // Key Vault Secrets User
+        principalId: webappPrincipleId 
+        principalType: 'ServicePrincipal'
+        enabled: true
+      }
+      {
+        roleDefinitionResourceId: '/providers/Microsoft.Authorization/roleDefinitions/db79e9a7-68ee-4b58-9aeb-b90e7c24fcba' // Key Vault Certificate User
+        principalId: webappPrincipleId
+        principalType: 'ServicePrincipal'
         enabled: true
       }
 ]

@@ -1,6 +1,5 @@
 using OpenIddict.Abstractions;
 using PathfinderFx.Config;
-using PathfinderFx.Model;
 
 namespace PathfinderFx;
 

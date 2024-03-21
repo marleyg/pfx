@@ -31,18 +31,14 @@ module keyVault 'modules/keyVault.bicep' = {
     keyVaultName: keyVaultName
     tenantId: tenantId
     scripterId: scripterId
+    webappPrincipleId: appService.outputs.appServicePrincipalId
   }
 }
 
-module policy 'modules/policy.bicep' = {
-  name: 'policy'
+module appServiceConfig 'modules/appServiceConfig.bicep' = {
+  name: 'config'
   params: {
-    webappPrincipleId: appService.outputs.appServicePrincipalId
-    keyVaultName: keyVaultName
     keyVaultUri: keyVault.outputs.keyVaultUri
-    tenantId: tenantId
     webAppName: appServiceAppName
-    scripterId: scripterId
-    webappPrincipleTenantId: appService.outputs.appServicePrincipleTenantId
   }
 }

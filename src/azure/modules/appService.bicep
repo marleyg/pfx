@@ -33,24 +33,6 @@ resource appServiceApp 'Microsoft.Web/sites@2023-01-01' = {
     siteConfig: {
       linuxFxVersion: 'DOTNETCORE|8.0'
       acrUseManagedIdentityCreds: true
-      appSettings: [
-        {
-          name: 'ASPNETCORE_ENVIRONMENT'
-          value: 'Production'
-        }
-        {
-            name: 'ENCRYPTION_CERTIFICATE_NAME'
-            value: 'pfx-encryption-certificate'
-        }
-        {
-            name: 'SIGNING_CERTIFICATE_NAME'
-            value: 'pfx-signing-certificate'
-        }
-        {
-            name: 'PFX_CONFIG_SECRET_NAME'
-            value: 'pfx-config'
-        }
-      ]
     }
   }
   identity: {
@@ -62,3 +44,4 @@ resource appServiceApp 'Microsoft.Web/sites@2023-01-01' = {
 output appServiceAppHostName string = appServiceApp.properties.defaultHostName
 output appServiceAppId string = appServiceApp.id
 output appServicePrincipalId string = appServiceApp.identity.principalId
+output appServicePrincipleTenantId string = appServiceApp.identity.tenantId
