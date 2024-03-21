@@ -36,7 +36,7 @@ public static class Program
         else
         {
             UseAzureKeyVault = true;
-            PfxConfig = AksConfigurationProvider.PfxConfig 
+            PfxConfig = AkvConfigurationProvider.PfxConfig 
                         ?? throw new InvalidOperationException("PfxConfig is null");
             Console.WriteLine("PfxConfig is set with {0} accounts, proceeding with the application", PfxConfig.PathfinderAccounts.Count);
         }
@@ -101,8 +101,8 @@ public static class Program
                 // Load and register the signing and encryption credentials from Azure Key Vault.
                 if (UseAzureKeyVault){
                         
-                    options.AddEncryptionCertificate(AksConfigurationProvider.GetEncryptionCertFromAks());
-                    options.AddSigningCertificate(AksConfigurationProvider.GetSigningCertFromAks());
+                    options.AddEncryptionCertificate(AkvConfigurationProvider.GetEncryptionCertFromAks());
+                    options.AddSigningCertificate(AkvConfigurationProvider.GetSigningCertFromAks());
                 }
                 else
                 {

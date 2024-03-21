@@ -5,7 +5,7 @@ namespace CertGenerator;
 
 public class Encryption
 {
-    public void CreateEncryptionCert(string password)
+    public static void CreateEncryptionCert(string password)
     {
         using var algorithm = RSA.Create(keySizeInBits: 2048);
 
@@ -17,7 +17,7 @@ public class Encryption
 
         var certificate = request.CreateSelfSigned(DateTimeOffset.UtcNow, DateTimeOffset.UtcNow.AddYears(2));
 
-        File.WriteAllBytes("pfx-encryption-certificate.pfx",
+        File.WriteAllBytes("encryption-certificate.pfx",
             certificate.Export(X509ContentType.Pfx,  password));
     }
 }

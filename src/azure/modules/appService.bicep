@@ -1,6 +1,5 @@
 param location string
 param appServiceAppName string
-param keyVaultUrl string
 param appServicePlanName string
 
 @allowed([
@@ -48,10 +47,6 @@ resource appServiceApp 'Microsoft.Web/sites@2023-01-01' = {
             value: 'pfx-signing-certificate'
         }
         {
-            name: 'AKS_URI'
-            value: keyVaultUrl
-        }
-        {
             name: 'PFX_CONFIG_SECRET_NAME'
             value: 'pfx-config'
         }
@@ -65,3 +60,6 @@ resource appServiceApp 'Microsoft.Web/sites@2023-01-01' = {
 }
 
 output appServiceAppHostName string = appServiceApp.properties.defaultHostName
+output appServiceAppId string = appServiceApp.id
+output appServicePrincipalId string = appServiceApp.identity.principalId
+output tenantId string = appServiceApp.identity.tenantId

@@ -5,7 +5,7 @@ namespace CertGenerator;
 
 public class Signing
 {
-    public void CreateSigningCert(string password)
+    public static void CreateSigningCert(string password)
     {
         using var algorithm = RSA.Create(keySizeInBits: 2048);
 
@@ -17,7 +17,7 @@ public class Signing
 
         var certificate = request.CreateSelfSigned(DateTimeOffset.UtcNow, DateTimeOffset.UtcNow.AddYears(2));
 
-        File.WriteAllBytes("pfx-signing-certificate.pfx",
+        File.WriteAllBytes("signing-certificate.pfx",
             certificate.Export(X509ContentType.Pfx, password));
     }
 }

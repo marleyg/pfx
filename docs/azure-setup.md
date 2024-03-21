@@ -6,7 +6,10 @@ This code base can switch from using a local accounts database to using Azure AD
 
 ## Prerequisites
 
-You will need to have an Azure subscription and an administrator account that has the permissions needed to be able to deploy the PathfinderFx.
+You will need to have an Azure subscription and an administrator account that has the permissions needed to be able to deploy the PathfinderFx. You will also need to have the following installed on your local machine:
+
+- [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest)
+- [dotnet 8](https://dotnet.microsoft.com/download/dotnet/8.0)
 
 ## Overview
 

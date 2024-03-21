@@ -3,27 +3,26 @@ using Azure.Identity;
 using Azure.Security.KeyVault.Certificates;
 using Azure.Security.KeyVault.Secrets;
 using Newtonsoft.Json;
-using PathfinderFx.Config;
 using PathfinderFx.Model;
 
 namespace PathfinderFx.Providers;
 
-public static class AksConfigurationProvider
+public static class AkvConfigurationProvider
 {
     
-    private static readonly string AksUri = Environment.GetEnvironmentVariable("AKS_URI") ??
-                                            throw new InvalidOperationException("Environment variable AKS_URI is not set");
+    private static readonly string AkvUri = Environment.GetEnvironmentVariable("AKV_URI") ??
+                                            throw new InvalidOperationException("Environment variable AKV_URI is not set");
 
     /// <summary>
     /// Loads the configuration data from the Azure Key Vault.
     /// </summary>
     /// <exception cref="Exception"></exception>'
-    static AksConfigurationProvider()
+    static AkvConfigurationProvider()
     {
         var secretName = Environment.GetEnvironmentVariable("PFX_CONFIG_SECRET_NAME");
-        if (string.IsNullOrEmpty(AksUri) || string.IsNullOrEmpty(secretName))
-            throw new Exception("AKS_URI or MPF_CONFIG_SECRET_NAME is not set in the environment");
-        var client = new SecretClient(vaultUri: new Uri(AksUri), credential: new DefaultAzureCredential());
+        if (string.IsNullOrEmpty(AkvUri) || string.IsNullOrEmpty(secretName))
+            throw new Exception("AKV_URI or MPF_CONFIG_SECRET_NAME is not set in the environment");
+        var client = new SecretClient(vaultUri: new Uri(AkvUri), credential: new DefaultAzureCredential());
         var secret = client.GetSecret(secretName);
         try
         {
@@ -59,7 +58,7 @@ public static class AksConfigurationProvider
     }
     private static X509Certificate2 GetCertFromAks(string certName)
     {
-        var client = new CertificateClient(vaultUri: new Uri(AksUri), credential: new DefaultAzureCredential());
+        var client = new CertificateClient(vaultUri: new Uri(AkvUri), credential: new DefaultAzureCredential());
         var certificate = client.DownloadCertificate(certName);
         return certificate;
     }

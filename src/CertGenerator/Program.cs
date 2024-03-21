@@ -8,12 +8,10 @@ public static class Program
     {
         if (!string.IsNullOrEmpty(args[0]))
         {
-            var encryption = new Encryption();
-            encryption.CreateEncryptionCert(args[0]);
+            Encryption.CreateEncryptionCert(args[0]);
             Console.WriteLine("encryption-certificate.pfx created");
 
-            var signing = new Signing();
-            signing.CreateSigningCert(args[0]);
+            Signing.CreateSigningCert(args[0]);
             Console.WriteLine("signing-certificate.pfx created");
         }
         else
