@@ -6,7 +6,6 @@ subscriptionId='32886bdb-91b8-4941-96c9-a662977d4455'
 location='westus2'
 hostOrgName='msft2'
 environmentType='nonprod'
-certPassword='pathfinder'
 resourceGroupName=${hostOrgName}'-pathfinderfx'
 keyVaultName=${hostOrgName}'-pathfinderfx-kv'
 
