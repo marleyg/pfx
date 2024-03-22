@@ -18,14 +18,15 @@ az configure --defaults group=$resourceGroupName
 
 
 # generate new self-signed certificates for encryption and signing
-dotnet ../CertGenerator/bin/debug/net8.0/CertGenerator.dll ${certPassword}
+#dotnet ../CertGenerator/bin/debug/net8.0/CertGenerator.dll ${certPassword}
 
 #upload the certificates to the key vault
 
 echo "Key Vault Name: ${keyVaultName}"
+az keyvault certificate create --vault-name ${keyVaultName} --name pfx-encryption-certificate --policy "$(az keyvault certificate get-default-policy)"
+az keyvault certificate create --vault-name ${keyVaultName} --name pfx-signing-certificate --policy "$(az keyvault certificate get-default-policy)"
 
-
-az webapp deploy --resource-group $resourceGroupName --name ${hostOrgName}'-PathfinderFx' --src-path ../PathfinderFx/bin/release/net8.0/PathfinderFx.zip
+#az webapp deploy --resource-group $resourceGroupName --name ${hostOrgName}'-PathfinderFx' --src-path ../PathfinderFx/bin/release/net8.0/PathfinderFx.zip
 #az keyvault certificate import --file encryption-certificate.pfx --name pfx-encryption-certificate --password ${certPassword} --vault-name ${keyVaultName}
 #az keyvault certificate import --vault-name ${keyVaultName} --name pfx-signing-certificate --file '../CertGenerator/bin/debug/net8.0/signing-certificate.pfx' --password ${certPassword}
 

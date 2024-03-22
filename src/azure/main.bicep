@@ -42,3 +42,4 @@ module appServiceConfig 'modules/appServiceConfig.bicep' = {
     webAppName: appServiceAppName
   }
 }
+

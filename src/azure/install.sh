@@ -4,7 +4,7 @@ az login
 # variables for the subscription and resource group
 subscriptionId='32886bdb-91b8-4941-96c9-a662977d4455'
 location='westus2'
-hostOrgName='msft'
+hostOrgName='msft2'
 environmentType='nonprod'
 certPassword='pathfinder'
 resourceGroupName=${hostOrgName}'-pathfinderfx'
@@ -24,16 +24,9 @@ az deployment group create \
 --parameters environmentType=$environmentType location=$location hostOrgName=$hostOrgName scripterId=$scripterId \
 --resource-group $resourceGroupName \
 
-# generate new self-signed certificates for encryption and signing, to be deployed to the key vault
-dotnet ../CertGenerator/bin/debug/net8.0/CertGenerator.dll ${certPassword}
-
-#upload the certificates to the key vault - these are commented out because they throw exceptions from the script but work fine when run from the command line
-
-#az keyvault certificate import --vault-name ${keyVaultName} --name pfx-encryption-certificate --file '../CertGenerator/bin/debug/net8.0/encryption-certificate.pfx' --password ${certPassword}
-#az keyvault certificate import --vault-name ${keyVaultName} --name pfx-signing-certificate --file '../CertGenerator/bin/debug/net8.0/signing-certificate.pfx' --password ${certPassword}
-
-#upload the PfxConfigTemplate.json file to the key vault as a secret
-#az keyvault secret set --vault-name ${keyVaultName} --name pfx-config --file PfxConfigTemplate.json
+# generate new self-signed certificates for encryption and signing
+az keyvault certificate create --vault-name ${keyVaultName} --name pfx-encryption-certificate --policy "$(az keyvault certificate get-default-policy)"
+az keyvault certificate create --vault-name ${keyVaultName} --name pfx-signing-certificate --policy "$(az keyvault certificate get-default-policy)"
 
 #deploy the web app
 az webapp deploy --resource-group $resourceGroupName --name ${hostOrgName}'-PathfinderFx' --src-path ../PathfinderFx/bin/release/net8.0/PathfinderFx.zip

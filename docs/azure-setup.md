@@ -61,17 +61,15 @@ The installation process is as follows:
     ./install.sh
     ```
 
-4. Once the installation is complete, you will need to upload the encryption and signing certificates as well as the `PfxConfigTemplate.json` file to the Key Vault. This can be done using the Azure CLI from a console or terminal.
+4. Once the installation is complete, *IF YOU GET 2 `Failed to establish a new connection: [Errno 8] nodename nor servname provided, or not known` errors* you will need to create the encryption and signing certificates in the Key Vault. This can be done using the Azure CLI from a console or terminal.
 
-Replace the `${keyVaultName}` and `${certPassword}` with the values you used in the `install.sh` script.
+Replace the `${keyVaultName}`  with the values you used in the `install.sh` script.
 
 ```bash
 #upload the certificates to the key vault
-az keyvault certificate import --vault-name ${keyVaultName} --name pfx-encryption-certificate --file '../CertGenerator/bin/debug/net8.0/encryption-certificate.pfx' --password ${certPassword}
-az keyvault certificate import --vault-name ${keyVaultName} --name pfx-signing-certificate --file '../CertGenerator/bin/debug/net8.0/signing-certificate.pfx' --password ${certPassword}
+az keyvault certificate create --vault-name ${keyVaultName} --name pfx-encryption-certificate --policy "$(az keyvault certificate get-default-policy)"
+az keyvault certificate create --vault-name ${keyVaultName} --name pfx-signing-certificate --policy "$(az keyvault certificate get-default-policy)"
 
-#updload the PfxConfigTemplate.json file to the key vault as a secret
-az keyvault secret set --vault-name ${keyVaultName} --name pfx-config --file PfxConfigTemplate.json
 ```
 
 ## Testing

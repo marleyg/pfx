@@ -29,6 +29,7 @@ public static class SampleDataCreator
         {
             retVal.PrecedingPfIds = [Guid.NewGuid().ToString()];
             retVal.Updated = DateTime.UtcNow.Subtract(TimeSpan.FromDays(90));
+            retVal.Comment = getAllOptionalFields ? "This sample has all optional fields" : "This is a sample status comment";
             retVal.StatusComment = getAllOptionalFields ? "This sample has all optional fields" : "This is a sample status comment";
         }
 

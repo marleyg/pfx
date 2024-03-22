@@ -3,6 +3,8 @@ param location string
 param tenantId string
 param scripterId string
 param webappPrincipleId string
+param secretName string = 'pfx-config'
+var serviceConfigJson = loadTextContent('../PfxConfigTemplate.json')
 
 param rbacPermissions array = [
       {
@@ -34,9 +36,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' = {
       name: 'standard'
     }
     tenantId: tenantId
-    accessPolicies: [
-
-    ]
+    accessPolicies: []
     enableRbacAuthorization: true
   }
 }
@@ -50,6 +50,14 @@ resource roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
     principalType: item.principalType
   }
 }]
+
+resource secret 'Microsoft.KeyVault/vaults/secrets@2023-07-01' = {
+  parent: keyVault
+  name: secretName
+  properties: {
+    value: serviceConfigJson
+  }
+}
 
 output keyVaultId string = keyVault.id
 output keyVaultUri string = keyVault.properties.vaultUri

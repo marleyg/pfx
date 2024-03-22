@@ -4,8 +4,6 @@ VisualStudioVersion = 17.5.33103.201
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PathfinderFx", "PathfinderFx\PathfinderFx.csproj", "{47F814AE-D290-4E2F-97C6-E79D5A81A038}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CertGenerator", "CertGenerator\CertGenerator.csproj", "{14FCC0DA-5C51-4B14-BCB8-3E37E274E1E3}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntegrationHarness", "IntegrationHarness\IntegrationHarness.csproj", "{BCFE6456-7A79-4431-BDD0-9C771D1255F0}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PathfinderFx.Integration", "PathfinderFx.Integration\PathfinderFx.Integration.csproj", "{E76EB493-EB99-4A63-852B-4EB90E4EDC67}"
@@ -22,10 +20,6 @@ Global
 		{47F814AE-D290-4E2F-97C6-E79D5A81A038}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{47F814AE-D290-4E2F-97C6-E79D5A81A038}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{47F814AE-D290-4E2F-97C6-E79D5A81A038}.Release|Any CPU.Build.0 = Release|Any CPU
-		{14FCC0DA-5C51-4B14-BCB8-3E37E274E1E3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{14FCC0DA-5C51-4B14-BCB8-3E37E274E1E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{14FCC0DA-5C51-4B14-BCB8-3E37E274E1E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{14FCC0DA-5C51-4B14-BCB8-3E37E274E1E3}.Release|Any CPU.Build.0 = Release|Any CPU
 		{BCFE6456-7A79-4431-BDD0-9C771D1255F0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{BCFE6456-7A79-4431-BDD0-9C771D1255F0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BCFE6456-7A79-4431-BDD0-9C771D1255F0}.Release|Any CPU.ActiveCfg = Release|Any CPU
