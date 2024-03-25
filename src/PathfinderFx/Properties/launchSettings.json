@@ -15,7 +15,11 @@
       "launchBrowser": false,
       "launchUrl": "swagger",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "AKV_URI": "https://pathfinerfx-kv.vault.azure.net/",
+        "PFX_CONFIG_SECRET_NAME": "pfx-config",
+        "ENCRYPTION_CERTIFICATE_NAME": "pfx-encryption-cert",
+        "SIGNING_CERTIFICATE_NAME": "pfx-signing-cert"
       },
       "dotnetRunMessages": true,
       "applicationUrl": "https://localhost:7126;http://localhost:5068"

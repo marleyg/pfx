@@ -1,12 +1,16 @@
+using System;
+using System.Collections.Generic;
 using System.Security.Claims;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using OpenIddict.Abstractions;
 using OpenIddict.Server.AspNetCore;
+using PathfinderFx.Config;
 using PathfinderFx.Helper;
-using PathfinderFx.Model;
 
 namespace PathfinderFx.Controllers;
 
@@ -20,7 +24,7 @@ public class AuthorizationController(
     /// </summary>
     /// <returns></returns>
     /// <exception cref="NotImplementedException"></exception>
-    /// <exception cref="InvalidOperationException"></exception>
+    /// <exception cref="ForbidResult"></exception>
     [HttpPost("~/2/auth/token"), IgnoreAntiforgeryToken, Produces("application/json")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
@@ -72,6 +76,7 @@ public class AuthorizationController(
         return SignIn(new ClaimsPrincipal(identity), OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
 
     }
+    
 
     private static IEnumerable<string> GetDestinations(Claim claim)
     {

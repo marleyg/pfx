@@ -4,13 +4,15 @@ using Microsoft.Xrm.Sdk;
 using PathfinderFx.Integration.Clients;
 using PathfinderFx.Integration.Model;
 using PathfinderFx.Integration.Model.Entities;
+using PathfinderFx.Model;
+using PathfinderFx.Model.Helpers;
 
 namespace PathfinderFx.Integration;
 
 public class ProductFootprintIntegrator
 {
     private readonly ILogger _logger = Utils.AppLogger.MyLoggerFactory.CreateLogger<ProductFootprintIntegrator>();
-    private static readonly IPathfinderConfig PathfinderConfig = new PathfinderConfig();
+    private static IPathfinderConfig _pathfinderConfig = new PathfinderConfig();
     private static readonly IDataverseConfig DataverseConfig = new DataverseConfig();
     private static IDataLakeConfig? _dataLakeConfig;
     private static ICosmosConfig? _cosmosConfig;
@@ -54,7 +56,7 @@ public class ProductFootprintIntegrator
     public List<string> GetPathfinderHosts()
     {
         _logger.LogInformation("GetPathfinderHosts called");
-        return PathfinderConfig.PathfinderConfigEntries!.Select(entry => entry.HostName!).ToList();
+        return _pathfinderConfig.PathfinderConfigEntries!.Select(entry => entry.HostName!).ToList();
     }
     
     /// <summary>
@@ -66,7 +68,7 @@ public class ProductFootprintIntegrator
     public string SetCurrentPathfinderHost(string hostName)
     {
         _logger.LogInformation("SetCurrentPathfinderHost called");
-        var host = PathfinderConfig.PathfinderConfigEntries!.FirstOrDefault(entry => entry.HostName == hostName);
+        var host = _pathfinderConfig.PathfinderConfigEntries!.FirstOrDefault(entry => entry.HostName == hostName);
         if (host == null)
         {
             _logger.LogError("Host {HostName} not found", hostName);
@@ -97,10 +99,10 @@ public class ProductFootprintIntegrator
                     return;
                 }
 
-                config = new PathfinderConfig();
+                _pathfinderConfig = new PathfinderConfig();
                 foreach (var cfgData in pathfinderConfigFromDataverse)
                 {
-                    config.PathfinderConfigEntries?.Add(new PathfinderConfigEntry
+                    _pathfinderConfig.PathfinderConfigEntries?.Add(new PathfinderConfigEntry
                     {
                         HostAuthUrl = cfgData.Msdyn_HostAuthUrl,
                         ClientId = cfgData.Msdyn_ClientId,
@@ -110,8 +112,7 @@ public class ProductFootprintIntegrator
                     });
                 }
 
-                _currentPathfinderConfigEntry = config.PathfinderConfigEntries!.FirstOrDefault();
-                PathfinderConfig.PathfinderConfigEntries = config.PathfinderConfigEntries;
+                _currentPathfinderConfigEntry = _pathfinderConfig.PathfinderConfigEntries!.FirstOrDefault();
             }
             catch (Exception e)
             {
@@ -123,7 +124,7 @@ public class ProductFootprintIntegrator
         {
             try
             {
-                PathfinderConfig.PathfinderConfigEntries = config.PathfinderConfigEntries;
+                _pathfinderConfig.PathfinderConfigEntries = config.PathfinderConfigEntries;
                 _currentPathfinderConfigEntry = config.PathfinderConfigEntries!.FirstOrDefault();
             }
             catch (Exception e)
@@ -210,30 +211,39 @@ public class ProductFootprintIntegrator
         var result = new IntegrationResult();
 
         _logger.LogInformation("Getting footprints from Pathfinder");
-        var pfs = await _pathfinderClient?.FootprintsAsync(null, null, null)!;
-        if (pfs == null)
+        var productFootprintCatchers = await _pathfinderClient?.FootprintsAsync(null, null, null)!;
+        if (productFootprintCatchers == null)
         {
             
             result.PathfinderHostConnected = false;
             result.PathfinderHostMessage = "Error getting footprints from Pathfinder";
             return result;
         }
-        _logger.LogInformation("Got {Count} footprints from Pathfinder", pfs.Data.Count);
-        result.PathfinderHostConnected = true;
-        result.PathfinderHostMessage = "Footprints retrieved from Pathfinder";
+        _logger.LogInformation("Got {Count} footprints from Pathfinder", productFootprintCatchers.Data.Count);
         
         _logger.LogInformation("Getting units from Dataverse");
         _units = _dataverseClient?.GetUnits();
         
         _logger.LogInformation("Processing footprints for Dataverse");
         _logger.LogInformation("Accessing Dataverse as {WhoAmI}", _dataverseClient!.WhoAmI());
-        foreach (var footprint in pfs.Data)
+        foreach (var caughtFootprint in productFootprintCatchers.Data)
         {
-            _logger.LogInformation("Processing footprint {FootprintId}", footprint.Id);
+            _logger.LogInformation("Processing footprint {FootprintId}", caughtFootprint.Id);
+
+            ProductFootprint footprint;
+            try
+            {
+                footprint = FootprintPreProcessor.ConvertToProductFootprint(caughtFootprint);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error converting footprint {FootprintId}", caughtFootprint.Id);
+                result.RecordsProcessed++;
+                result.Success = false;
+                result.Message = "Error converting footprint " + caughtFootprint.Id;
+                continue;
+            }
             
-            var footprintResult = new FootprintRecordResult();
-            
-            //dataverse processing
             var dataversePf = GetDataversePfEntity(footprint);
             if (dataversePf == null) continue;
             var resultMsg = _dataverseClient.AddProductFootprint(dataversePf);
@@ -268,13 +278,14 @@ public class ProductFootprintIntegrator
 
 
     #region entity collections
+
     private ProductFootprintEntityCollection? GetDataversePfEntity(ProductFootprint pf)
     {
         _logger.LogInformation("GetDataversePfEntity called");
-        
+
         //check to see if the product already exists in Dataverse
-        var existingPf = _dataverseClient!.GetProductFootprintIdentifierById(pf.Id);
-        
+        var existingPf = _dataverseClient!.GetProductFootprintIdentifierById(new Guid(pf.Id));
+
         if (existingPf != null)
         {
             _logger.LogInformation("ProductFootprint {ProductFootprintId} already exists in Dataverse", pf.Id);
@@ -285,41 +296,56 @@ public class ProductFootprintIntegrator
         {
             HostName = _currentPathfinderConfigEntry?.HostName
         };
-        
+
         //get the SustainabilityProductIdentifier entity from the ProductFootprint
         var identifier = new Msdyn_SustainabilityProductIdentifier
         {
-            Msdyn_Name = pf.Id.ToString(),
-            Msdyn_SustainabilityProductIdentifierId = pf.Id
+            Msdyn_Name = pf.Id,
+            Msdyn_SustainabilityProductIdentifierId = new Guid(pf.Id)
         };
         dataversePfEntityCollection.Msdyn_SustainabilityProductIdentifier = identifier;
 
-        //get the SustainabilityProduct entity from the ProductFootprint
-        var product = GetSustainabilityProduct(pf);
-        dataversePfEntityCollection.Msdyn_SustainabilityProduct = product;
-        
-        //get the SustainabilityProductFootprint entity from the ProductFootprint
-        var dataversePf = GetSustainabilityProductFootprint(pf);
-        dataversePfEntityCollection.Msdyn_SustainabilityProductFootprint = dataversePf;
-        
-        //get the SustainabilityProductCarbonFootprint entity from the ProductFootprint
-        var dataversePcf = GetDataversePcfEntity(pf);
-        dataversePfEntityCollection.Msdyn_SustainabilityProductCarbonFootprint = dataversePcf;
-        
-        //get the ProductFootprintRuleMapping entity from the ProductFootprint
-        var dataversePfRm = GetProductRuleOrSectorRules(pf);
-        dataversePfEntityCollection.Msdyn_ProductOrSectorSpecificRule = dataversePfRm;
-        
-        //get the ProductCarbonFootprintAssurance entity from the ProductFootprint
-        var dataversePcfA = GetDataversePcfAssuranceEntity(pf);
-        dataversePfEntityCollection.Msdyn_ProductCarbonFootprintAssurance = dataversePcfA;
-        
-        return dataversePfEntityCollection;
+        try
+        {
+            //get the SustainabilityProduct entity from the ProductFootprint
+            var product = GetSustainabilityProduct(pf);
+            dataversePfEntityCollection.Msdyn_SustainabilityProduct = product;
+
+            //get the SustainabilityProductFootprint entity from the ProductFootprint
+            var dataversePf = GetSustainabilityProductFootprint(pf);
+            dataversePfEntityCollection.Msdyn_SustainabilityProductFootprint = dataversePf;
+
+            //get the SustainabilityProductCarbonFootprint entity from the ProductFootprint
+            var dataversePcf = GetDataversePcfEntity(pf);
+            dataversePfEntityCollection.Msdyn_SustainabilityProductCarbonFootprint = dataversePcf;
+
+            //get the ProductFootprintRuleMapping entity from the ProductFootprint
+            // ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
+            if (pf.Pcf.ProductOrSectorSpecificRules != null)
+            {
+                var dataversePfRm = GetProductRuleOrSectorRules(pf);
+                dataversePfEntityCollection.Msdyn_ProductOrSectorSpecificRule = dataversePfRm;
+            }
+
+            //get the ProductCarbonFootprintAssurance entity from the ProductFootprint
+            // ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
+            if (pf.Pcf.Assurance == null) return dataversePfEntityCollection;
+            var dataversePcfA = GetDataversePcfAssuranceEntity(pf);
+            dataversePfEntityCollection.Msdyn_ProductCarbonFootprintAssurance = dataversePcfA;
+
+            return dataversePfEntityCollection;
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Error creating ProductFootprintEntityCollection for {ProductFootprintId}", pf.Id);
+            return null;
+        }
     }
 
     private Msdyn_ProductCarbonFootprintAssurance? GetDataversePcfAssuranceEntity(ProductFootprint pf)
     {
         _logger.LogInformation("GetDataversePcfAssuranceEntity called for {ProductFootprintId}", pf.Id);
+        // ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
         if (pf.Pcf.Assurance == null) return null;
         var assuranceData = pf.Pcf.Assurance;
         var assurance = new Msdyn_ProductCarbonFootprintAssurance
@@ -329,7 +355,7 @@ public class ProductFootprintIntegrator
             Msdyn_StandardName = assuranceData.StandardName,
             Msdyn_CompletedDate = assuranceData.CompletedAt?.DateTime,
             Msdyn_Name = pf.Id.ToString(),
-            Msdyn_ProductCarbonFootprintAssuranceId = pf.Id,
+            Msdyn_ProductCarbonFootprintAssuranceId = new Guid(pf.Id),
             Msdyn_Boundary = assuranceData.Boundary switch
             {
                 "Cradle-to-Gate" => Msdyn_ProductCarbonFootprintAssurance_Msdyn_Boundary.CradleToGate,
@@ -362,7 +388,7 @@ public class ProductFootprintIntegrator
         {
             var newRule = new Msdyn_ProductOrSectorSpecificRule
             {
-                Msdyn_OtherOperatorName = rule.Operator,
+                Msdyn_OtherOperatorName = rule.OtherOperatorName,
             };
             var ruleNames = new StringBuilder();
             foreach(var name in rule.RuleNames)
@@ -387,9 +413,10 @@ public class ProductFootprintIntegrator
             Msdyn_Name = pf.Id.ToString(),
             Msdyn_ProductDescription = pf.ProductNameCompany + ": " + pf.ProductDescription,
             Msdyn_ProductCategoryCPc = Convert.ToString(pf.ProductCategoryCpc) ?? string.Empty,
-            Msdyn_SustainabilityProductId = pf.Id
+            Msdyn_SustainabilityProductId = new Guid(pf.Id)
         };
 
+        // ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
         if (pf.ProductIds == null) return product;
         var productIds = new StringBuilder();
         foreach (var productId in pf.ProductIds)
@@ -409,22 +436,23 @@ public class ProductFootprintIntegrator
     {
         var dataversePf = new Msdyn_SustainabilityProductFootprint
         {
-            Msdyn_SustainabilityProductFootprintId = pf.Id,
-            Msdyn_Name = pf.Id.ToString(),
+            Msdyn_SustainabilityProductFootprintId = new Guid(pf.Id),
+            Msdyn_Name = pf.Id,
             Msdyn_Comment = pf.Comment,
             Msdyn_Version = (int?)pf.Version,
             Msdyn_SpecVersion = pf.SpecVersion,
             Msdyn_StatusComment = pf.StatusComment,
             Msdyn_ValidityPeriodStart = pf.ValidityPeriodStart?.DateTime,
             Msdyn_ValidityPeriodEnd = pf.ValidityPeriodEnd?.DateTime,
-            Msdyn_FootprintStatus = pf.Status switch
+            Msdyn_FootprintStatus = EnumHelper.GetEnumText(pf.Status) switch
             {
-                "Draft" => Msdyn_SustainabilityProductFootprint_Msdyn_FootprintStatus.Active,
-                "Published" => Msdyn_SustainabilityProductFootprint_Msdyn_FootprintStatus.Inactive,
+                "Active" => Msdyn_SustainabilityProductFootprint_Msdyn_FootprintStatus.Active,
+                "Depreciated" => Msdyn_SustainabilityProductFootprint_Msdyn_FootprintStatus.Inactive,
                 _ => Msdyn_SustainabilityProductFootprint_Msdyn_FootprintStatus.Active
             }
         };
 
+        // ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
         if (pf.PrecedingPfIds == null) return dataversePf;
         var precedingPfIds = new StringBuilder();
         foreach (var precedingPfId in pf.PrecedingPfIds)
@@ -446,7 +474,7 @@ public class ProductFootprintIntegrator
         
         var dataversePcf = new Msdyn_SustainabilityProductCarbonFootprint
         {
-            Msdyn_GeographyCountry = footprint.Pcf.GeographyCountry,
+            Msdyn_GeographyCountry = EnumHelper.GetEnumText(footprint.Pcf.GeographyCountry),
             Msdyn_AllocationRulesDescription = footprint.Pcf.AllocationRulesDescription,
             Msdyn_BiogenicCarbonContent = Convert.ToDecimal(footprint.Pcf.BiogenicCarbonContent),
             Msdyn_BiogenicCarbonWithdrawal = Convert.ToDecimal(footprint.Pcf.BiogenicCarbonWithdrawal),
@@ -461,7 +489,7 @@ public class ProductFootprintIntegrator
             Msdyn_ReferencePeriodEnd = footprint.Pcf.ReferencePeriodEnd?.DateTime,
             Msdyn_UncertaintyAssessmentDescription = footprint.Pcf.UncertaintyAssessmentDescription,
             Msdyn_UnitaryProductAmount = Convert.ToDecimal(footprint.Pcf.UnitaryProductAmount),
-            Msdyn_GeographyRegionOrSubregion = footprint.Pcf.GeographyRegionOrSubregion,
+            Msdyn_GeographyRegionOrSubregion = EnumHelper.GetEnumText(footprint.Pcf.GeographyRegionOrSubregion),
             Msdyn_PcFExcludingBiogenic = Convert.ToDecimal(footprint.Pcf.PCfExcludingBiogenic),
             Msdyn_PcFIncludingBiogenic = Convert.ToDecimal(footprint.Pcf.PCfIncludingBiogenic),
             Msdyn_AircraftGHGEmissions = Convert.ToDecimal(footprint.Pcf.AircraftGhgEmissions),
@@ -472,48 +500,92 @@ public class ProductFootprintIntegrator
             Msdyn_ILuCGHGEmissions = Convert.ToDecimal(footprint.Pcf.ILucGhgEmissions),
             Msdyn_PackAgInGgHGEmissions = Convert.ToDecimal(footprint.Pcf.PackagingGhgEmissions),
             Msdyn_Name = footprint.Id.ToString(),
-            Msdyn_SustainabilityProductCarbonFootprintId = footprint.Id,
-            Msdyn_BiogenicAccountingMethodology = footprint.Pcf.BiogenicAccountingMethodology switch
+            Msdyn_SustainabilityProductCarbonFootprintId = new Guid(footprint.Id),
+            Msdyn_BiogenicAccountingMethodology = EnumHelper.GetEnumText(footprint.Pcf.BiogenicAccountingMethodology).ToLower() switch
             {
-                "ISO" => Msdyn_SustainabilityProductCarbonFootprint_Msdyn_BiogenicAccountingMethodology.Iso,
-                "GHGP" => Msdyn_SustainabilityProductCarbonFootprint_Msdyn_BiogenicAccountingMethodology.Ghgp,
-                "GGP" => Msdyn_SustainabilityProductCarbonFootprint_Msdyn_BiogenicAccountingMethodology.Ghgp,
-                "PEF" => Msdyn_SustainabilityProductCarbonFootprint_Msdyn_BiogenicAccountingMethodology.Pef,
-                "Quantis" => Msdyn_SustainabilityProductCarbonFootprint_Msdyn_BiogenicAccountingMethodology.Quantis,
+                "iso" => Msdyn_SustainabilityProductCarbonFootprint_Msdyn_BiogenicAccountingMethodology.Iso,
+                "ghgp" => Msdyn_SustainabilityProductCarbonFootprint_Msdyn_BiogenicAccountingMethodology.Ghgp,
+                "pef" => Msdyn_SustainabilityProductCarbonFootprint_Msdyn_BiogenicAccountingMethodology.Pef,
+                "quantis" => Msdyn_SustainabilityProductCarbonFootprint_Msdyn_BiogenicAccountingMethodology.Quantis,
                 _ => Msdyn_SustainabilityProductCarbonFootprint_Msdyn_BiogenicAccountingMethodology.Ghgp
             },
             //foreach on footprint.Pcf.CharacterizationFactors
-            Msdyn_CharacterizationFactors = footprint.Pcf.CharacterizationFactors switch
+            Msdyn_CharacterizationFactors = EnumHelper.GetEnumText(footprint.Pcf.CharacterizationFactors).ToLower() switch
             {
-                "AR5" => Msdyn_SustainabilityProductCarbonFootprint_Msdyn_CharacterizationFactors.Ar5,
-                "AR6" => Msdyn_SustainabilityProductCarbonFootprint_Msdyn_CharacterizationFactors.Ar6,
+                "ar5" => Msdyn_SustainabilityProductCarbonFootprint_Msdyn_CharacterizationFactors.Ar5,
+                "ar6" => Msdyn_SustainabilityProductCarbonFootprint_Msdyn_CharacterizationFactors.Ar6,
                 _ => Msdyn_SustainabilityProductCarbonFootprint_Msdyn_CharacterizationFactors.Ar6
             }
         };
 
-        if (!string.IsNullOrEmpty(footprint.Pcf.DeclaredUnit))
+        if (!string.IsNullOrEmpty(EnumHelper.GetEnumText(footprint.Pcf.DeclaredUnit)))
         {
-            var searchUnit = footprint.Pcf.DeclaredUnit.ToLower();
+            var searchUnit = EnumHelper.GetEnumText(footprint.Pcf.DeclaredUnit).ToLower();
             if (searchUnit == "liter")
                 searchUnit = "Litres";
+            if (searchUnit == "kilogram")
+                searchUnit = "kg";
+            if (searchUnit == "cubicmeter")
+                searchUnit = "cubic metres";
+            if (searchUnit == "kilowatthour")
+                searchUnit = "kWh";
+            if (searchUnit == "megajoule")
+                searchUnit = "J";
+            if (searchUnit == "tonkilometer")
+                searchUnit = "tonne-km";
+            if (searchUnit == "squaremeter")
+                searchUnit = "sq m";
             var unit = _units?.FirstOrDefault(u => string.Equals(u.Msdyn_Name, searchUnit, StringComparison.CurrentCultureIgnoreCase));
             if (unit != null)
             {
-                dataversePcf.Msdyn_DeclaredUnit = new EntityReference(Msdyn_Unit.EntityLogicalName, (Guid)unit.Msdyn_UnitId!);
+                dataversePcf.Msdyn_DeclaredUnit = new EntityReference(Msdyn_Unit.EntityLogicalName, (Guid)unit.Msdyn_UnitId);
+            }
+            //find a unit that contains the first two letters of the searchUnit
+            else
+            {
+                //get the first two letters of the searchUnit
+                searchUnit = searchUnit[..2];
+                unit = _units?.FirstOrDefault(u => u.Msdyn_Name.ToLower().Contains(searchUnit, StringComparison.CurrentCultureIgnoreCase));
+                if (unit != null)
+                {
+                    dataversePcf.Msdyn_DeclaredUnit = new EntityReference(Msdyn_Unit.EntityLogicalName, (Guid)unit.Msdyn_UnitId);
+                }
+                else
+                {
+                    _logger.LogInformation("Unit {Unit} not found, attempting to add it to the msdyn_unit table", EnumHelper.GetEnumText(footprint.Pcf.DeclaredUnit));
+                    try
+                    {
+                        var newUnitId = _dataverseClient?.AddUnit(footprint.Pcf.DeclaredUnit);
+                        if (newUnitId != null)
+                        {
+                            dataversePcf.Msdyn_DeclaredUnit =
+                                new EntityReference(Msdyn_Unit.EntityLogicalName, (Guid)newUnitId);
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        _logger.LogError(e, "Error adding unit {Unit} to the msdyn_unit table, using the 1st unit in the table", EnumHelper.GetEnumText(footprint.Pcf.DeclaredUnit));
+                        unit =  _units?.FirstOrDefault();
+                        dataversePcf.Msdyn_DeclaredUnit = new EntityReference(Msdyn_Unit.EntityLogicalName, (Guid)unit.Msdyn_UnitId);
+                    }
+                }
             }
         }
         
+        // ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
         if (footprint.Pcf.Dqi != null)
         {
             dataversePcf.Msdyn_CoveragePercent = Convert.ToDecimal(footprint.Pcf.Dqi.CoveragePercent);
-            dataversePcf.Msdyn_CompletenessDQR = Convert.ToDecimal(footprint.Pcf.Dqi.CompletenessDQR);
-            dataversePcf.Msdyn_GeographicalDQR = Convert.ToDecimal(footprint.Pcf.Dqi.GeographicalDQR);
-            dataversePcf.Msdyn_ReliabilityDQR = Convert.ToDecimal(footprint.Pcf.Dqi.ReliabilityDQR);
-            dataversePcf.Msdyn_TemporalDQR = Convert.ToDecimal(footprint.Pcf.Dqi.TemporalDQR);
-            dataversePcf.Msdyn_TechnologicalDQR = Convert.ToDecimal(footprint.Pcf.Dqi.TechnologicalDQR);
+            dataversePcf.Msdyn_CompletenessDQR = Convert.ToDecimal(footprint.Pcf.Dqi.CompletenessDqr);
+            dataversePcf.Msdyn_GeographicalDQR = Convert.ToDecimal(footprint.Pcf.Dqi.GeographicalDqr);
+            dataversePcf.Msdyn_ReliabilityDQR = Convert.ToDecimal(footprint.Pcf.Dqi.ReliabilityDqr);
+            dataversePcf.Msdyn_TemporalDQR = Convert.ToDecimal(footprint.Pcf.Dqi.TemporalDqr);
+            dataversePcf.Msdyn_TechnologicalDQR = Convert.ToDecimal(footprint.Pcf.Dqi.TechnologicalDqr);
         }
 
         //list of secondary emission factor sources from the collection
+        // ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
+        if(footprint.Pcf.SecondaryEmissionFactorSources == null) return dataversePcf;
         var secondaryEmissionFactorSources = new StringBuilder();
         foreach (var secEm in footprint.Pcf.SecondaryEmissionFactorSources)
         {

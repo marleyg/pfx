@@ -137,6 +137,17 @@ public partial class DataverseContext : Microsoft.Xrm.Sdk.Client.OrganizationSer
 			return CreateQuery<Msdyn_Unit>();
 		}
 	}
+	
+	/// <summary>
+	/// Gets a binding to the set of all <see cref="Msdyn_UnitGroup"/> entities.
+	/// </summary>
+	public IQueryable<Msdyn_UnitGroup> Msdyn_UnitGroupSet
+	{
+		get
+		{
+			return CreateQuery<Msdyn_UnitGroup>();
+		}
+	}
 		
 	/// <summary>
 	/// Gets a binding to the set of all <see cref="Organization"/> entities.
