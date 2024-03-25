@@ -8,7 +8,7 @@ public interface IPfxConfig
 
 public class PfxConfig : IPfxConfig
 {
-    public List<PathfinderAccount> PathfinderAccounts { get; set; } = new();
+    public List<PathfinderAccount> PathfinderAccounts { get; set; } = [];
 }
 
 public class PathfinderAccount
