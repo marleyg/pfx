@@ -1,0 +1,649 @@
+{
+	"info": {
+		"_postman_id": "4c62a37f-bebf-4cc5-8389-53846f92f6bf",
+		"name": "Pathfinder APIs",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "22772377"
+	},
+	"item": [
+		{
+			"name": "Action Auth",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6ImhlbGxvIn0.wZPjxQz1wI25fIe0Oz4w5Y2g8UD_dMz6Wd-Aegg8HMM",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "grant_type",
+							"value": "client_credentials",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "https://api.pathfinder.sine.dev/2/auth/token",
+					"protocol": "https",
+					"host": [
+						"api",
+						"pathfinder",
+						"sine",
+						"dev"
+					],
+					"path": [
+						"2",
+						"auth",
+						"token"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Action List Footprints",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6ImhlbGxvIn0.wZPjxQz1wI25fIe0Oz4w5Y2g8UD_dMz6Wd-Aegg8HMM",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "grant_type",
+							"value": "client_credentials",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "https://api.pathfinder.sine.dev/2/footprints",
+					"protocol": "https",
+					"host": [
+						"api",
+						"pathfinder",
+						"sine",
+						"dev"
+					],
+					"path": [
+						"2",
+						"footprints"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Action List Footprints",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "grant_type",
+									"value": "client_credentials",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "https://api.pathfinder.sine.dev/2/footprints",
+							"protocol": "https",
+							"host": [
+								"api",
+								"pathfinder",
+								"sine",
+								"dev"
+							],
+							"path": [
+								"2",
+								"footprints"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "content-type",
+							"value": "application/json"
+						},
+						{
+							"key": "server",
+							"value": "Fly/fe06e9419 (2023-05-24)"
+						},
+						{
+							"key": "permissions-policy",
+							"value": "interest-cohort=()"
+						},
+						{
+							"key": "x-content-type-options",
+							"value": "nosniff"
+						},
+						{
+							"key": "x-frame-options",
+							"value": "SAMEORIGIN"
+						},
+						{
+							"key": "content-encoding",
+							"value": "gzip"
+						},
+						{
+							"key": "date",
+							"value": "Thu, 25 May 2023 11:54:45 GMT"
+						},
+						{
+							"key": "transfer-encoding",
+							"value": "chunked"
+						},
+						{
+							"key": "via",
+							"value": "1.1 fly.io"
+						},
+						{
+							"key": "fly-request-id",
+							"value": "01H19C5SR6GY524R5MAH1BZ2RN-iad"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"data\": [\n        {\n            \"id\": \"d9be4477-e351-45b3-acd9-e1da05e6f633\",\n            \"specVersion\": \"2.0.0\",\n            \"precedingPfIds\": [\n                \"c3028ee9-d595-4779-a73a-290bfa7505d6\"\n            ],\n            \"version\": 0,\n            \"created\": \"2022-05-22T21:47:32Z\",\n            \"status\": \"Active\",\n            \"companyName\": \"My Corp\",\n            \"companyIds\": [\n                \"urn:uuid:51131FB5-42A2-4267-A402-0ECFEFAD1619\",\n                \"urn:epc:id:sgln:4063973.00000.8\"\n            ],\n            \"productDescription\": \"Cote'd Or Ethanol\",\n            \"productIds\": [\n                \"urn:gtin:4712345060507\"\n            ],\n            \"productCategoryCpc\": \"3342\",\n            \"productNameCompany\": \"Green Ethanol\",\n            \"comment\": \"\",\n            \"pcf\": {\n                \"declaredUnit\": \"liter\",\n                \"unitaryProductAmount\": \"12.0\",\n                \"pCfExcludingBiogenic\": \"0.0\",\n                \"pCfIncludingBiogenic\": \"0.0\",\n                \"fossilGhgEmissions\": \"0.123\",\n                \"fossilCarbonContent\": \"0.0\",\n                \"biogenicCarbonContent\": \"0.0\",\n                \"landManagementGhgEmissions\": \"0.001\",\n                \"otherBiogenicGhgEmissions\": \"0\",\n                \"characterizationFactors\": \"AR5\",\n                \"crossSectoralStandardsUsed\": [\n                    \"GHG Protocol Product standard\"\n                ],\n                \"productOrSectorSpecificRules\": [\n                    {\n                        \"operator\": \"EPD International\",\n                        \"ruleNames\": [\n                            \"ABC 2021\"\n                        ]\n                    }\n                ],\n                \"boundaryProcessesDescription\": \"End-of-life included\",\n                \"reportingPeriodStart\": \"2021-01-01T00:00:00Z\",\n                \"reportingPeriodEnd\": \"2022-01-01T00:00:00Z\",\n                \"geographyCountry\": \"FR\",\n                \"secondaryEmissionFactorSources\": [\n                    {\n                        \"name\": \"Ecoinvent\",\n                        \"version\": \"1.2.3\"\n                    }\n                ],\n                \"exemptedEmissionsPercent\": \"0.0\",\n                \"exemptedEmissionsDescription\": \"\",\n                \"packagingEmissionsIncluded\": false,\n                \"primaryDataShare\": 56.12\n            }\n        },\n        {\n            \"id\": \"c3028ee9-d595-4779-a73a-290bfa7505d6\",\n            \"specVersion\": \"2.0.0\",\n            \"precedingPfIds\": [\n                \"c3028ee9-d595-4779-a73a-290bfa7505d6\"\n            ],\n            \"version\": 0,\n            \"created\": \"2022-05-22T21:47:32Z\",\n            \"status\": \"Active\",\n            \"companyName\": \"My Corp\",\n            \"companyIds\": [\n                \"urn:uuid:51131FB5-42A2-4267-A402-0ECFEFAD1619\",\n                \"urn:epc:id:sgln:4063973.00000.8\"\n            ],\n            \"productDescription\": \"Cote'd Or Ethanol\",\n            \"productIds\": [\n                \"urn:gtin:4712345060507\"\n            ],\n            \"productCategoryCpc\": \"3342\",\n            \"productNameCompany\": \"Green Ethanol Nuits-Saint-Georges\",\n            \"comment\": \"\",\n            \"pcf\": {\n                \"declaredUnit\": \"liter\",\n                \"unitaryProductAmount\": \"12.0\",\n                \"pCfExcludingBiogenic\": \"0.0\",\n                \"pCfIncludingBiogenic\": \"0.0\",\n                \"fossilGhgEmissions\": \"0.123\",\n                \"fossilCarbonContent\": \"0.0\",\n                \"biogenicCarbonContent\": \"0.0\",\n                \"landManagementGhgEmissions\": \"0.001\",\n                \"otherBiogenicGhgEmissions\": \"0\",\n                \"characterizationFactors\": \"AR5\",\n                \"crossSectoralStandardsUsed\": [\n                    \"GHG Protocol Product standard\"\n                ],\n                \"productOrSectorSpecificRules\": [\n                    {\n                        \"operator\": \"EPD International\",\n                        \"ruleNames\": [\n                            \"ABC 2021\"\n                        ]\n                    }\n                ],\n                \"boundaryProcessesDescription\": \"End-of-life included\",\n                \"reportingPeriodStart\": \"2021-01-01T00:00:00Z\",\n                \"reportingPeriodEnd\": \"2022-01-01T00:00:00Z\",\n                \"geographyCountry\": \"FR\",\n                \"secondaryEmissionFactorSources\": [\n                    {\n                        \"name\": \"Ecoinvent\",\n                        \"version\": \"1.2.3\"\n                    }\n                ],\n                \"exemptedEmissionsPercent\": \"0.0\",\n                \"exemptedEmissionsDescription\": \"\",\n                \"packagingEmissionsIncluded\": false,\n                \"primaryDataShare\": 56.12\n            }\n        },\n        {\n            \"id\": \"9faa3200-8b65-4116-bf57-4ec6cff7aed2\",\n            \"specVersion\": \"2.0.0\",\n            \"precedingPfIds\": [\n                \"c3028ee9-d595-4779-a73a-290bfa7505d6\"\n            ],\n            \"version\": 0,\n            \"created\": \"2022-05-22T21:47:32Z\",\n            \"status\": \"Active\",\n            \"companyName\": \"My Corp\",\n            \"companyIds\": [\n                \"urn:uuid:51131FB5-42A2-4267-A402-0ECFEFAD1619\",\n                \"urn:epc:id:sgln:4063973.00000.8\"\n            ],\n            \"productDescription\": \"Cote'd Or Ethanol\",\n            \"productIds\": [\n                \"urn:gtin:4712345060507\"\n            ],\n            \"productCategoryCpc\": \"3342\",\n            \"productNameCompany\": \"Green Ethanol Pontigny\",\n            \"comment\": \"\",\n            \"pcf\": {\n                \"declaredUnit\": \"liter\",\n                \"unitaryProductAmount\": \"12.0\",\n                \"pCfExcludingBiogenic\": \"0.0\",\n                \"pCfIncludingBiogenic\": \"0.0\",\n                \"fossilGhgEmissions\": \"0.123\",\n                \"fossilCarbonContent\": \"0.0\",\n                \"biogenicCarbonContent\": \"0.0\",\n                \"landManagementGhgEmissions\": \"0.001\",\n                \"otherBiogenicGhgEmissions\": \"0\",\n                \"characterizationFactors\": \"AR5\",\n                \"crossSectoralStandardsUsed\": [\n                    \"GHG Protocol Product standard\"\n                ],\n                \"productOrSectorSpecificRules\": [\n                    {\n                        \"operator\": \"EPD International\",\n                        \"ruleNames\": [\n                            \"ABC 2021\"\n                        ]\n                    }\n                ],\n                \"boundaryProcessesDescription\": \"End-of-life included\",\n                \"reportingPeriodStart\": \"2021-01-01T00:00:00Z\",\n                \"reportingPeriodEnd\": \"2022-01-01T00:00:00Z\",\n                \"geographyCountry\": \"FR\",\n                \"secondaryEmissionFactorSources\": [\n                    {\n                        \"name\": \"Ecoinvent\",\n                        \"version\": \"1.2.3\"\n                    }\n                ],\n                \"exemptedEmissionsPercent\": \"0.0\",\n                \"exemptedEmissionsDescription\": \"\",\n                \"packagingEmissionsIncluded\": false,\n                \"primaryDataShare\": 56.12\n            }\n        },\n        {\n            \"id\": \"02a090d6-5c91-4290-855b-7ad4627903ef\",\n            \"specVersion\": \"2.0.0\",\n            \"precedingPfIds\": [\n                \"c3028ee9-d595-4779-a73a-290bfa7505d6\"\n            ],\n            \"version\": 0,\n            \"created\": \"2022-05-22T21:47:32Z\",\n            \"status\": \"Active\",\n            \"companyName\": \"My Corp\",\n            \"companyIds\": [\n                \"urn:uuid:51131FB5-42A2-4267-A402-0ECFEFAD1619\",\n                \"urn:epc:id:sgln:4063973.00000.8\"\n            ],\n            \"productDescription\": \"Cote'd Or Ethanol\",\n            \"productIds\": [\n                \"urn:gtin:4712345060507\"\n            ],\n            \"productCategoryCpc\": \"3342\",\n            \"productNameCompany\": \"Green Ethanol Meursault\",\n            \"comment\": \"\",\n            \"pcf\": {\n                \"declaredUnit\": \"liter\",\n                \"unitaryProductAmount\": \"12.0\",\n                \"pCfExcludingBiogenic\": \"0.0\",\n                \"pCfIncludingBiogenic\": \"0.0\",\n                \"fossilGhgEmissions\": \"0.123\",\n                \"fossilCarbonContent\": \"0.0\",\n                \"biogenicCarbonContent\": \"0.0\",\n                \"landManagementGhgEmissions\": \"0.001\",\n                \"otherBiogenicGhgEmissions\": \"0\",\n                \"characterizationFactors\": \"AR5\",\n                \"crossSectoralStandardsUsed\": [\n                    \"GHG Protocol Product standard\"\n                ],\n                \"productOrSectorSpecificRules\": [\n                    {\n                        \"operator\": \"EPD International\",\n                        \"ruleNames\": [\n                            \"ABC 2021\"\n                        ]\n                    }\n                ],\n                \"boundaryProcessesDescription\": \"End-of-life included\",\n                \"reportingPeriodStart\": \"2021-01-01T00:00:00Z\",\n                \"reportingPeriodEnd\": \"2022-01-01T00:00:00Z\",\n                \"geographyCountry\": \"FR\",\n                \"secondaryEmissionFactorSources\": [\n                    {\n                        \"name\": \"Ecoinvent\",\n                        \"version\": \"1.2.3\"\n                    }\n                ],\n                \"exemptedEmissionsPercent\": \"0.0\",\n                \"exemptedEmissionsDescription\": \"\",\n                \"packagingEmissionsIncluded\": false,\n                \"primaryDataShare\": 56.12\n            }\n        },\n        {\n            \"id\": \"18d88391-f4c7-4b79-a302-01c092154177\",\n            \"specVersion\": \"2.0.0\",\n            \"precedingPfIds\": [\n                \"c3028ee9-d595-4779-a73a-290bfa7505d6\"\n            ],\n            \"version\": 0,\n            \"created\": \"2022-05-22T21:47:32Z\",\n            \"updated\": \"2022-05-22T21:47:35Z\",\n            \"status\": \"Active\",\n            \"companyName\": \"My Corp\",\n            \"companyIds\": [\n                \"urn:uuid:51131FB5-42A2-4267-A402-0ECFEFAD1619\",\n                \"urn:epc:id:sgln:4063973.00000.8\"\n            ],\n            \"productDescription\": \"Cote'd Or Ethanol\",\n            \"productIds\": [\n                \"urn:gtin:4712345060507\"\n            ],\n            \"productCategoryCpc\": \"3342\",\n            \"productNameCompany\": \"Green Ethanol Puligny-Montrachet\",\n            \"comment\": \"\",\n            \"pcf\": {\n                \"declaredUnit\": \"liter\",\n                \"unitaryProductAmount\": \"12.0\",\n                \"pCfExcludingBiogenic\": \"0.0\",\n                \"pCfIncludingBiogenic\": \"0.0\",\n                \"fossilGhgEmissions\": \"0.123\",\n                \"fossilCarbonContent\": \"0.0\",\n                \"biogenicCarbonContent\": \"0.0\",\n                \"landManagementGhgEmissions\": \"0.001\",\n                \"otherBiogenicGhgEmissions\": \"0\",\n                \"characterizationFactors\": \"AR5\",\n                \"crossSectoralStandardsUsed\": [\n                    \"GHG Protocol Product standard\"\n                ],\n                \"productOrSectorSpecificRules\": [\n                    {\n                        \"operator\": \"EPD International\",\n                        \"ruleNames\": [\n                            \"ABC 2021\"\n                        ]\n                    }\n                ],\n                \"boundaryProcessesDescription\": \"End-of-life included\",\n                \"reportingPeriodStart\": \"2021-01-01T00:00:00Z\",\n                \"reportingPeriodEnd\": \"2022-01-01T00:00:00Z\",\n                \"geographyCountry\": \"FR\",\n                \"secondaryEmissionFactorSources\": [\n                    {\n                        \"name\": \"Ecoinvent\",\n                        \"version\": \"1.2.3\"\n                    }\n                ],\n                \"exemptedEmissionsPercent\": \"0.0\",\n                \"exemptedEmissionsDescription\": \"\",\n                \"packagingEmissionsIncluded\": false,\n                \"primaryDataShare\": 56.12\n            }\n        },\n        {\n            \"id\": \"c20ac3d2-3209-4454-b7bc-073344824d73\",\n            \"specVersion\": \"2.0.0\",\n            \"precedingPfIds\": [\n                \"c3028ee9-d595-4779-a73a-290bfa7505d6\"\n            ],\n            \"version\": 1,\n            \"created\": \"2022-05-22T21:47:32Z\",\n            \"updated\": \"2022-05-22T21:47:35Z\",\n            \"status\": \"Active\",\n            \"companyName\": \"My Corp\",\n            \"companyIds\": [\n                \"urn:uuid:51131FB5-42A2-4267-A402-0ECFEFAD1619\",\n                \"urn:epc:id:sgln:4063973.00000.8\"\n            ],\n            \"productDescription\": \"Cote'd Or Ethanol\",\n            \"productIds\": [\n                \"urn:gtin:4712345060507\"\n            ],\n            \"productCategoryCpc\": \"3342\",\n            \"productNameCompany\": \"Green Ethanol Chassagne-Montrachet\",\n            \"comment\": \"\",\n            \"pcf\": {\n                \"declaredUnit\": \"liter\",\n                \"unitaryProductAmount\": \"12.0\",\n                \"pCfExcludingBiogenic\": \"0.0\",\n                \"pCfIncludingBiogenic\": \"0.0\",\n                \"fossilGhgEmissions\": \"0.123\",\n                \"fossilCarbonContent\": \"0.0\",\n                \"biogenicCarbonContent\": \"0.0\",\n                \"landManagementGhgEmissions\": \"0.001\",\n                \"otherBiogenicGhgEmissions\": \"0\",\n                \"characterizationFactors\": \"AR5\",\n                \"crossSectoralStandardsUsed\": [\n                    \"GHG Protocol Product standard\"\n                ],\n                \"productOrSectorSpecificRules\": [\n                    {\n                        \"operator\": \"EPD International\",\n                        \"ruleNames\": [\n                            \"ABC 2021\"\n                        ]\n                    }\n                ],\n                \"boundaryProcessesDescription\": \"End-of-life included\",\n                \"reportingPeriodStart\": \"2021-01-01T00:00:00Z\",\n                \"reportingPeriodEnd\": \"2022-01-01T00:00:00Z\",\n                \"geographyRegionOrSubregion\": \"Western Europe\",\n                \"secondaryEmissionFactorSources\": [\n                    {\n                        \"name\": \"Ecoinvent\",\n                        \"version\": \"1.2.3\"\n                    }\n                ],\n                \"exemptedEmissionsPercent\": \"0.0\",\n                \"exemptedEmissionsDescription\": \"\",\n                \"packagingEmissionsIncluded\": false,\n                \"primaryDataShare\": 56.12\n            }\n        },\n        {\n            \"id\": \"3893bb5d-da16-4dc1-9185-11d97476c254\",\n            \"specVersion\": \"2.0.0\",\n            \"precedingPfIds\": [\n                \"c3028ee9-d595-4779-a73a-290bfa7505d6\"\n            ],\n            \"version\": 42,\n            \"created\": \"2022-05-22T21:47:32Z\",\n            \"updated\": \"2022-05-22T21:47:35Z\",\n            \"status\": \"Active\",\n            \"companyName\": \"My Corp\",\n            \"companyIds\": [\n                \"urn:uuid:51131FB5-42A2-4267-A402-0ECFEFAD1619\",\n                \"urn:epc:id:sgln:4063973.00000.8\"\n            ],\n            \"productDescription\": \"Cote'd Or Ethanol\",\n            \"productIds\": [\n                \"urn:gtin:4712345060507\"\n            ],\n            \"productCategoryCpc\": \"3342\",\n            \"productNameCompany\": \"Green Ethanol Volnay\",\n            \"comment\": \"\",\n            \"pcf\": {\n                \"declaredUnit\": \"liter\",\n                \"unitaryProductAmount\": \"12.0\",\n                \"pCfExcludingBiogenic\": \"0.0\",\n                \"pCfIncludingBiogenic\": \"0.0\",\n                \"fossilGhgEmissions\": \"0.123\",\n                \"fossilCarbonContent\": \"0.0\",\n                \"biogenicCarbonContent\": \"0.0\",\n                \"landManagementGhgEmissions\": \"0.001\",\n                \"otherBiogenicGhgEmissions\": \"0\",\n                \"characterizationFactors\": \"AR5\",\n                \"crossSectoralStandardsUsed\": [\n                    \"GHG Protocol Product standard\"\n                ],\n                \"productOrSectorSpecificRules\": [\n                    {\n                        \"operator\": \"EPD International\",\n                        \"ruleNames\": [\n                            \"ABC 2021\"\n                        ]\n                    }\n                ],\n                \"boundaryProcessesDescription\": \"End-of-life included\",\n                \"reportingPeriodStart\": \"2021-01-01T00:00:00Z\",\n                \"reportingPeriodEnd\": \"2022-01-01T00:00:00Z\",\n                \"secondaryEmissionFactorSources\": [\n                    {\n                        \"name\": \"Ecoinvent\",\n                        \"version\": \"1.2.3\"\n                    }\n                ],\n                \"exemptedEmissionsPercent\": \"0.0\",\n                \"exemptedEmissionsDescription\": \"\",\n                \"packagingEmissionsIncluded\": false,\n                \"primaryDataShare\": 56.12\n            }\n        },\n        {\n            \"id\": \"3392ff32-421e-44b5-966f-d02df90d91b2\",\n            \"specVersion\": \"2.0.0\",\n            \"precedingPfIds\": [\n                \"c3028ee9-d595-4779-a73a-290bfa7505d6\"\n            ],\n            \"version\": 0,\n            \"created\": \"2022-05-22T21:47:32Z\",\n            \"status\": \"Active\",\n            \"companyName\": \"My Corp\",\n            \"companyIds\": [\n                \"urn:uuid:51131FB5-42A2-4267-A402-0ECFEFAD1619\",\n                \"urn:epc:id:sgln:4063973.00000.8\"\n            ],\n            \"productDescription\": \"Cote'd Or Ethanol\",\n            \"productIds\": [\n                \"urn:gtin:4712345060507\"\n            ],\n            \"productCategoryCpc\": \"3342\",\n            \"productNameCompany\": \"Green Ethanol Mont-Saint-Sulpice\",\n            \"comment\": \"\",\n            \"pcf\": {\n                \"declaredUnit\": \"liter\",\n                \"unitaryProductAmount\": \"12.0\",\n                \"pCfExcludingBiogenic\": \"0.0\",\n                \"pCfIncludingBiogenic\": \"0.0\",\n                \"fossilGhgEmissions\": \"0.123\",\n                \"fossilCarbonContent\": \"0.0\",\n                \"biogenicCarbonContent\": \"0.0\",\n                \"landManagementGhgEmissions\": \"0.001\",\n                \"otherBiogenicGhgEmissions\": \"0\",\n                \"characterizationFactors\": \"AR5\",\n                \"crossSectoralStandardsUsed\": [\n                    \"GHG Protocol Product standard\"\n                ],\n                \"productOrSectorSpecificRules\": [\n                    {\n                        \"operator\": \"EPD International\",\n                        \"ruleNames\": [\n                            \"ABC 2021\"\n                        ]\n                    }\n                ],\n                \"boundaryProcessesDescription\": \"End-of-life included\",\n                \"reportingPeriodStart\": \"2021-01-01T00:00:00Z\",\n                \"reportingPeriodEnd\": \"2022-01-01T00:00:00Z\",\n                \"geographyCountrySubdivision\": \"FR-89\",\n                \"secondaryEmissionFactorSources\": [\n                    {\n                        \"name\": \"Ecoinvent\",\n                        \"version\": \"1.2.3\"\n                    }\n                ],\n                \"exemptedEmissionsPercent\": \"0.0\",\n                \"exemptedEmissionsDescription\": \"\",\n                \"packagingEmissionsIncluded\": false,\n                \"primaryDataShare\": 56.12\n            }\n        }\n    ]\n}"
+				}
+			]
+		},
+		{
+			"name": "Action List Footprints with filter Copy",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6ImhlbGxvIn0.wZPjxQz1wI25fIe0Oz4w5Y2g8UD_dMz6Wd-Aegg8HMM",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "grant_type",
+							"value": "client_credentials",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "https://api.pathfinder.sine.dev/2/footprints?filter=productCategoryCpc eq '3340'",
+					"protocol": "https",
+					"host": [
+						"api",
+						"pathfinder",
+						"sine",
+						"dev"
+					],
+					"path": [
+						"2",
+						"footprints"
+					],
+					"query": [
+						{
+							"key": "filter",
+							"value": "productCategoryCpc eq '3340'"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Action List Footprints - Pagination",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6ImhlbGxvIn0.wZPjxQz1wI25fIe0Oz4w5Y2g8UD_dMz6Wd-Aegg8HMM",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "grant_type",
+							"value": "client_credentials",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "https://api.pathfinder.sine.dev/2/footprints?limit=3",
+					"protocol": "https",
+					"host": [
+						"api",
+						"pathfinder",
+						"sine",
+						"dev"
+					],
+					"path": [
+						"2",
+						"footprints"
+					],
+					"query": [
+						{
+							"key": "limit",
+							"value": "3"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Action List Footprints - Pagination with link header url from prev response",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6ImhlbGxvIn0.wZPjxQz1wI25fIe0Oz4w5Y2g8UD_dMz6Wd-Aegg8HMM",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "grant_type",
+							"value": "client_credentials",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "https://api.pathfinder.sine.dev/2/footprints?offset=3&limit=3",
+					"protocol": "https",
+					"host": [
+						"api",
+						"pathfinder",
+						"sine",
+						"dev"
+					],
+					"path": [
+						"2",
+						"footprints"
+					],
+					"query": [
+						{
+							"key": "offset",
+							"value": "3"
+						},
+						{
+							"key": "limit",
+							"value": "3"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Action List Footprints - Pagination with link header url from prev response with no more results available",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6ImhlbGxvIn0.wZPjxQz1wI25fIe0Oz4w5Y2g8UD_dMz6Wd-Aegg8HMM",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "grant_type",
+							"value": "client_credentials",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "https://api.pathfinder.sine.dev/2/footprints?offset=6&limit=3",
+					"protocol": "https",
+					"host": [
+						"api",
+						"pathfinder",
+						"sine",
+						"dev"
+					],
+					"path": [
+						"2",
+						"footprints"
+					],
+					"query": [
+						{
+							"key": "offset",
+							"value": "6"
+						},
+						{
+							"key": "limit",
+							"value": "3"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Action Get Footprint",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6ImhlbGxvIn0.wZPjxQz1wI25fIe0Oz4w5Y2g8UD_dMz6Wd-Aegg8HMM",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "grant_type",
+							"value": "client_credentials",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "https://api.pathfinder.sine.dev/2/footprints/d9be4477-e351-45b3-acd9-e1da05e6f633",
+					"protocol": "https",
+					"host": [
+						"api",
+						"pathfinder",
+						"sine",
+						"dev"
+					],
+					"path": [
+						"2",
+						"footprints",
+						"d9be4477-e351-45b3-acd9-e1da05e6f633"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Action Events",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"content-type": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6ImhlbGxvIn0.wZPjxQz1wI25fIe0Oz4w5Y2g8UD_dMz6Wd-Aegg8HMM",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n        \"specversion\": \"1.0\",\n        \"id\": \"1234\",\n        \"source\":\"http://localhost:3000\",\n        \"time\": \"2023-04-12T14:27:58.535Z\",\n        \"type\": \"org.wbcsd.pathfinder.ProductFootprint.Published.v1\",\n        \"data\": {\n            \"pfIds\": [\n                \"f4b1225a-bd44-4c8e-861d-079e4e1dfd69\"\n            ]\n        }\n}"
+				},
+				"url": {
+					"raw": "https://api.pathfinder.sine.dev/2/events",
+					"protocol": "https",
+					"host": [
+						"api",
+						"pathfinder",
+						"sine",
+						"dev"
+					],
+					"path": [
+						"2",
+						"events"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Action Events - Asynchronous request and retrieval of Product Footprints",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"content-type": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6ImhlbGxvIn0.wZPjxQz1wI25fIe0Oz4w5Y2g8UD_dMz6Wd-Aegg8HMM",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n        \"specversion\": \"1.0\",\n        \"id\": \"1234\",\n        \"source\":\"http://localhost:3000\",\n        \"time\": \"2023-04-12T14:27:58.535Z\",\n        \"type\": \"org.wbcsd.pathfinder.ProductFootprint.Published.v1\",\n        \"data\": {\n            \"pfIds\": [\n                \"f4b1225a-bd44-4c8e-861d-079e4e1dfd69\"\n            ]\n        }\n}"
+				},
+				"url": {
+					"raw": "https://api.pathfinder.sine.dev/2/events",
+					"protocol": "https",
+					"host": [
+						"api",
+						"pathfinder",
+						"sine",
+						"dev"
+					],
+					"path": [
+						"2",
+						"events"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "OpenId Discovery",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}/.well-known/openid-configuration",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						".well-known",
+						"openid-configuration"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "host",
+			"value": "https://pathfinderfx.azurewebsites.net https://localhost:7126",
+			"type": "string"
+		},
+		{
+			"key": "clientId",
+			"value": "ctest1",
+			"type": "string"
+		},
+		{
+			"key": "clientSecret",
+			"value": "a0d0685d-65e5-45b1-b978-a5807a121db2",
+			"type": "string"
+		},
+		{
+			"key": "bearer",
+			"value": "eyJhbGciOiJSU0EtT0FFUCIsImVuYyI6IkEyNTZDQkMtSFM1MTIiLCJraWQiOiI1RkI1QkYyOEQ5QTdBQUJCNzI3NEE4N0RBMUVFNzU1Q0M1OEJFQkQzIiwidHlwIjoiYXQrand0IiwiY3R5IjoiSldUIn0.J8mZg9IZKGvZMM_QNSKQDgNCNk6YGbnPQMhgD2VcTRFE8WNITqfCx4NWEhQm36K1dAFf9GvbQGrRMIi8_gAel2z4vqwba3HNbyDRAsZK4jic1-kshEowPgjMqa0G13bjpGYkRmvfYBg7OpOaRwaEJiqCAwNgSYIBwPTL8C4GX_GTCP8szKZIgHcvYhLjvo-o93HVrgnKfE15YgxkOGS3fagyVd4HtmHEFQWA7LJaplE_LnIOHtAoVZk6ewL4n8StNmHtxatiXktZWT7siuIeZ9QCfyBdC6O-yCrjE6BadbWBlCqaTt9WCV-jngDJKD1Rgk9KdkNfY62goW5PQmqGIQ.IW-nyBJaivu1BXwGf0glMg.i43-hKoylO8pg3oGc7O6EvtvBuZxoNTz7CbmcIZjPgS_nzb7EWr-FD3ao_fRgtezuGriBK7UvteneqWSga0zNx2L4e247rUNtJzYjI8w9OKh1d26iYl90MjdcaRboH_b9JpEbr8nMcTHgK5FDQN-dANgDYsnnUc-6QtITJO1_Gmi0_umcyuXFar-e-bx_zbeenakMBI-r2Tc5f5Rf54e3rL2RMIud4ANzO6ZKVOz5clsirPjDcWmaK46cBjwOsJW4lLiU5SOLkEmSdsi74pM7vuWeAXj3OsXMaG1dCs_xh__iHgtpXUT5ftpdZ2QDp2usNkrNLNE_ivk0MeklyHohuT_1-zHzZONtRyB8C5Zi8pSMc-VxFyRqCaEbNRKl2isTU3HRQ3ER9ptI6-wTsWlb8Mioo7H94ujAlnN3IKBTkdCRE7vZdQCL7RSiTd6UszYwLQZPD_VlZDuFax-rpj-B598gfb70_QVzqWOLu2q_bT1ux14gAF3clFloo9efboVfvpkJP9c9_Dt4xej4zPz5cuKsADxXz75SQGglsU4acJPpGns9kitzE3ybULAgmUP-ctSVx4KUG9kaXNPVhyVwMmJwUbN0HCmMWPSvbhqsD8To7RtOQc1EyYZitzeAYvMQL8jrh3oL871ExiZXQQE-A6iRfjh8IQYei0Dy4gmKxsI3ztItKkOuYgkUlFDx4DpZEH1_HzEBW6TKre_yey5XKkTNhkJpQvfwnfTCR0m8KmmRE2QhA5gk3zHK8Ix2nro5qc2IIy0ckDhhTjeaNA2y5yxs3td4dvmZHSms0_MpQMMCZBDjfr6r4ynqVOkZQJgCBVeOO8AkCjTfMw5ueTyJWNzJ2ozyy1TPftOMQEiBKCM6a2ASftPoXlt2DeLvXzvGecHIXJhfh7UguBrPeCjslGSIsDsQVLZRd5vCTZssuRmlGp-WGb3PvYYSPyEzojOH1Ezj4zqHlfRCtTG1MTt4bBjplKZCy7YJb68z9UpdwwEsYB3bNgYn_vfbA040lxkujVSBayLH944pZIXExkYJ12wGzBsXfG8-MWUQ5_pmjPvcxDzV4kGAwKcTC9gLBaVV9wT9BFRf-Iiiekl3zNnfVSaceX6WXi1p7h5jJEkWiY.8Nr9dq0qxlcP1pH2uEh2l0WiqpkDEEXLMzI9cKMZewQ",
+			"type": "string"
+		}
+	]
+}

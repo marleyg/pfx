@@ -1,0 +1,401 @@
+{
+  "data": [
+    {
+      "id": "d9be4477-e351-45b3-acd9-e1da05e6f633",
+      "specVersion": "2.1.0",
+      "version": 1,
+      "created": "2022-05-22T21:47:32+00:00",
+      "status": "Active",
+      "companyName": "My Corp",
+      "companyIds": [
+        "urn:uuid:51131FB5-42A2-4267-A402-0ECFEFAD1619",
+        "urn:epc:id:sgln:4063973.00000.8"
+      ],
+      "productDescription": "Cote'd Or Ethanol",
+      "productIds": [
+        "urn:gtin:4712345060507"
+      ],
+      "productCategoryCpc": "3342",
+      "productNameCompany": "Green Ethanol",
+      "comment": "",
+      "pcf": {
+        "declaredUnit": "liter",
+        "unitaryProductAmount": "12.0",
+        "pCfExcludingBiogenic": "0.0",
+        "fossilGhgEmissions": "0.123",
+        "fossilCarbonContent": "0.0",
+        "biogenicCarbonContent": "0.0",
+        "landManagementGhgEmissions": "0.01",
+        "characterizationFactors": "AR5",
+        "crossSectoralStandardsUsed": [
+          "GHG Protocol Product standard"
+        ],
+        "productOrSectorSpecificRules": [
+          {
+            "operator": "EPD International",
+            "ruleNames": [
+              "ABC 2021"
+            ]
+          }
+        ],
+        "boundaryProcessesDescription": "End-of-life included",
+        "referencePeriodStart": "2021-01-01T00:00:00+00:00",
+        "referencePeriodEnd": "2022-01-01T00:00:00+00:00",
+        "geographyCountry": "FR",
+        "secondaryEmissionFactorSources": [
+          {
+            "name": "Ecoinvent",
+            "version": "1.2.3"
+          }
+        ],
+        "exemptedEmissionsPercent": 3.1,
+        "exemptedEmissionsDescription": "",
+        "packagingEmissionsIncluded": false,
+        "primaryDataShare": 56.12,
+        "assurance": {
+          "assurance": true,
+          "coverage": "product line",
+          "level": "reasonable",
+          "boundary": "Cradle-to-Gate",
+          "providerName": "My Auditor",
+          "completedAt": "2022-12-08T14:47:32+00:00",
+          "standardName": "ISO ...",
+          "comments": "This is a comment"
+        }
+      },
+      "extensions": [
+        {
+          "specVersion": "2.1.0",
+          "dataSchema": "https://catalog.carbon-transparency.com/shipment/1.0.0/data-model.json",
+          "data": {
+            "shipmentId": "S1234567890",
+            "consignmentId": "Cabc.def-ghi",
+            "shipmentType": "PICKUP",
+            "weight": 10,
+            "transportChainElementId": "ABCDEFGHI"
+          }
+        }
+      ]
+    },
+    {
+      "id": "6b24e0de-e282-466d-8b9a-ad862d325c4f",
+      "specVersion": "2.1.0",
+      "precedingPfIds": [
+        "9d454aec-04f9-48a8-bf04-519c7873bba3"
+      ],
+      "version": 2,
+      "created": "2022-04-11T21:47:32+00:00",
+      "updated": "2022-11-21T21:47:32Z",
+      "status": "Active",
+      "statusComment": "Updated PCF to reflect new data",
+      "validityPeriodStart": "2023-11-21T14:47:32+00:00",
+      "validityPeriodEnd": "2024-1-08T14:47:32+00:00",
+      "companyName": "My Corp",
+      "companyIds": [
+        "urn:uuid:f5257737-db27-4495-b99a-55bbc5130f96"
+      ],
+      "productDescription": "Solar Inverter",
+      "productIds": [
+        "urn:rnpwr:s:us:1234567890"
+      ],
+      "productCategoryCpc": "31424",
+      "productNameCompany": "P94x Solar Inverter",
+      "comment": "This PCF was calculated using a new model that reflects updates to the data.",
+      "pcf": {
+        "declaredUnit": "kilogram",
+        "unitaryProductAmount": "3.12",
+        "pCfExcludingBiogenic": "0.0",
+        "pCfIncludingBiogenic": "0.2",
+        "fossilGhgEmissions": "0.023",
+        "fossilCarbonContent": "1.2",
+        "biogenicCarbonContent": "0.12",
+        "dLucGhgEmissions": ".51",
+        "landManagementGhgEmissions": "0.11",
+        "otherBiogenicGhgEmissions": "0.0",
+        "iLucGhgEmissions": "0.0",
+        "biogenicCarbonWithdrawal": "1.6",
+        "aircraftGhgEmissions": "0.0",
+        "characterizationFactors": "AR6",
+        "crossSectoralStandardsUsed": [
+          "GHG Protocol Product standard"
+        ],
+        "productOrSectorSpecificRules": [
+          {
+            "operator": "I-REC-Standard",
+            "ruleNames": [
+              "IREC 2022"
+            ]
+          }
+        ],
+        "biogenicAccountingMethodology": "ISO",
+        "boundaryProcessesDescription": "End-of-life included",
+        "referencePeriodStart": "2023-01-01T00:00:00+00:00",
+        "referencePeriodEnd": "2024-01-01T00:00:00+00:00",
+        "geographyCountry": "CN",
+        "secondaryEmissionFactorSources": [
+          {
+            "name": "Ecoinvent",
+            "version": "2.2.3"
+          }
+        ],
+        "exemptedEmissionsPercent": 0.1,
+        "exemptedEmissionsDescription": "Excluded PCF emissions due to overestimation of emissions.",
+        "packagingEmissionsIncluded": true,
+        "packagingGhgEmissions": "0.1",
+        "allocationRulesDescription": "Allocation rules were applied to account for the use of multiple feedstocks.",
+        "uncertaintyAssessmentDescription": "Uncertainty was assessed using a Monte Carlo simulation.",
+        "dqi": {
+          "coveragePercent": 90,
+          "technologicalDQR": 1.13,
+          "temporalDQR": 2.57,
+          "geographicalDQR": 1,
+          "completenessDQR": 2.6,
+          "reliabilityDQR": 1.79
+        }
+      }
+    },
+    {
+      "id": "a8f051f7-1e67-4643-91a1-b634545a6fff",
+      "specVersion": "2.1.0",
+      "precedingPfIds": [
+        "56c831e2-5337-45dd-82af-e4428ef1b41a"
+      ],
+      "version": 1,
+      "created": "2022-12-08T14:47:32+00:00",
+      "updated": "2023-1-08T14:47:32+00:00",
+      "status": "Active",
+      "statusComment": "This is an optional comment",
+      "validityPeriodStart": "2022-12-08T14:47:32+00:00",
+      "validityPeriodEnd": "2023-12-08T14:47:32+00:00",
+      "companyName": "Acme Corp",
+      "companyIds": [
+        "urn:epc:id:sgln:4063973.00000.8"
+      ],
+      "productDescription": "Canvas Sheet",
+      "productIds": [
+        "urn:gtin:687139912"
+      ],
+      "productCategoryCpc": "3342",
+      "productNameCompany": "Green Canvas",
+      "comment": "Should have information and instructions related to the calculation of the footprint, or other information which informs the ability to interpret, to audit or to verify the Product Footprint.",
+      "pcf": {
+        "declaredUnit": "tonne",
+        "unitaryProductAmount": "1.0",
+        "pCfExcludingBiogenic": "0.6",
+        "pCfIncludingBiogenic": "1.2",
+        "fossilGhgEmissions": "0.423",
+        "fossilCarbonContent": "0.621",
+        "biogenicCarbonContent": "0.01",
+        "dLucGhgEmissions": "0.21",
+        "landManagementGhgEmissions": "2.20",
+        "otherBiogenicGhgEmissions": "0.4",
+        "iLucGhgEmissions": "0.021",
+        "biogenicCarbonWithdrawal": "0.0",
+        "aircraftGhgEmissions": "0.0",
+        "characterizationFactors": "AR5",
+        "crossSectoralStandardsUsed": [
+          "GHG Protocol Product standard"
+        ],
+        "productOrSectorSpecificRules": [
+          {
+            "operator": "UDSD International",
+            "ruleNames": [
+              "ABC 2022"
+            ]
+          }
+        ],
+        "biogenicAccountingMethodology": "ISO",
+        "boundaryProcessesDescription": "End-of-life included",
+        "referencePeriodStart": "2021-01-01T00:00:00+00:00",
+        "referencePeriodEnd": "2022-01-01T00:00:00+00:00",
+        "geographyCountrySubdivision": "US-GA",
+        "geography_country": "US",
+        "geographyRegionOrSubregion": "North America",
+        "secondaryEmissionFactorSources": [
+          {
+            "name": "Carbon Trust",
+            "version": "2.3"
+          }
+        ],
+        "exemptedEmissionsPercent": 0.1,
+        "exemptedEmissionsDescription": "",
+        "packagingEmissionsIncluded": true,
+        "packagingGhgEmissions": "2.123",
+        "allocationRulesDescription": "Allocation rules description",
+        "uncertaintyAssessmentDescription": "Uncertainty assessment description",
+        "primaryDataShare": 10.4,
+        "dqi": {
+          "coveragePercent": 100,
+          "technologicalDQR": 1.13,
+          "temporalDQR": 2.57,
+          "geographicalDQR": 1,
+          "completenessDQR": 2.6,
+          "reliabilityDQR": 1.79
+        },
+        "assurance": {
+          "assurance": true,
+          "coverage": "product line",
+          "level": "reasonable",
+          "boundary": "Cradle-to-Gate",
+          "providerName": "My Auditor",
+          "completedAt": "2022-12-08T14:47:32+00:00",
+          "standardName": "ISO ...",
+          "comments": "This is a comment"
+        }
+      },
+      "extensions": [
+        {
+          "specVersion": "2.1.0",
+          "dataSchema": "https://catalog.carbon-transparency.com/shipment/1.0.0/data-model.json",
+          "data": {
+            "shipmentId": "S1234567890",
+            "consignmentId": "Cabc.def-ghi",
+            "shipmentType": "PICKUP",
+            "weight": 10,
+            "transportChainElementId": "1-2212-dd-43123"
+          }
+        }
+      ]
+    },
+    {
+      "id": "4b5c7992-dab0-4c31-9c6c-1ac2432b6094",
+      "specVersion": "2.1.0",
+      "version": 1,
+      "created": "2022-05-22T21:47:32+00:00",
+      "status": "Active",
+      "companyName": "ABC Corp",
+      "companyIds": [
+        "urn:uuid:2321dd:d21:2"
+      ],
+      "productDescription": "Glass Sheet",
+      "productIds": [
+        "urn:gtin:442134123"
+      ],
+      "productCategoryCpc": "3342",
+      "productNameCompany": "Sheet glass .5cm du-ply",
+      "comment": "",
+      "pcf": {
+        "declaredUnit": "tonne",
+        "unitaryProductAmount": "2.0",
+        "pCfExcludingBiogenic": "0.3",
+        "fossilGhgEmissions": "1.21",
+        "fossilCarbonContent": "0.4",
+        "biogenicCarbonContent": "0.0",
+        "landManagementGhgEmissions": "0.01",
+        "characterizationFactors": "AR6",
+        "crossSectoralStandardsUsed": [
+          "GHG Protocol Product standard"
+        ],
+        "productOrSectorSpecificRules": [
+          {
+            "operator": "Glass door association",
+            "ruleNames": [
+              "Glass 99-4a"
+            ]
+          }
+        ],
+        "boundaryProcessesDescription": "End-of-life included",
+        "referencePeriodStart": "2021-01-01T00:00:00+00:00",
+        "referencePeriodEnd": "2022-01-01T00:00:00+00:00",
+        "geographyCountry": "FR",
+        "secondaryEmissionFactorSources": [
+          {
+            "name": "EU ETS",
+            "version": "3.7"
+          }
+        ],
+        "exemptedEmissionsPercent": 0.1,
+        "exemptedEmissionsDescription": "",
+        "packagingEmissionsIncluded": false,
+        "primaryDataShare": 56.12,
+        "assurance": {
+          "assurance": true,
+          "coverage": "product line",
+          "level": "reasonable",
+          "boundary": "Cradle-to-Gate",
+          "providerName": "My Auditor",
+          "completedAt": "2022-12-08T14:47:32+00:00",
+          "standardName": "ISO ...",
+          "comments": "This is a comment"
+        }
+      },
+      "extensions": []
+    },
+    {
+      "id": "ae59f69c-9b72-4657-a96f-e22cd9d74840",
+      "specVersion": "2.1.0",
+      "version": 1,
+      "created": "2022-05-22T21:47:32+00:00",
+      "status": "Active",
+      "companyName": "Contoso Corp",
+      "companyIds": [
+        "urn:ars:id:sglo:4899s.223"
+      ],
+      "productDescription": "Planck Wood",
+      "productIds": [
+        "urn:pw:441a2345060507"
+      ],
+      "productCategoryCpc": "31230",
+      "productNameCompany": "Planck Wood ev. 1.5cm",
+      "comment": "",
+      "pcf": {
+        "declaredUnit": "kilogram",
+        "unitaryProductAmount": "1.1",
+        "pCfExcludingBiogenic": "0.04",
+        "fossilGhgEmissions": "0.023",
+        "fossilCarbonContent": "0.2",
+        "biogenicCarbonContent": "0.87",
+        "landManagementGhgEmissions": "0.61",
+        "characterizationFactors": "AR5",
+        "crossSectoralStandardsUsed": [
+          "GHG Protocol Product standard"
+        ],
+        "productOrSectorSpecificRules": [
+          {
+            "operator": "Woody wood association",
+            "ruleNames": [
+              "Wood from trees 2020"
+            ]
+          }
+        ],
+        "boundaryProcessesDescription": "End-of-life included",
+        "referencePeriodStart": "2021-01-01T00:00:00+00:00",
+        "referencePeriodEnd": "2022-01-01T00:00:00+00:00",
+        "geographyCountry": "UK",
+        "secondaryEmissionFactorSources": [
+          {
+            "name": "UK GGP",
+            "version": "2.312"
+          }
+        ],
+        "exemptedEmissionsPercent": 3.1,
+        "exemptedEmissionsDescription": "",
+        "packagingEmissionsIncluded": false,
+        "primaryDataShare": 56.12,
+        "assurance": {
+          "assurance": true,
+          "coverage": "product line",
+          "level": "reasonable",
+          "boundary": "Cradle-to-Gate",
+          "providerName": "My Auditor",
+          "completedAt": "2022-12-08T14:47:32+00:00",
+          "standardName": "ISO ...",
+          "comments": "This is a comment"
+        }
+      },
+      "extensions": [
+        {
+          "specVersion": "2.1.0",
+          "dataSchema": "https://catalog.carbon-transparency.com/wood/1.0.0/data-model.json",
+          "data": {
+            "palletId": "44-1213123",
+            "consignmentId": "ww:1234-1234-1234",
+            "shipmentType": "PICKUP",
+            "weight": 100,
+            "transportChainElementId": "downstream-transport-chain-element-id"
+          }
+        }
+      ]
+    }
+  ]
+}
