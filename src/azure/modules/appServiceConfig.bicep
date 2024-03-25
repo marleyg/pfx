@@ -10,8 +10,8 @@ resource siteconfig 'Microsoft.Web/sites/config@2023-01-01' = {
   name: 'appsettings'
   properties: {
       ASPNETCORE_ENVIRONMENT: 'Production'
-      ENCRYPTION_CERTIFICATE_NAME: 'pfx-encryption-certificate'
-      SIGNING_CERTIFICATE_NAME: 'pfx-signing-certificate'
+      ENCRYPTION_CERTIFICATE_NAME: 'encryption-certificate'
+      SIGNING_CERTIFICATE_NAME: 'signing-certificate'
       PFX_CONFIG_SECRET_NAME: 'pfx-config'
       AKV_URI: keyVaultUri
     }

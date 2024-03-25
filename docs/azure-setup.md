@@ -61,8 +61,6 @@ The installation process is as follows:
     ./install.sh
     ```
 
-4. Once the installation is complete, *IF YOU GET 2 `Failed to establish a new connection: [Errno 8] nodename nor servname provided, or not known` errors* you will need to create the encryption and signing certificates in the Key Vault. This can be done using the Azure CLI from a console or terminal.
-
 Replace the `${keyVaultName}`  with the values you used in the `install.sh` script.
 
 ```bash

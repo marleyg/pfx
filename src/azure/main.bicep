@@ -1,7 +1,7 @@
 param location string
 param hostOrgName string 
 param appServiceAppName string = '${hostOrgName}-PathfinderFx'
-param keyVaultName string = '${hostOrgName}-pathfinder-kv'
+param keyVaultName string
 param tenantId string = subscription().tenantId
 @description('Specifies the object ID of a user, service principal or security group in the Azure Active Directory tenant for the vault. The object ID must be unique for the list of access policies. Get it by using Get-AzADUser or Get-AzADServicePrincipal cmdlets.')
 param scripterId string
